@@ -297,6 +297,72 @@ Then the real test, which is a session creation and not a provider listing:
     --no-idle-gate --tag cudacheck
 ```
 
+#### The second failure, and the worse one
+
+With the driver updated and the CUDA 12 wheel in place, the session created on
+CUDA and then this happened on the first convolution:
+
+```
+Could not locate cudnn_engines_tensor_ir64_9.dll.
+CUDNN_BACKEND_TENSOR_DESCRIPTOR cudnnFinalize failed ... CUDNN_STATUS_SUBLIBRARY_LOADING_FAILED
+Non-zero status code returned while running Conv node. Name:'/conv1/Conv'
+EP Error: ... using ['CUDAExecutionProvider', 'CPUExecutionProvider']
+Falling back to ['CPUExecutionProvider'] and retrying.
+```
+
+and then the benchmark **completed and saved**, headed
+`cuda -> CUDAExecutionProvider`, reporting 15.99 FPS — which is the CPU number.
+
+Two separate defects, and the second matters more than the first.
+
+**cuDNN loads sublibraries lazily.** `preload_dlls()` LoadLibrary's a fixed
+list — in this ONNX Runtime it is seven cuDNN DLLs, and
+`cudnn_engines_tensor_ir64_9.dll` is not among them. cuDNN reaches for it at the
+first Conv, long after session creation, and by then only the Windows DLL search
+path is consulted, where `site-packages/nvidia/*/bin` does not appear.
+`backends.py` now calls `os.add_dll_directory()` on each of those directories
+and keeps the handles alive for the process, so the directory stays searchable
+rather than being preloaded once. Check the file is actually there before
+reinstalling anything:
+
+```powershell
+Get-ChildItem .venv-cuda\Lib\site-packages\nvidia\cudnn\bin\cudnn_engines_tensor_ir64_9.dll
+```
+
+If it exists, this is a search-path problem and not a CUDA version problem. Do
+not change the CUDA version to fix it.
+
+**ONNX Runtime's Python wrapper swaps the session to CPU and retries, inside
+`run()`.** Not at session creation — the retry lives in `InferenceSession.run()`
+and `run_async()`, which catch the EP failure, call
+`set_providers(["CPUExecutionProvider"])`, disable further fallback and re-issue
+the call. The harness had already checked `get_providers()` at construction and
+seen CUDA, so nothing downstream ever noticed. That is how a dead accelerator
+produced a complete, plausible, correctly-ordered benchmark under the wrong
+name.
+
+`backends.py` now calls `disable_fallback()` for every non-CPU backend, and
+re-reads the providers once after the first inference. Note that this is a
+different thing from listing `CPUExecutionProvider` behind the accelerator:
+that is graph partitioning, where an op with no accelerator kernel runs on the
+host, and it stays.
+
+**Delete any result produced before this fix.** It is a CPU measurement wearing
+an accelerator's label, which is worse than no measurement:
+
+```powershell
+Remove-Item .\results\cudacheck__cuda__resnet50_224__bbb_360_2MB.json
+```
+
+After the fix there are exactly two acceptable outcomes from the `cudacheck`
+command, and a third that must not occur:
+
+| | |
+|---|---|
+| ✅ | real GPU numbers, `saved -> results\cudacheck__cuda__...` |
+| ✅ | a CUDA or cuDNN exception, the run aborts, nothing is saved |
+| ❌ | CPU numbers saved under the `cuda` tag |
+
 A 2 GB card is not a constraint here. ResNet50 at 224, batch 1, FP32 is about
 100 MB of weights and the pipeline holds a few dozen decoded frames; the MX150's
 memory is the least of this backend's problems.
@@ -429,6 +495,8 @@ there, running it here at least separates them on *this* machine.
 | Windows error 126 loading `onnxruntime_providers_cuda.dll` | the CUDA runtime it links is absent. Read the DLL it names: `cublasLt64_13` means a CUDA 13 wheel, which Pascal cannot use at all — downgrade the wheel rather than install CUDA 13. `cublasLt64_12` missing means the right wheel with no runtime: `preload_dlls()`, the `[cuda,cudnn]` extra, or CUDA on `PATH` |
 | `CUDAExecutionProvider` never appears, whatever you install | check the driver before the wheels. `nvidia-smi` reports the highest CUDA version the driver can host, and the 550XBE shipped with 451.67, which caps at 11.0 |
 | a provider is listed but no run ever succeeds | listing is about the wheel, running is about the machine. See §2 |
+| `CUDNN_STATUS_SUBLIBRARY_LOADING_FAILED` on the first Conv | cuDNN loading a sublibrary lazily from a directory that is not on the DLL search path. `backends.py` handles it with `os.add_dll_directory`; if it persists, check the DLL is present before changing any version |
+| "Falling back to ['CPUExecutionProvider'] and retrying." | the accelerator died mid-run and ONNX Runtime silently continued on CPU. Should now be impossible — `disable_fallback()` is set for every non-CPU backend. If you see it, the result is void |
 | `settled: false` in the result | the idle gate gave up. The run is marked contaminated on purpose; close things or raise `--max-busy-pct` to your real floor |
 | `drift` above 1.05x | not steady state. A throttling laptop is two machines and their average describes neither. Longer cooldown, or shorter runs |
 | last repeat is always slowest | heat accumulating between repeats, not within one. Raise `--cooldown` |
