@@ -69,7 +69,38 @@ On Linux/macOS substitute `.venv/bin/python`.
 
 ## Results
 
-_Pending first run._
+W1 is measured: a 3 backend x 3 resolution grid, 5 runs per cell.
+Full write-up in [`docs/findings-w1.md`](docs/findings-w1.md).
+
+```
+inference p50 (ms)      360p    720p   1080p      overlap ceiling (x)
+cpu (ORT CPU EP)       14.39   11.87   11.91      1.10   1.29   1.41
+openvino/GPU (Arc)      2.39    2.53    3.43      1.83   2.19   1.64
+openvino/NPU            3.05    3.42    5.32      1.39   1.98   2.14
+```
+
+1. **Making inference faster moves the bottleneck to the host.** Inference
+   falls 4-6x on the accelerators and the overlap ceiling roughly doubles. On
+   CPU an async pipeline is not worth building: the ceiling at 360p is 1.10x
+   against 30% run-to-run noise.
+2. **Measured "inference" is not device time.** It rises with *source*
+   resolution even though the model always sees 224x224 — +74% on the NPU from
+   360p to 1080p, against 2% within-cell noise. `session.run()` includes host
+   copy, submit and wait. DEEPX's SDK already splits this into `get_latency()`
+   and `get_npu_inference_time()`; this grid reached the same distinction from
+   the other side.
+3. **Inference on the iGPU contends with video decode.** `read` agrees across
+   backends to within 3% at 720p, but at 1080p the GPU row is double the CPU
+   row — same silicon doing decode and inference. It is the only cell in the
+   grid where `read` is the bottleneck, and the only backend whose ceiling
+   *falls* at 1080p.
+4. **The CPU cells are bimodal, not noisy** — per-run inference switches
+   between two levels rather than drifting, consistent with a hybrid P/E-core
+   part and an unpinned thread pool. Pinning `--intra-threads` is the untested
+   fix.
+
+Async has not been built yet: the ceiling is what overlap could reach, not what
+it does reach.
 
 ## Findings from reading DX-APP
 

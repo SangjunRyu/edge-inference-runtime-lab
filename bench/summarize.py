@@ -21,6 +21,14 @@ import statistics
 from pathlib import Path
 
 
+def cv(vals: list[float]) -> float:
+    vals = [v for v in vals if v is not None]
+    if len(vals) < 2:
+        return 0.0
+    m = statistics.fmean(vals)
+    return (statistics.stdev(vals) / m) if m else 0.0
+
+
 def load(out_dir: str, tag: str) -> list[dict]:
     rows = []
     for p in sorted(Path(out_dir).glob(f"{tag}__*.json")):
@@ -50,17 +58,14 @@ def load(out_dir: str, tag: str) -> list[dict]:
                 key=lambda s: sum(1 for r in runs if r["bottleneck_stage"] == s)),
             "fps_cv": (d.get("across_runs") or {}).get(
                 "throughput_fps", {}).get("cv", 0.0),
+            # Within-cell run-to-run spread of each metric. This, not the
+            # worst cell in the grid, is what a cross-axis difference has to
+            # beat: one unstable cell must not raise the bar for every other.
+            "within": {m: cv([r["stages_ms"][m]["p50"] for r in runs])
+                       for m in ("read", "preprocess", "inference", "postprocess")},
             "ort": meta["env"].get("onnxruntime_version"),
         })
     return rows
-
-
-def cv(vals: list[float]) -> float:
-    vals = [v for v in vals if v is not None]
-    if len(vals) < 2:
-        return 0.0
-    m = statistics.fmean(vals)
-    return (statistics.stdev(vals) / m) if m else 0.0
 
 
 def grid(rows: list[dict], metric: str) -> tuple[list[str], list[str], dict]:
@@ -77,7 +82,7 @@ def table(rows: list[dict], metric: str, unit: str = "ms") -> str:
            "|---" * (len(clips) + 2) + "|"]
     for b in backends:
         vals = [cells.get((b, c)) for c in clips]
-        shown = [f"{v:.2f}" if v is not None else "—" for v in vals]
+        shown = [f"{v:.2f}" if v is not None else "--" for v in vals]
         out.append(f"| **{b}** | " + " | ".join(shown) +
                    f" | CV {100 * cv([v for v in vals if v is not None]):.0f}% |")
     per_clip = []
@@ -119,25 +124,50 @@ def main() -> int:
         print(f"| {r['backend']} x {r['clip']} | {r['bottleneck']} | "
               f"{r['ceiling']:.2f}x | {r['n_runs']} |")
 
-    # The two expectations, stated as numbers.
-    _, _, inf = grid(rows, "inference")
-    _, _, rd = grid(rows, "read")
-    backends, clips, _ = grid(rows, "inference")
-    inf_across_clips = statistics.fmean(
-        [cv([inf.get((b, c)) for c in clips]) for b in backends] or [0])
-    rd_across_backends = statistics.fmean(
-        [cv([rd.get((b, c)) for b in backends]) for c in clips] or [0])
-
+    # The two expectations, each checked against the noise of the very cells
+    # being compared. Averaging one global noise figure lets a single unstable
+    # cell excuse a real effect elsewhere in the grid.
     print("\n## Do the axes separate?\n")
-    print(f"- `inference` across clips (want ~0, machine noise {100 * noise:.0f}%): "
-          f"**{100 * inf_across_clips:.0f}%**")
-    print(f"- `read` across backends (want ~0, machine noise {100 * noise:.0f}%): "
-          f"**{100 * rd_across_backends:.0f}%**")
-    for name, val in (("inference varies with the clip", inf_across_clips),
-                      ("read varies with the backend", rd_across_backends)):
-        if val > max(noise, 0.05) * 1.5:
-            print(f"- ⚠ {name} by more than the noise floor — explain this "
-                  f"before quoting the grid")
+    print("`inference` should depend on the backend only; `read` and "
+          "`preprocess` on the clip only.\n")
+    print("| expectation | row/col | cross-axis CV | within-cell CV | verdict |")
+    print("|---|---|---|---|---|")
+
+    backends, clips, inf = grid(rows, "inference")
+    by_cell = {(r["backend"], r["clip"]): r for r in rows}
+    verdicts = []
+
+    for b in backends:
+        cells = [by_cell.get((b, c)) for c in clips]
+        cells = [c for c in cells if c]
+        across = cv([inf.get((b, c)) for c in clips])
+        within = statistics.fmean([c["within"]["inference"] for c in cells] or [0])
+        real = across > max(within, 0.02) * 2
+        verdicts.append(("inference flat across clips", b, real))
+        print(f"| inference flat across clips | {b} | {100 * across:.0f}% | "
+              f"{100 * within:.0f}% | {'**varies -- explain**' if real else 'ok'} |")
+
+    _, _, rd = grid(rows, "read")
+    for c in clips:
+        cells = [by_cell.get((b, c)) for b in backends]
+        cells = [x for x in cells if x]
+        across = cv([rd.get((b, c)) for b in backends])
+        within = statistics.fmean([x["within"]["read"] for x in cells] or [0])
+        real = across > max(within, 0.02) * 2
+        verdicts.append(("read flat across backends", c, real))
+        print(f"| read flat across backends | {c} | {100 * across:.0f}% | "
+              f"{100 * within:.0f}% | {'**varies -- explain**' if real else 'ok'} |")
+
+    print("\n| cell | fps CV | inference CV | read CV |")
+    print("|---|---|---|---|")
+    for r in sorted(rows, key=lambda r: -r["fps_cv"]):
+        print(f"| {r['backend']} x {r['clip']} | {100 * r['fps_cv']:.0f}% | "
+              f"{100 * r['within']['inference']:.0f}% | "
+              f"{100 * r['within']['read']:.0f}% |")
+
+    if any(v[2] for v in verdicts):
+        print("\nCross-axis effects above twice their own cells' noise are "
+              "real and need an explanation, not a wider error bar.")
     return 0
 
 

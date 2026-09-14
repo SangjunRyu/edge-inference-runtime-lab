@@ -30,15 +30,36 @@ contaminated.
 | `npucheck_openvino-npu_resnet50_224.json` | first NPU run; bottleneck moved from inference to `read` |
 | `noisetest_openvino-npu_resnet50_224.json` | 3 runs, 10 s cooldown; produced the first between-run CV and showed 10 s is not enough |
 
-## Not yet measured
+## The W1 grid
 
-The backend × resolution matrix. So far CPU has only been measured at 360p and
-the NPU only at 1080p, so backend and resolution are confounded — `inference`
-should respond only to the backend and `read` only to the resolution, and that
-has not been shown.
+`gram__*.json` -- 9 cells, 3 backends x 3 resolutions, 5 runs each, 200 counted
+frames after 100 warm-up, 60 s cooldown between runs and between cells. All on
+ONNX Runtime 1.24.1. Analysed in `../docs/findings-w1.md`.
 
 | | 360p | 720p | 1080p |
 |---|---|---|---|
-| CPU | partial | — | — |
-| GPU (Arc iGPU) | — | — | — |
-| NPU | — | — | ✅ |
+| cpu (ORT CPU EP) | done | done | done |
+| openvino/GPU (Arc iGPU) | done | done | done |
+| openvino/NPU | done | done | done |
+
+Per-cell noise, worst first -- the CPU cells are bimodal rather than noisy and
+should be re-run with `--intra-threads` pinned:
+
+| cell | fps CV | inference CV | read CV |
+|---|---|---|---|
+| cpu x 1080p | 30% | 54% | 32% |
+| cpu x 360p | 30% | 27% | 6% |
+| openvino/GPU x 360p | 25% | 9% | 35% |
+| openvino/GPU x 1080p | 17% | 13% | 23% |
+| openvino/NPU x 1080p | 14% | 15% | 18% |
+| openvino/NPU x 360p | 9% | 2% | 10% |
+| cpu x 720p | 8% | 8% | 9% |
+| openvino/GPU x 720p | 6% | 8% | 5% |
+| openvino/NPU x 720p | 3% | 1% | 5% |
+
+## Still to run
+
+- `openvino/CPU` row -- the `cpu` row uses ONNX Runtime's own kernels, so
+  comparing it with the OpenVINO rows mixes a change of engine with a change of
+  device. Same engine on the CPU would separate them.
+- CPU row with `--intra-threads` pinned.
