@@ -1,0 +1,16 @@
+{
+  "timestamp_utc": "2026-09-14T11:56:49+00:00",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.13.14",
+  "cpu_name": "Intel(R) Core(TM) Ultra 7 255H",
+  "cpu_count_logical": 16,
+  "gpus_nvidia_smi": [],
+  "ram_total_gb": 31.5,
+  "cpu_freq_mhz_at_start": 2000.0,
+  "onnxruntime_version": "1.24.1",
+  "onnxruntime_available_providers": [
+    "OpenVINOExecutionProvider",
+    "CPUExecutionProvider"
+  ],
+  "opencv_version": "5.0.0"
+}

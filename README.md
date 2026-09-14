@@ -129,6 +129,26 @@ frame's own service time. The stage times themselves fell (`read` 9.75 → 5.05
 ms for identical work), which is recorded as an open question rather than
 claimed as a pipeline result.
 
+### In-flight depth (NPU, 360p, 10 s per point)
+
+| depth | FPS | E2E p50 | E2E p95 | inference p50 | resident |
+|---|---|---|---|---|---|
+| 1 | 226.7 | 28.1 | 45.9 | 3.52 | 6.96 |
+| 2 | 363.3 | 21.1 | 25.8 | 5.07 | 7.95 |
+| **4** | **383.8** | **25.8** | 28.7 | 10.14 | 10.08 |
+| 8 | 383.6 | 38.5 | 47.9 | 20.39 | 15.12 |
+| 16 | 386.8 | 74.1 | 104.1 | 36.27 | 29.65 |
+
+Throughput saturates at depth 4; going on to 16 buys **+0.8% throughput for
+2.87x the latency**. `inference` grows linearly with depth because the stage
+timer spans submit to completion and queueing inside the runtime lands in it,
+and `resident` tracks depth exactly as Little's Law requires.
+
+The same sweep at 1080p finds no knee: `q_inflight` is 0.00 ms from depth 2
+upward and `resident` stays near 2.8 whatever the limit says, because 1080p
+decode cannot feed more. A limit that never binds cannot shape anything —
+whether depth is worth tuning is a property of the workload, not the pipeline.
+
 With reordering disabled, 138 of 200 frames are emitted out of submission order
 while the frame count is exactly right — the defect DEEPX's `FrameReorderBuffer`
 prevents. Restoring order costs ~7 ms of mean latency and no throughput.

@@ -131,13 +131,91 @@ a gap must also survive the output queue and the postprocess worker.
 Both belong to the failure class this project keeps meeting: the count is
 almost right and nothing looks wrong.
 
+## In-flight depth: throughput saturates, latency does not
+
+NPU, 360p, queue sizes fixed at 4, **10 s measured per point**, 3 runs each:
+
+| depth | FPS | CV | x vs 1 | E2E p50 | E2E p95 | q_inflight | inference p50 | resident |
+|---|---|---|---|---|---|---|---|---|
+| 1 | 226.7 | 2.7% | 1.00 | 28.1 | 45.9 | 2.35 | 3.52 | 6.96 |
+| 2 | 363.3 | 1.8% | 1.60 | 21.1 | 25.8 | 1.45 | 5.07 | 7.95 |
+| **4** | **383.8** | 0.3% | **1.69** | **25.8** | 28.7 | 1.05 | 10.14 | 10.08 |
+| 8 | 383.6 | 0.5% | 1.69 | 38.5 | 47.9 | 1.24 | 20.39 | 15.12 |
+| 16 | 386.8 | 0.2% | 1.71 | 74.1 | 104.1 | 1.24 | 36.27 | 29.65 |
+
+```
+ 1 -> 2    throughput +60.3%  (needs >3.7%)   latency -25.1%   gain
+ 2 -> 4    throughput  +5.6%  (needs >2.1%)   latency +22.5%   gain
+ 4 -> 8    throughput  -0.0%  (needs >2.0%)   latency +49.4%   NOISE
+ 8 -> 16   throughput  +0.8%  (needs >2.0%)   latency +92.2%   NOISE
+```
+
+**The knee is 4.** Going on to 16 buys +0.8% throughput for **2.87x the
+latency**. Depth is not a free dial: past saturation the extra frames are
+queueing, not being worked on.
+
+Two independent confirmations of the mechanism:
+
+* `inference` p50 grows almost linearly with depth (3.52 -> 36.27 ms). That is
+  not the model getting slower; it is each request waiting its turn inside the
+  runtime. The stage timer spans submit to completion, so queueing inside ONNX
+  Runtime lands in it -- the same reason `get_latency()` and
+  `get_npu_inference_time()` are separate calls in DEEPX's SDK.
+* `resident` tracks depth (6.96 -> 29.65) exactly as Little's Law requires.
+
+`q_inflight` stays near 1 ms from depth 2 upward: the semaphore stops binding
+almost immediately, so beyond the knee the limit is not what holds frames back
+-- the slowest stage is.
+
+**Depth 1 is not a sequential baseline.** Its E2E is the *worst* of the whole
+sweep (28.1 ms) because the queues still hold four frames each while only one
+request may be outstanding, so frames sit waiting for the single slot
+(`q_inflight` 2.35 ms, resident 6.96). For a true sequential comparison use
+`run_ab`, not depth 1.
+
+### The same sweep at 1080p finds no knee at all
+
+| depth | FPS | E2E p50 | q_inflight | resident |
+|---|---|---|---|---|
+| 1 | 160.0 | 40.2 | 3.42 | 6.80 |
+| 2 | 183.6 | 16.5 | 0.00 | 2.79 |
+| 4 | 187.9 | 14.9 | 0.00 | 2.87 |
+| 8 | 190.9 | 17.8 | 0.00 | 3.26 |
+| 16 | 178.0 | 13.8 | 0.00 | 2.85 |
+
+Only 1 -> 2 clears the noise. From depth 2 upward `q_inflight` is **0.00 ms**
+and `resident` sits near 2.8 whatever the limit says: fewer than two requests
+are ever actually outstanding, because 1080p decode cannot feed them. The
+pipeline is producer-bound, and an in-flight limit that never binds cannot
+shape anything.
+
+So the textbook curve requires the limit to bind. Whether depth is worth tuning
+is a property of the workload, not of the pipeline.
+
+## Measurement duration changed the answer's quality
+
+The first version of this sweep used a fixed frame count (300 frames, 220
+counted), which at these rates is **0.55-0.98 s of measurement per run** -- and
+a different duration at every depth, so the fast points got less thermal
+exposure than the slow ones.
+
+Switching to a fixed 10 s per point cut the run-to-run CVs from
+5.9 / 10.7 / 0.4 / 0.6 / 3.2% to **2.7 / 1.8 / 0.3 / 0.5 / 0.2%**. The clip is
+300 frames, so a 10 s point replays it 12 times; `restarts` is recorded with
+every result.
+
+Looping is the standard approach and does not weaken the measurement: the
+decode work is performed in full every time, and only the file read is served
+from the page cache, which removes disk noise rather than adding any. MLPerf's
+loadgen works the same way -- replay the sample set, but enforce a minimum
+duration.
+
 ## Not established
 
 - **Why per-stage service time falls in async mode** (see above). The decoder
   read-ahead hypothesis is untested.
-- **The in-flight depth sweep.** Everything here is `inflight=4`. The
-  latency-versus-throughput curve across 1/2/4/8/16 has not been measured, so
-  the saturation point is unknown.
+- **That looping is equivalent to a single long pass.** A 10-minute source
+  played once would settle it; not run.
 - **GPU.** Only CPU and NPU have been compared this way. The Arc iGPU shares
   silicon with video decode (W1 finding 3), so its async behaviour is not
   predictable from either.

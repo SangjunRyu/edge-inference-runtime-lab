@@ -1,0 +1,2013 @@
+{
+  "meta": {
+    "tag": "sweep-npu360-10s",
+    "mode": "sweep",
+    "args": {
+      "model": "models/resnet50_224.onnx",
+      "backend": "openvino",
+      "ov_device": "NPU",
+      "source": "clips/bbb_360_2MB.mp4",
+      "frames": 40000,
+      "duration_s": 10.0,
+      "warmup": 200,
+      "top_k": 5,
+      "intra_threads": null,
+      "depths": [
+        1,
+        2,
+        4,
+        8,
+        16
+      ],
+      "queue_size": 4,
+      "reorder": "on",
+      "reorder_cap": null,
+      "repeat": 3,
+      "cooldown": 15.0,
+      "between_depths": 20.0,
+      "max_busy_pct": 25.0,
+      "no_idle_gate": true,
+      "allow_fallback": false,
+      "tag": "sweep-npu360-10s",
+      "out_dir": "results"
+    },
+    "backend": {
+      "requested_backend": "openvino",
+      "openvino_device": "NPU",
+      "actual_providers": [
+        "OpenVINOExecutionProvider",
+        "CPUExecutionProvider"
+      ],
+      "fell_back_to_cpu": false,
+      "input_shape": [
+        "1",
+        "3",
+        "224",
+        "224"
+      ]
+    },
+    "idle_gate": {
+      "checked": false,
+      "reason": "disabled"
+    },
+    "env": {
+      "timestamp_utc": "2026-09-14T11:55:46+00:00",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "python": "3.13.14",
+      "cpu_name": "Intel(R) Core(TM) Ultra 7 255H",
+      "cpu_count_logical": 16,
+      "gpus_nvidia_smi": [],
+      "ram_total_gb": 31.5,
+      "cpu_freq_mhz_at_start": 2000.0,
+      "onnxruntime_version": "1.24.1",
+      "onnxruntime_available_providers": [
+        "OpenVINOExecutionProvider",
+        "CPUExecutionProvider"
+      ],
+      "opencv_version": "5.0.0"
+    }
+  },
+  "points": [
+    {
+      "inflight": 1,
+      "throughput": {
+        "n": 3,
+        "mean": 226.67887908662206,
+        "min": 219.7320540416047,
+        "max": 231.34729020275728,
+        "stdev": 6.133661654617881,
+        "cv": 0.02705881412213085
+      },
+      "e2e_p50": {
+        "n": 3,
+        "mean": 28.11088332964573,
+        "min": 27.642499975627288,
+        "max": 28.770050004823133,
+        "stdev": 0.5874869988427149,
+        "cv": 0.0208989163361918
+      },
+      "e2e_p95": {
+        "n": 3,
+        "mean": 45.94206000328993,
+        "min": 44.75116499816066,
+        "max": 46.940315008396276,
+        "stdev": 1.1072159089514888,
+        "cv": 0.0241002669203819
+      },
+      "resident": 6.960543302015211,
+      "q_inflight_p50": 2.3502000112785026,
+      "inference_p50": 3.5183500149287283,
+      "order_violations": 0,
+      "source": {
+        "kind": "video",
+        "path": "clips/bbb_360_2MB.mp4",
+        "frame_count": 300,
+        "fps": 30.0,
+        "width": 640,
+        "height": 360,
+        "restarts": 7
+      },
+      "seconds_measured": 8.99731112675456,
+      "runs": [
+        {
+          "frames_counted": 1940,
+          "frames_warmup_discarded": 200,
+          "stages_ms": {
+            "read": {
+              "mean": 0.5626469067587114,
+              "mean_trim10": 0.4759558415099582,
+              "p50": 0.423350022174418,
+              "p95": 0.8608650052337906,
+              "max": 23.171499982709065
+            },
+            "preprocess": {
+              "mean": 1.3241568553566299,
+              "mean_trim10": 1.2550609390685261,
+              "p50": 1.1803500092355534,
+              "p95": 2.2967950251768343,
+              "max": 21.872299985261634
+            },
+            "inference": {
+              "mean": 4.22222865994458,
+              "mean_trim10": 3.910763230535361,
+              "p50": 3.5183500149287283,
+              "p95": 7.309005002025514,
+              "max": 37.07580000627786
+            },
+            "postprocess": {
+              "mean": 0.15428355691256002,
+              "mean_trim10": 0.14792789248970975,
+              "p50": 0.14504999853670597,
+              "p95": 0.23199999268399552,
+              "max": 4.2434000060893595
+            },
+            "q_read": {
+              "mean": 22.026865721752834,
+              "mean_trim10": 20.977748453628163,
+              "p50": 19.77120000810828,
+              "p95": 35.090729995863505,
+              "max": 86.6892000194639
+            },
+            "q_inflight": {
+              "mean": 2.999059226710143,
+              "mean_trim10": 2.7014776059824555,
+              "p50": 2.3502000112785026,
+              "p95": 6.300840018957385,
+              "max": 36.05510000488721
+            },
+            "q_output": {
+              "mean": 0.20922242224842943,
+              "mean_trim10": 0.15995274888970842,
+              "p50": 0.10019999172072858,
+              "p95": 0.8955100085586309,
+              "max": 5.116199987241998
+            },
+            "q_reorder": {
+              "mean": 0.049560721504583606,
+              "mean_trim10": 0.042267830473459875,
+              "p50": 0.03684998955577612,
+              "p95": 0.11810999712906776,
+              "max": 0.9289000008720905
+            }
+          },
+          "e2e_ms": {
+            "mean": 31.55166298977925,
+            "mean_trim10": 30.181491409103973,
+            "p50": 28.770050004823133,
+            "p95": 46.940315008396276,
+            "max": 104.54420000314713
+          },
+          "stage_sum_mean_ms": 31.548024071188472,
+          "service_sum_mean_ms": 6.263315978972481,
+          "wait_sum_mean_ms": 25.28470809221599,
+          "wait_stages": [
+            "q_read",
+            "q_inflight",
+            "q_output",
+            "q_reorder"
+          ],
+          "unaccounted_mean_ms": 0.0036389185907772514,
+          "throughput_fps": 219.7320540416047,
+          "throughput_implied_by_e2e_fps": 31.694050495022623,
+          "concurrency_littles_law": 6.932911717172673,
+          "pipelined": true,
+          "bottleneck_stage": "inference",
+          "overlap_ceiling_x": 1.4834146805906745,
+          "bottleneck_p95_over_p50": 2.0773956459740046,
+          "drift": {
+            "first_decile_ms": 33.56986546309271,
+            "last_decile_ms": 29.522247939069334,
+            "ratio": 0.8794270555396357
+          },
+          "order": {
+            "emitted": 2140,
+            "order_violations": 0,
+            "first_violation_at_frame": null,
+            "in_submission_order": true
+          },
+          "reorder": {
+            "cap": 20,
+            "max_depth": 1,
+            "forced_flushes": 0,
+            "out_of_order_arrivals": 0,
+            "max_displacement": 0,
+            "arrivals": 2140
+          },
+          "errors": [],
+          "source": {
+            "kind": "video",
+            "path": "clips/bbb_360_2MB.mp4",
+            "frame_count": 300,
+            "fps": 30.0,
+            "width": 640,
+            "height": 360,
+            "restarts": 7
+          }
+        },
+        {
+          "frames_counted": 2060,
+          "frames_warmup_discarded": 200,
+          "stages_ms": {
+            "read": {
+              "mean": 0.5316778636273015,
+              "mean_trim10": 0.441814994328593,
+              "p50": 0.4107000131625682,
+              "p95": 0.7581850091810336,
+              "max": 21.04479999979958
+            },
+            "preprocess": {
+              "mean": 1.3169782525561389,
+              "mean_trim10": 1.2725190399195787,
+              "p50": 1.207049994263798,
+              "p95": 2.1021300228312607,
+              "max": 7.022400008281693
+            },
+            "inference": {
+              "mean": 4.148151213712922,
+              "mean_trim10": 3.8420313377068465,
+              "p50": 3.5303000040585175,
+              "p95": 6.919885010574944,
+              "max": 48.86740000802092
+            },
+            "postprocess": {
+              "mean": 0.16717533963829623,
+              "mean_trim10": 0.1622997302349261,
+              "p50": 0.1563500118209049,
+              "p95": 0.30273000593297184,
+              "max": 1.2709999864455312
+            },
+            "q_read": {
+              "mean": 21.19523106795313,
+              "mean_trim10": 20.318120280628573,
+              "p50": 19.33204998204019,
+              "p95": 31.838804994185917,
+              "max": 83.32340000197291
+            },
+            "q_inflight": {
+              "mean": 2.8134876700119316,
+              "mean_trim10": 2.553926861035952,
+              "p50": 2.3067000147420913,
+              "p95": 5.720120015030261,
+              "max": 47.67929998342879
+            },
+            "q_output": {
+              "mean": 0.1558836408381043,
+              "mean_trim10": 0.11589444760795471,
+              "p50": 0.10309999925084412,
+              "p95": 0.5826499836985022,
+              "max": 2.6742999907583
+            },
+            "q_reorder": {
+              "mean": 0.06840305813436749,
+              "mean_trim10": 0.056918500417149236,
+              "p50": 0.04450001870281994,
+              "p95": 0.13370499946177006,
+              "max": 8.927100017899647
+            }
+          },
+          "e2e_ms": {
+            "mean": 30.401055193921547,
+            "mean_trim10": 29.27103451963769,
+            "p50": 27.92010000848677,
+            "p95": 44.75116499816066,
+            "max": 105.18489999230951
+          },
+          "stage_sum_mean_ms": 30.396988106472193,
+          "service_sum_mean_ms": 6.163982669534659,
+          "wait_sum_mean_ms": 24.233005436937535,
+          "wait_stages": [
+            "q_read",
+            "q_inflight",
+            "q_output",
+            "q_reorder"
+          ],
+          "unaccounted_mean_ms": 0.004067087449353579,
+          "throughput_fps": 228.9572930155042,
+          "throughput_implied_by_e2e_fps": 32.89359509468415,
+          "concurrency_littles_law": 6.960543302015211,
+          "pipelined": true,
+          "bottleneck_stage": "inference",
+          "overlap_ceiling_x": 1.4859590096807025,
+          "bottleneck_p95_over_p50": 1.9601407819787777,
+          "drift": {
+            "first_decile_ms": 28.893597573222753,
+            "last_decile_ms": 32.9467985445342,
+            "ratio": 1.1402802458586108
+          },
+          "order": {
+            "emitted": 2260,
+            "order_violations": 0,
+            "first_violation_at_frame": null,
+            "in_submission_order": true
+          },
+          "reorder": {
+            "cap": 20,
+            "max_depth": 1,
+            "forced_flushes": 0,
+            "out_of_order_arrivals": 0,
+            "max_displacement": 0,
+            "arrivals": 2260
+          },
+          "errors": [],
+          "source": {
+            "kind": "video",
+            "path": "clips/bbb_360_2MB.mp4",
+            "frame_count": 300,
+            "fps": 30.0,
+            "width": 640,
+            "height": 360,
+            "restarts": 7
+          }
+        },
+        {
+          "frames_counted": 2093,
+          "frames_warmup_discarded": 200,
+          "stages_ms": {
+            "read": {
+              "mean": 0.4254726704881503,
+              "mean_trim10": 0.35216394008213453,
+              "p50": 0.3302000113762915,
+              "p95": 0.6153399881441143,
+              "max": 22.615699999732897
+            },
+            "preprocess": {
+              "mean": 1.1948187287728451,
+              "mean_trim10": 1.1453087091789913,
+              "p50": 1.044400007231161,
+              "p95": 2.0967999880667776,
+              "max": 10.964100016281009
+            },
+            "inference": {
+              "mean": 4.124178643162842,
+              "mean_trim10": 3.8238304302070896,
+              "p50": 3.5078000219073147,
+              "p95": 6.635899993125346,
+              "max": 39.01619999669492
+            },
+            "postprocess": {
+              "mean": 0.14852685183602596,
+              "mean_trim10": 0.1443271910122819,
+              "p50": 0.14639997971244156,
+              "p95": 0.24588000960648057,
+              "max": 1.324900018516928
+            },
+            "q_read": {
+              "mean": 21.125094601239834,
+              "mean_trim10": 20.16112830601034,
+              "p50": 19.270200020400807,
+              "p95": 33.662299992283806,
+              "max": 81.01230001193471
+            },
+            "q_inflight": {
+              "mean": 2.8796779744429855,
+              "mean_trim10": 2.6253845990556073,
+              "p50": 2.403299993602559,
+              "p95": 5.565580021357164,
+              "max": 38.26729999855161
+            },
+            "q_output": {
+              "mean": 0.14772646929966388,
+              "mean_trim10": 0.10994065833421851,
+              "p50": 0.0999000039882958,
+              "p95": 0.5212799878790961,
+              "max": 5.026400001952425
+            },
+            "q_reorder": {
+              "mean": 0.05266378371479284,
+              "mean_trim10": 0.047976922769400854,
+              "p50": 0.04449998959898949,
+              "p95": 0.10877998429350545,
+              "max": 1.1932999768760055
+            }
+          },
+          "e2e_ms": {
+            "mean": 30.102168943968145,
+            "mean_trim10": 28.867809452962618,
+            "p50": 27.642499975627288,
+            "p95": 46.13470000331285,
+            "max": 90.67760000471026
+          },
+          "stage_sum_mean_ms": 30.09815972295714,
+          "service_sum_mean_ms": 5.892996894259863,
+          "wait_sum_mean_ms": 24.205162828697276,
+          "wait_stages": [
+            "q_read",
+            "q_inflight",
+            "q_output",
+            "q_reorder"
+          ],
+          "unaccounted_mean_ms": 0.004009221011006758,
+          "throughput_fps": 231.34729020275728,
+          "throughput_implied_by_e2e_fps": 33.220197583150544,
+          "concurrency_littles_law": 6.9640552144126255,
+          "pipelined": true,
+          "bottleneck_stage": "inference",
+          "overlap_ceiling_x": 1.4288898236814762,
+          "bottleneck_p95_over_p50": 1.8917555025035813,
+          "drift": {
+            "first_decile_ms": 29.286457415481888,
+            "last_decile_ms": 27.29144354064561,
+            "ratio": 0.931879303579352
+          },
+          "order": {
+            "emitted": 2293,
+            "order_violations": 0,
+            "first_violation_at_frame": null,
+            "in_submission_order": true
+          },
+          "reorder": {
+            "cap": 20,
+            "max_depth": 1,
+            "forced_flushes": 0,
+            "out_of_order_arrivals": 0,
+            "max_displacement": 0,
+            "arrivals": 2293
+          },
+          "errors": [],
+          "source": {
+            "kind": "video",
+            "path": "clips/bbb_360_2MB.mp4",
+            "frame_count": 300,
+            "fps": 30.0,
+            "width": 640,
+            "height": 360,
+            "restarts": 7
+          }
+        }
+      ]
+    },
+    {
+      "inflight": 2,
+      "throughput": {
+        "n": 3,
+        "mean": 363.31072691960134,
+        "min": 357.78950475290657,
+        "max": 370.45374489592115,
+        "stdev": 6.486016561501643,
+        "cv": 0.017852532504323667
+      },
+      "e2e_p50": {
+        "n": 3,
+        "mean": 21.062816662985522,
+        "min": 20.790750000742264,
+        "max": 21.27289999043569,
+        "stdev": 0.24697895352518737,
+        "cv": 0.011725827436897969
+      },
+      "e2e_p95": {
+        "n": 3,
+        "mean": 25.78306667079838,
+        "min": 24.037890002364293,
+        "max": 27.519859999301826,
+        "stdev": 1.741000136468859,
+        "cv": 0.06752494413089723
+      },
+      "resident": 7.946379487454523,
+      "q_inflight_p50": 1.452249998692423,
+      "inference_p50": 5.071999999927357,
+      "order_violations": 0,
+      "source": {
+        "kind": "video",
+        "path": "clips/bbb_360_2MB.mp4",
+        "frame_count": 300,
+        "fps": 30.0,
+        "width": 640,
+        "height": 360,
+        "restarts": 12
+      },
+      "seconds_measured": 9.375459706752602,
+      "runs": [
+        {
+          "frames_counted": 3472,
+          "frames_warmup_discarded": 200,
+          "stages_ms": {
+            "read": {
+              "mean": 0.41234516128778304,
+              "mean_trim10": 0.33044798336227016,
+              "p50": 0.3119000175502151,
+              "p95": 0.5784249937278217,
+              "max": 25.068299990380183
+            },
+            "preprocess": {
+              "mean": 1.0666822582284259,
+              "mean_trim10": 1.027541197358664,
+              "p50": 0.9076000133063644,
+              "p95": 1.8733449905994344,
+              "max": 5.324199999449775
+            },
+            "inference": {
+              "mean": 5.168189919086091,
+              "mean_trim10": 5.068917733404121,
+              "p50": 5.050699997809716,
+              "p95": 5.999130006239282,
+              "max": 47.118599992245436
+            },
+            "postprocess": {
+              "mean": 0.17636146317000076,
+              "mean_trim10": 0.17295948821119964,
+              "p50": 0.17374999879393727,
+              "p95": 0.2786999975796789,
+              "max": 2.3421999940183014
+            },
+            "q_read": {
+              "mean": 12.896782863338428,
+              "mean_trim10": 12.766075768660729,
+              "p50": 12.628750002477318,
+              "p95": 14.686100013204848,
+              "max": 53.612699994118884
+            },
+            "q_inflight": {
+              "mean": 1.4068760368238045,
+              "mean_trim10": 1.3480866326206504,
+              "p50": 1.452249998692423,
+              "p95": 2.407169993966818,
+              "max": 40.46899999957532
+            },
+            "q_output": {
+              "mean": 0.14651160737033397,
+              "mean_trim10": 0.11116450077073921,
+              "p50": 0.10489998385310173,
+              "p95": 0.5435849932837294,
+              "max": 4.449700005352497
+            },
+            "q_reorder": {
+              "mean": 0.09693522481054652,
+              "mean_trim10": 0.06388326418586075,
+              "p50": 0.05840000812895596,
+              "p95": 0.1443350090994499,
+              "max": 37.5818999891635
+            }
+          },
+          "e2e_ms": {
+            "mean": 21.3747255473351,
+            "mean_trim10": 21.028398335539805,
+            "p50": 20.790750000742264,
+            "p95": 24.037890002364293,
+            "max": 70.55279999622144
+          },
+          "stage_sum_mean_ms": 21.370684534115412,
+          "service_sum_mean_ms": 6.8235788017723005,
+          "wait_sum_mean_ms": 14.547105732343113,
+          "wait_stages": [
+            "q_read",
+            "q_inflight",
+            "q_output",
+            "q_reorder"
+          ],
+          "unaccounted_mean_ms": 0.004041013219687528,
+          "throughput_fps": 370.45374489592115,
+          "throughput_implied_by_e2e_fps": 46.78422643535067,
+          "concurrency_littles_law": 7.918347125132805,
+          "pipelined": true,
+          "bottleneck_stage": "inference",
+          "overlap_ceiling_x": 1.3203034154323297,
+          "bottleneck_p95_over_p50": 1.1877818933694066,
+          "drift": {
+            "first_decile_ms": 21.02999077869649,
+            "last_decile_ms": 20.80512939345411,
+            "ratio": 0.9893075851716413
+          },
+          "order": {
+            "emitted": 3672,
+            "order_violations": 0,
+            "first_violation_at_frame": null,
+            "in_submission_order": true
+          },
+          "reorder": {
+            "cap": 24,
+            "max_depth": 4,
+            "forced_flushes": 0,
+            "out_of_order_arrivals": 60,
+            "max_displacement": 3,
+            "arrivals": 3672
+          },
+          "errors": [],
+          "source": {
+            "kind": "video",
+            "path": "clips/bbb_360_2MB.mp4",
+            "frame_count": 300,
+            "fps": 30.0,
+            "width": 640,
+            "height": 360,
+            "restarts": 12
+          }
+        },
+        {
+          "frames_counted": 3391,
+          "frames_warmup_discarded": 200,
+          "stages_ms": {
+            "read": {
+              "mean": 0.43940374514280833,
+              "mean_trim10": 0.37120219600279775,
+              "p50": 0.3487000067252666,
+              "p95": 0.6640000210609287,
+              "max": 21.817400003783405
+            },
+            "preprocess": {
+              "mean": 1.1535020051896188,
+              "mean_trim10": 1.124035168758672,
+              "p50": 1.0944000096060336,
+              "p95": 1.808150002034381,
+              "max": 5.5924000043887645
+            },
+            "inference": {
+              "mean": 5.313418873230644,
+              "mean_trim10": 5.157158275670425,
+              "p50": 5.071999999927357,
+              "p95": 6.582500005606562,
+              "max": 42.09949998767115
+            },
+            "postprocess": {
+              "mean": 0.16754600401552774,
+              "mean_trim10": 0.16333879407278298,
+              "p50": 0.15880001592449844,
+              "p95": 0.2867500006686896,
+              "max": 5.649900005664676
+            },
+            "q_read": {
+              "mean": 13.25520377448095,
+              "mean_trim10": 12.985779088597516,
+              "p50": 12.724400003207847,
+              "p95": 15.537950006546453,
+              "max": 49.91830000653863
+            },
+            "q_inflight": {
+              "mean": 1.400731495106156,
+              "mean_trim10": 1.3084647327875039,
+              "p50": 1.3205999857746065,
+              "p95": 2.5547999975970015,
+              "max": 38.06799999438226
+            },
+            "q_output": {
+              "mean": 0.14366054286845512,
+              "mean_trim10": 0.10671300815386627,
+              "p50": 0.10010000551119447,
+              "p95": 0.4017500177724287,
+              "max": 4.891099990345538
+            },
+            "q_reorder": {
+              "mean": 0.09282621651430883,
+              "mean_trim10": 0.05854351246081962,
+              "p50": 0.045599997974932194,
+              "p95": 0.15610000991728157,
+              "max": 17.632300005061552
+            }
+          },
+          "e2e_ms": {
+            "mean": 21.97020368599094,
+            "mean_trim10": 21.45439255969092,
+            "p50": 21.12479999777861,
+            "p95": 25.791450010729022,
+            "max": 68.49430000875145
+          },
+          "stage_sum_mean_ms": 21.966292656548468,
+          "service_sum_mean_ms": 7.073870627578598,
+          "wait_sum_mean_ms": 14.89242202896987,
+          "wait_stages": [
+            "q_read",
+            "q_inflight",
+            "q_output",
+            "q_reorder"
+          ],
+          "unaccounted_mean_ms": 0.003911029442470237,
+          "throughput_fps": 361.68893110997624,
+          "throughput_implied_by_e2e_fps": 45.51619157894468,
+          "concurrency_littles_law": 7.946379487454523,
+          "pipelined": true,
+          "bottleneck_stage": "inference",
+          "overlap_ceiling_x": 1.3313218468841648,
+          "bottleneck_p95_over_p50": 1.297811515319566,
+          "drift": {
+            "first_decile_ms": 21.475171092276085,
+            "last_decile_ms": 21.170719174371488,
+            "ratio": 0.9858230736976946
+          },
+          "order": {
+            "emitted": 3591,
+            "order_violations": 0,
+            "first_violation_at_frame": null,
+            "in_submission_order": true
+          },
+          "reorder": {
+            "cap": 24,
+            "max_depth": 3,
+            "forced_flushes": 0,
+            "out_of_order_arrivals": 52,
+            "max_displacement": 2,
+            "arrivals": 3591
+          },
+          "errors": [],
+          "source": {
+            "kind": "video",
+            "path": "clips/bbb_360_2MB.mp4",
+            "frame_count": 300,
+            "fps": 30.0,
+            "width": 640,
+            "height": 360,
+            "restarts": 11
+          }
+        },
+        {
+          "frames_counted": 3355,
+          "frames_warmup_discarded": 200,
+          "stages_ms": {
+            "read": {
+              "mean": 0.38985666162584215,
+              "mean_trim10": 0.33391185807657703,
+              "p50": 0.31689999741502106,
+              "p95": 0.5640400078846134,
+              "max": 14.234100002795458
+            },
+            "preprocess": {
+              "mean": 0.898260685562152,
+              "mean_trim10": 0.8537323285663441,
+              "p50": 0.7986999989952892,
+              "p95": 1.738860009936615,
+              "max": 4.610599979059771
+            },
+            "inference": {
+              "mean": 5.385610790199416,
+              "mean_trim10": 5.2179624837675185,
+              "p50": 5.109599995194003,
+              "p95": 7.212169980630277,
+              "max": 40.17059999750927
+            },
+            "postprocess": {
+              "mean": 0.1620112371286752,
+              "mean_trim10": 0.1592256293388466,
+              "p50": 0.15659999917261302,
+              "p95": 0.2521999995224178,
+              "max": 1.5433999942615628
+            },
+            "q_read": {
+              "mean": 13.468372548674267,
+              "mean_trim10": 13.153712421644627,
+              "p50": 12.862499977927655,
+              "p95": 16.98575001209972,
+              "max": 66.93570001516491
+            },
+            "q_inflight": {
+              "mean": 1.7136814605358617,
+              "mean_trim10": 1.619426730732008,
+              "p50": 1.6506999963894486,
+              "p95": 3.070119998301379,
+              "max": 37.32119998312555
+            },
+            "q_output": {
+              "mean": 0.13462116245399666,
+              "mean_trim10": 0.10192222594121257,
+              "p50": 0.09610000415705144,
+              "p95": 0.46186999825294817,
+              "max": 4.140500008361414
+            },
+            "q_reorder": {
+              "mean": 0.09811138593690295,
+              "mean_trim10": 0.06407625808045947,
+              "p50": 0.06199997733347118,
+              "p95": 0.12493001122493294,
+              "max": 8.840000024065375
+            }
+          },
+          "e2e_ms": {
+            "mean": 22.25406116239682,
+            "mean_trim10": 21.727192911549103,
+            "p50": 21.27289999043569,
+            "p95": 27.519859999301826,
+            "max": 76.07549999374896
+          },
+          "stage_sum_mean_ms": 22.250525932117114,
+          "service_sum_mean_ms": 6.835739374516085,
+          "wait_sum_mean_ms": 15.414786557601028,
+          "wait_stages": [
+            "q_read",
+            "q_inflight",
+            "q_output",
+            "q_reorder"
+          ],
+          "unaccounted_mean_ms": 0.0035352302797058144,
+          "throughput_fps": 357.78950475290657,
+          "throughput_implied_by_e2e_fps": 44.935618389048116,
+          "concurrency_littles_law": 7.962269522034851,
+          "pipelined": true,
+          "bottleneck_stage": "inference",
+          "overlap_ceiling_x": 1.269259818580944,
+          "bottleneck_p95_over_p50": 1.4114940479516818,
+          "drift": {
+            "first_decile_ms": 21.784330149956133,
+            "last_decile_ms": 24.451238507623852,
+            "ratio": 1.1224232436485126
+          },
+          "order": {
+            "emitted": 3555,
+            "order_violations": 0,
+            "first_violation_at_frame": null,
+            "in_submission_order": true
+          },
+          "reorder": {
+            "cap": 24,
+            "max_depth": 2,
+            "forced_flushes": 0,
+            "out_of_order_arrivals": 88,
+            "max_displacement": 1,
+            "arrivals": 3555
+          },
+          "errors": [],
+          "source": {
+            "kind": "video",
+            "path": "clips/bbb_360_2MB.mp4",
+            "frame_count": 300,
+            "fps": 30.0,
+            "width": 640,
+            "height": 360,
+            "restarts": 11
+          }
+        }
+      ]
+    },
+    {
+      "inflight": 4,
+      "throughput": {
+        "n": 3,
+        "mean": 383.7897106522167,
+        "min": 382.62856514164315,
+        "max": 384.5549624051362,
+        "stdev": 1.0223993861062448,
+        "cv": 0.0026639572602630943
+      },
+      "e2e_p50": {
+        "n": 3,
+        "mean": 25.810266660604004,
+        "min": 25.792400003410876,
+        "max": 25.822499999776483,
+        "stdev": 0.015820971817297923,
+        "cv": 0.0006129720403643317
+      },
+      "e2e_p95": {
+        "n": 3,
+        "mean": 28.745993323779356,
+        "min": 28.623439994407818,
+        "max": 28.855139994993806,
+        "stdev": 0.11643035012440846,
+        "cv": 0.004050315771418988
+      },
+      "resident": 10.079448907480476,
+      "q_inflight_p50": 1.0528000129852444,
+      "inference_p50": 10.143199993763119,
+      "order_violations": 0,
+      "source": {
+        "kind": "video",
+        "path": "clips/bbb_360_2MB.mp4",
+        "frame_count": 300,
+        "fps": 30.0,
+        "width": 640,
+        "height": 360,
+        "restarts": 12
+      },
+      "seconds_measured": 9.390307800647156,
+      "runs": [
+        {
+          "frames_counted": 3605,
+          "frames_warmup_discarded": 200,
+          "stages_ms": {
+            "read": {
+              "mean": 0.503327129147146,
+              "mean_trim10": 0.4354938021567376,
+              "p50": 0.4182000120636076,
+              "p95": 0.7378400012385098,
+              "max": 34.56879997975193
+            },
+            "preprocess": {
+              "mean": 1.3860517336380502,
+              "mean_trim10": 1.3612012333353516,
+              "p50": 1.2832999927923083,
+              "p95": 2.1689199842512603,
+              "max": 4.322599997976795
+            },
+            "inference": {
+              "mean": 10.133671900039491,
+              "mean_trim10": 10.019398828174857,
+              "p50": 10.141799983102828,
+              "p95": 12.799420015653595,
+              "max": 43.927499995334074
+            },
+            "postprocess": {
+              "mean": 0.262256671646132,
+              "mean_trim10": 0.25468365736875764,
+              "p50": 0.2468000166118145,
+              "p95": 0.45769999269396056,
+              "max": 1.358299981802702
+            },
+            "q_read": {
+              "mean": 12.337704687883067,
+              "mean_trim10": 12.38562824543292,
+              "p50": 12.406599998939782,
+              "p95": 13.380439998582006,
+              "max": 46.49550002068281
+            },
+            "q_inflight": {
+              "mean": 0.9513586408464463,
+              "mean_trim10": 0.9171650692936428,
+              "p50": 1.0074999881908298,
+              "p95": 1.7101399891544131,
+              "max": 33.79650000715628
+            },
+            "q_output": {
+              "mean": 0.1600215813689497,
+              "mean_trim10": 0.12945809457823002,
+              "p50": 0.11480000102892518,
+              "p95": 0.43118000030517506,
+              "max": 2.6148000033572316
+            },
+            "q_reorder": {
+              "mean": 0.471389903018481,
+              "mean_trim10": 0.2760543942283764,
+              "p50": 0.08570001227781177,
+              "p95": 2.825780014973133,
+              "max": 11.009299982106313
+            }
+          },
+          "e2e_ms": {
+            "mean": 26.210684798969197,
+            "mean_trim10": 26.022764631667865,
+            "p50": 25.822499999776483,
+            "p95": 28.623439994407818,
+            "max": 64.06780000543222
+          },
+          "stage_sum_mean_ms": 26.205782247587763,
+          "service_sum_mean_ms": 12.28530743447082,
+          "wait_sum_mean_ms": 13.920474813116943,
+          "wait_stages": [
+            "q_read",
+            "q_inflight",
+            "q_output",
+            "q_reorder"
+          ],
+          "unaccounted_mean_ms": 0.00490255138143425,
+          "throughput_fps": 384.5549624051362,
+          "throughput_implied_by_e2e_fps": 38.15237975160907,
+          "concurrency_littles_law": 10.079448907480476,
+          "pipelined": true,
+          "bottleneck_stage": "inference",
+          "overlap_ceiling_x": 1.2123253600131798,
+          "bottleneck_p95_over_p50": 1.2620461887415062,
+          "drift": {
+            "first_decile_ms": 25.928433333724062,
+            "last_decile_ms": 25.927768054841888,
+            "ratio": 0.9999743417246383
+          },
+          "order": {
+            "emitted": 3805,
+            "order_violations": 0,
+            "first_violation_at_frame": null,
+            "in_submission_order": true
+          },
+          "reorder": {
+            "cap": 32,
+            "max_depth": 5,
+            "forced_flushes": 0,
+            "out_of_order_arrivals": 784,
+            "max_displacement": 4,
+            "arrivals": 3805
+          },
+          "errors": [],
+          "source": {
+            "kind": "video",
+            "path": "clips/bbb_360_2MB.mp4",
+            "frame_count": 300,
+            "fps": 30.0,
+            "width": 640,
+            "height": 360,
+            "restarts": 12
+          }
+        },
+        {
+          "frames_counted": 3609,
+          "frames_warmup_discarded": 200,
+          "stages_ms": {
+            "read": {
+              "mean": 0.500763258710968,
+              "mean_trim10": 0.4274611336263404,
+              "p50": 0.41439998312853277,
+              "p95": 0.6793799926526845,
+              "max": 18.51999998325482
+            },
+            "preprocess": {
+              "mean": 1.3382774172731395,
+              "mean_trim10": 1.309198798643813,
+              "p50": 1.255100010894239,
+              "p95": 2.1239800029434264,
+              "max": 6.468300009146333
+            },
+            "inference": {
+              "mean": 10.133831892168045,
+              "mean_trim10": 9.997182321779327,
+              "p50": 10.143199993763119,
+              "p95": 12.80687999096699,
+              "max": 47.426999983144924
+            },
+            "postprocess": {
+              "mean": 0.25808243283224686,
+              "mean_trim10": 0.2517544810974544,
+              "p50": 0.2466999867465347,
+              "p95": 0.4307999915909021,
+              "max": 1.493200019467622
+            },
+            "q_read": {
+              "mean": 12.309578913732347,
+              "mean_trim10": 12.38914290089371,
+              "p50": 12.411600007908419,
+              "p95": 13.44850001623854,
+              "max": 38.47150001092814
+            },
+            "q_inflight": {
+              "mean": 1.000941368846644,
+              "mean_trim10": 0.9742263158579509,
+              "p50": 1.0528000129852444,
+              "p95": 1.7696599999908358,
+              "max": 18.922400020528585
+            },
+            "q_output": {
+              "mean": 0.1564343308715883,
+              "mean_trim10": 0.12452075764718132,
+              "p50": 0.11210000957362354,
+              "p95": 0.4200799856334912,
+              "max": 1.6662999987602234
+            },
+            "q_reorder": {
+              "mean": 0.5348500413643379,
+              "mean_trim10": 0.2890812806959156,
+              "p50": 0.08260001777671278,
+              "p95": 2.8763600159436464,
+              "max": 38.19089999888092
+            }
+          },
+          "e2e_ms": {
+            "mean": 26.237737739027533,
+            "mean_trim10": 26.03504958421363,
+            "p50": 25.815899978624657,
+            "p95": 28.855139994993806,
+            "max": 54.48489999980666
+          },
+          "stage_sum_mean_ms": 26.232759655799317,
+          "service_sum_mean_ms": 12.2309550009844,
+          "wait_sum_mean_ms": 14.001804654814917,
+          "wait_stages": [
+            "q_read",
+            "q_inflight",
+            "q_output",
+            "q_reorder"
+          ],
+          "unaccounted_mean_ms": 0.00497808322821669,
+          "throughput_fps": 384.1856044098706,
+          "throughput_implied_by_e2e_fps": 38.11304198351453,
+          "concurrency_littles_law": 10.080161131615965,
+          "pipelined": true,
+          "bottleneck_stage": "inference",
+          "overlap_ceiling_x": 1.2069427568101974,
+          "bottleneck_p95_over_p50": 1.2626074610420501,
+          "drift": {
+            "first_decile_ms": 26.034764721165022,
+            "last_decile_ms": 26.24265416662739,
+            "ratio": 1.0079850710267169
+          },
+          "order": {
+            "emitted": 3809,
+            "order_violations": 0,
+            "first_violation_at_frame": null,
+            "in_submission_order": true
+          },
+          "reorder": {
+            "cap": 32,
+            "max_depth": 7,
+            "forced_flushes": 0,
+            "out_of_order_arrivals": 776,
+            "max_displacement": 6,
+            "arrivals": 3809
+          },
+          "errors": [],
+          "source": {
+            "kind": "video",
+            "path": "clips/bbb_360_2MB.mp4",
+            "frame_count": 300,
+            "fps": 30.0,
+            "width": 640,
+            "height": 360,
+            "restarts": 12
+          }
+        },
+        {
+          "frames_counted": 3593,
+          "frames_warmup_discarded": 200,
+          "stages_ms": {
+            "read": {
+              "mean": 0.48593253557359806,
+              "mean_trim10": 0.4214077589222283,
+              "p50": 0.40950000402517617,
+              "p95": 0.6717999931424854,
+              "max": 16.702799999620765
+            },
+            "preprocess": {
+              "mean": 1.3082369886540373,
+              "mean_trim10": 1.2784838280230173,
+              "p50": 1.2329999881330878,
+              "p95": 2.0961999834980816,
+              "max": 4.449500003829598
+            },
+            "inference": {
+              "mean": 10.182757973961593,
+              "mean_trim10": 10.032055057272181,
+              "p50": 10.151099995709956,
+              "p95": 12.78734000516124,
+              "max": 53.55100001906976
+            },
+            "postprocess": {
+              "mean": 0.24807255755729699,
+              "mean_trim10": 0.24268666854002355,
+              "p50": 0.23910001618787646,
+              "p95": 0.39404000272043044,
+              "max": 2.357999997911975
+            },
+            "q_read": {
+              "mean": 12.399747620191297,
+              "mean_trim10": 12.403140581305696,
+              "p50": 12.415099976351485,
+              "p95": 13.46726000192575,
+              "max": 40.9516999789048
+            },
+            "q_inflight": {
+              "mean": 1.0505536043955048,
+              "mean_trim10": 1.0171259272473343,
+              "p50": 1.0977000056300312,
+              "p95": 1.7565400048624722,
+              "max": 17.526799987535924
+            },
+            "q_output": {
+              "mean": 0.15912733118576244,
+              "mean_trim10": 0.12109529886441119,
+              "p50": 0.10959999053739011,
+              "p95": 0.5351199943106588,
+              "max": 3.6564999900292605
+            },
+            "q_reorder": {
+              "mean": 0.49830278324161836,
+              "mean_trim10": 0.26613092136169897,
+              "p50": 0.08099997648969293,
+              "p95": 2.845980005804449,
+              "max": 26.226699992548674
+            }
+          },
+          "e2e_ms": {
+            "mean": 26.337471110450448,
+            "mean_trim10": 26.015090844302993,
+            "p50": 25.792400003410876,
+            "p95": 28.759399981936433,
+            "max": 69.4538000097964
+          },
+          "stage_sum_mean_ms": 26.332731394760707,
+          "service_sum_mean_ms": 12.225000055746525,
+          "wait_sum_mean_ms": 14.107731339014183,
+          "wait_stages": [
+            "q_read",
+            "q_inflight",
+            "q_output",
+            "q_reorder"
+          ],
+          "unaccounted_mean_ms": 0.004739715689741075,
+          "throughput_fps": 382.62856514164315,
+          "throughput_implied_by_e2e_fps": 37.96871749023808,
+          "concurrency_littles_law": 10.077468780451134,
+          "pipelined": true,
+          "bottleneck_stage": "inference",
+          "overlap_ceiling_x": 1.2005588355342596,
+          "bottleneck_p95_over_p50": 1.259699935038115,
+          "drift": {
+            "first_decile_ms": 27.03855710180637,
+            "last_decile_ms": 26.055279945368387,
+            "ratio": 0.9636342593010523
+          },
+          "order": {
+            "emitted": 3793,
+            "order_violations": 0,
+            "first_violation_at_frame": null,
+            "in_submission_order": true
+          },
+          "reorder": {
+            "cap": 32,
+            "max_depth": 5,
+            "forced_flushes": 0,
+            "out_of_order_arrivals": 745,
+            "max_displacement": 4,
+            "arrivals": 3793
+          },
+          "errors": [],
+          "source": {
+            "kind": "video",
+            "path": "clips/bbb_360_2MB.mp4",
+            "frame_count": 300,
+            "fps": 30.0,
+            "width": 640,
+            "height": 360,
+            "restarts": 12
+          }
+        }
+      ]
+    },
+    {
+      "inflight": 8,
+      "throughput": {
+        "n": 3,
+        "mean": 383.5995083710566,
+        "min": 381.7492841082383,
+        "max": 385.3066428655601,
+        "stdev": 1.7829908422144893,
+        "cv": 0.004648052990958994
+      },
+      "e2e_p50": {
+        "n": 3,
+        "mean": 38.5487166592308,
+        "min": 38.53194999101106,
+        "max": 38.560999993933365,
+        "stdev": 0.015034988427536132,
+        "cv": 0.000390025654043035
+      },
+      "e2e_p95": {
+        "n": 3,
+        "mean": 47.86679999524494,
+        "min": 47.30514000402763,
+        "max": 48.76363999210296,
+        "stdev": 0.7848979430091004,
+        "cv": 0.016397543664650065
+      },
+      "resident": 15.116690012640614,
+      "q_inflight_p50": 1.2428000045474619,
+      "inference_p50": 20.394349994603544,
+      "order_violations": 0,
+      "source": {
+        "kind": "video",
+        "path": "clips/bbb_360_2MB.mp4",
+        "frame_count": 300,
+        "fps": 30.0,
+        "width": 640,
+        "height": 360,
+        "restarts": 12
+      },
+      "seconds_measured": 9.376076613452344,
+      "runs": [
+        {
+          "frames_counted": 3598,
+          "frames_warmup_discarded": 200,
+          "stages_ms": {
+            "read": {
+              "mean": 0.5355499999112594,
+              "mean_trim10": 0.476116584149768,
+              "p50": 0.4612500051734969,
+              "p95": 0.7728149808826856,
+              "max": 15.91689998167567
+            },
+            "preprocess": {
+              "mean": 1.250702278987386,
+              "mean_trim10": 1.2206577516519428,
+              "p50": 1.1369500134605914,
+              "p95": 2.120320021640509,
+              "max": 14.356400002725422
+            },
+            "inference": {
+              "mean": 20.615943218309592,
+              "mean_trim10": 20.279130111021708,
+              "p50": 20.394349994603544,
+              "p95": 30.496029980713477,
+              "max": 43.75429998617619
+            },
+            "postprocess": {
+              "mean": 0.2719695945110523,
+              "mean_trim10": 0.2641512347991797,
+              "p50": 0.2507499884814024,
+              "p95": 0.5235199991147962,
+              "max": 1.8601000192575157
+            },
+            "q_read": {
+              "mean": 12.289779905641435,
+              "mean_trim10": 12.408519858022196,
+              "p50": 12.393350014463067,
+              "p95": 13.322625013825016,
+              "max": 28.659900010097772
+            },
+            "q_inflight": {
+              "mean": 1.1231411617412193,
+              "mean_trim10": 1.116127801687443,
+              "p50": 1.21565000154078,
+              "p95": 1.8677650150493714,
+              "max": 11.564200016437098
+            },
+            "q_output": {
+              "mean": 0.16859535860990574,
+              "mean_trim10": 0.1416881445269973,
+              "p50": 0.12100000458303839,
+              "p95": 0.4120850193430663,
+              "max": 5.399100016802549
+            },
+            "q_reorder": {
+              "mean": 3.1325892437813834,
+              "mean_trim10": 2.630381315424256,
+              "p50": 0.24280000070575625,
+              "p95": 12.129590017138973,
+              "max": 25.899300002492964
+            }
+          },
+          "e2e_ms": {
+            "mean": 39.39278590892948,
+            "mean_trim10": 39.0977739654723,
+            "p50": 38.53194999101106,
+            "p95": 47.53161998960422,
+            "max": 59.88449999131262
+          },
+          "stage_sum_mean_ms": 39.38827076149323,
+          "service_sum_mean_ms": 22.67416509171929,
+          "wait_sum_mean_ms": 16.714105669773943,
+          "wait_stages": [
+            "q_read",
+            "q_inflight",
+            "q_output",
+            "q_reorder"
+          ],
+          "unaccounted_mean_ms": 0.0045151474362512545,
+          "throughput_fps": 383.7425981393713,
+          "throughput_implied_by_e2e_fps": 25.385358687548976,
+          "concurrency_littles_law": 15.116690012640614,
+          "pipelined": true,
+          "bottleneck_stage": "inference",
+          "overlap_ceiling_x": 1.0998364155165956,
+          "bottleneck_p95_over_p50": 1.4953175751511028,
+          "drift": {
+            "first_decile_ms": 39.535954317355575,
+            "last_decile_ms": 39.363152924555415,
+            "ratio": 0.9956292595996777
+          },
+          "order": {
+            "emitted": 3798,
+            "order_violations": 0,
+            "first_violation_at_frame": null,
+            "in_submission_order": true
+          },
+          "reorder": {
+            "cap": 48,
+            "max_depth": 10,
+            "forced_flushes": 0,
+            "out_of_order_arrivals": 2563,
+            "max_displacement": 9,
+            "arrivals": 3798
+          },
+          "errors": [],
+          "source": {
+            "kind": "video",
+            "path": "clips/bbb_360_2MB.mp4",
+            "frame_count": 300,
+            "fps": 30.0,
+            "width": 640,
+            "height": 360,
+            "restarts": 12
+          }
+        },
+        {
+          "frames_counted": 3577,
+          "frames_warmup_discarded": 200,
+          "stages_ms": {
+            "read": {
+              "mean": 0.4982820238964541,
+              "mean_trim10": 0.43997890636914805,
+              "p50": 0.43410001671873033,
+              "p95": 0.6417799973860382,
+              "max": 20.412900019437075
+            },
+            "preprocess": {
+              "mean": 1.1282554380829362,
+              "mean_trim10": 1.0985648032675204,
+              "p50": 1.0395999997854233,
+              "p95": 1.9474800035823128,
+              "max": 3.507399989757687
+            },
+            "inference": {
+              "mean": 20.787103214893953,
+              "mean_trim10": 20.44572388936941,
+              "p50": 20.458799990592524,
+              "p95": 29.059459979180243,
+              "max": 54.12470002193004
+            },
+            "postprocess": {
+              "mean": 0.26939781926352835,
+              "mean_trim10": 0.2613915189625895,
+              "p50": 0.24870000197552145,
+              "p95": 0.5338799906894564,
+              "max": 1.3281999854370952
+            },
+            "q_read": {
+              "mean": 12.418190998126194,
+              "mean_trim10": 12.493149891338241,
+              "p50": 12.447099987184629,
+              "p95": 13.873619982041417,
+              "max": 20.648500008974224
+            },
+            "q_inflight": {
+              "mean": 1.2697588480222837,
+              "mean_trim10": 1.264166666412004,
+              "p50": 1.3307999761309475,
+              "p95": 1.9917600031476466,
+              "max": 7.4902999913319945
+            },
+            "q_output": {
+              "mean": 0.14591805975779273,
+              "mean_trim10": 0.13072326805295886,
+              "p50": 0.11649998486973345,
+              "p95": 0.3159599960781632,
+              "max": 3.63439999637194
+            },
+            "q_reorder": {
+              "mean": 2.9538647470920147,
+              "mean_trim10": 2.410689406781178,
+              "p50": 0.19259998225606978,
+              "p95": 10.813479986973102,
+              "max": 38.92140000243671
+            }
+          },
+          "e2e_ms": {
+            "mean": 39.47516826974988,
+            "mean_trim10": 39.09356797167503,
+            "p50": 38.560999993933365,
+            "p95": 47.30514000402763,
+            "max": 69.5150000101421
+          },
+          "stage_sum_mean_ms": 39.47077114913516,
+          "service_sum_mean_ms": 22.683038496136874,
+          "wait_sum_mean_ms": 16.787732652998287,
+          "wait_stages": [
+            "q_read",
+            "q_inflight",
+            "q_output",
+            "q_reorder"
+          ],
+          "unaccounted_mean_ms": 0.0043971206147190856,
+          "throughput_fps": 381.7492841082383,
+          "throughput_implied_by_e2e_fps": 25.33238093290935,
+          "concurrency_littles_law": 15.06961722702926,
+          "pipelined": true,
+          "bottleneck_stage": "inference",
+          "overlap_ceiling_x": 1.0912072866355176,
+          "bottleneck_p95_over_p50": 1.4203892697784093,
+          "drift": {
+            "first_decile_ms": 41.5693507001524,
+            "last_decile_ms": 39.801929973024116,
+            "ratio": 0.9574825996230486
+          },
+          "order": {
+            "emitted": 3777,
+            "order_violations": 0,
+            "first_violation_at_frame": null,
+            "in_submission_order": true
+          },
+          "reorder": {
+            "cap": 48,
+            "max_depth": 14,
+            "forced_flushes": 0,
+            "out_of_order_arrivals": 2456,
+            "max_displacement": 13,
+            "arrivals": 3777
+          },
+          "errors": [],
+          "source": {
+            "kind": "video",
+            "path": "clips/bbb_360_2MB.mp4",
+            "frame_count": 300,
+            "fps": 30.0,
+            "width": 640,
+            "height": 360,
+            "restarts": 12
+          }
+        },
+        {
+          "frames_counted": 3623,
+          "frames_warmup_discarded": 200,
+          "stages_ms": {
+            "read": {
+              "mean": 0.5135903397912795,
+              "mean_trim10": 0.4499249464044809,
+              "p50": 0.4424000217113644,
+              "p95": 0.6318700092379003,
+              "max": 16.330700018443167
+            },
+            "preprocess": {
+              "mean": 1.2009019319254934,
+              "mean_trim10": 1.1751430060220254,
+              "p50": 1.0978000063914806,
+              "p95": 1.9893999851774424,
+              "max": 5.269799992674962
+            },
+            "inference": {
+              "mean": 20.56756022637142,
+              "mean_trim10": 20.17617815274146,
+              "p50": 20.375399995828047,
+              "p95": 30.66502000147011,
+              "max": 46.82489999686368
+            },
+            "postprocess": {
+              "mean": 0.29365015211994544,
+              "mean_trim10": 0.28773043905154794,
+              "p50": 0.27669998235069215,
+              "p95": 0.5452599929412818,
+              "max": 0.9833999793045223
+            },
+            "q_read": {
+              "mean": 12.247773143411425,
+              "mean_trim10": 12.380184718971657,
+              "p50": 12.382300017634407,
+              "p95": 13.006640001549384,
+              "max": 28.413099993485957
+            },
+            "q_inflight": {
+              "mean": 1.1594167818312628,
+              "mean_trim10": 1.1584751152255706,
+              "p50": 1.2428000045474619,
+              "p95": 1.8136100145056837,
+              "max": 10.417699988465756
+            },
+            "q_output": {
+              "mean": 0.14965296737890071,
+              "mean_trim10": 0.13037388796734345,
+              "p50": 0.11779999476857483,
+              "p95": 0.3092600003583355,
+              "max": 5.822900013299659
+            },
+            "q_reorder": {
+              "mean": 3.3061183824080778,
+              "mean_trim10": 2.7514056747020765,
+              "p50": 0.2956999815069139,
+              "p95": 12.847969986614771,
+              "max": 29.037000000244007
+            }
+          },
+          "e2e_ms": {
+            "mean": 39.44344488006136,
+            "mean_trim10": 39.07273135938284,
+            "p50": 38.55319999274798,
+            "p95": 48.76363999210296,
+            "max": 63.52769999648444
+          },
+          "stage_sum_mean_ms": 39.438663925237805,
+          "service_sum_mean_ms": 22.57570265020814,
+          "wait_sum_mean_ms": 16.862961275029665,
+          "wait_stages": [
+            "q_read",
+            "q_inflight",
+            "q_output",
+            "q_reorder"
+          ],
+          "unaccounted_mean_ms": 0.004780954823552008,
+          "throughput_fps": 385.3066428655601,
+          "throughput_implied_by_e2e_fps": 25.35275514197036,
+          "concurrency_littles_law": 15.197821329789205,
+          "pipelined": true,
+          "bottleneck_stage": "inference",
+          "overlap_ceiling_x": 1.0976363944840628,
+          "bottleneck_p95_over_p50": 1.505002110768324,
+          "drift": {
+            "first_decile_ms": 38.808439779468394,
+            "last_decile_ms": 38.90722845336911,
+            "ratio": 1.002545546135379
+          },
+          "order": {
+            "emitted": 3823,
+            "order_violations": 0,
+            "first_violation_at_frame": null,
+            "in_submission_order": true
+          },
+          "reorder": {
+            "cap": 48,
+            "max_depth": 11,
+            "forced_flushes": 0,
+            "out_of_order_arrivals": 2609,
+            "max_displacement": 10,
+            "arrivals": 3823
+          },
+          "errors": [],
+          "source": {
+            "kind": "video",
+            "path": "clips/bbb_360_2MB.mp4",
+            "frame_count": 300,
+            "fps": 30.0,
+            "width": 640,
+            "height": 360,
+            "restarts": 12
+          }
+        }
+      ]
+    },
+    {
+      "inflight": 16,
+      "throughput": {
+        "n": 3,
+        "mean": 386.8141371613679,
+        "min": 386.17780753909494,
+        "max": 387.6863002849277,
+        "stdev": 0.7814094133707373,
+        "cv": 0.0020201159634575493
+      },
+      "e2e_p50": {
+        "n": 3,
+        "mean": 74.0853166692735,
+        "min": 72.5232499971753,
+        "max": 75.03059999726247,
+        "stdev": 1.3627242112445976,
+        "cv": 0.018393985104065574
+      },
+      "e2e_p95": {
+        "n": 3,
+        "mean": 104.12939333424826,
+        "min": 103.12015500676353,
+        "max": 105.91220001224428,
+        "stdev": 1.5484459379784896,
+        "cv": 0.014870401991184983
+      },
+      "resident": 29.65108720205107,
+      "q_inflight_p50": 1.24379999761004,
+      "inference_p50": 36.269000003812835,
+      "order_violations": 0,
+      "source": {
+        "kind": "video",
+        "path": "clips/bbb_360_2MB.mp4",
+        "frame_count": 300,
+        "fps": 30.0,
+        "width": 640,
+        "height": 360,
+        "restarts": 12
+      },
+      "seconds_measured": 9.40451080505139,
+      "runs": [
+        {
+          "frames_counted": 3632,
+          "frames_warmup_discarded": 200,
+          "stages_ms": {
+            "read": {
+              "mean": 0.5264853524016719,
+              "mean_trim10": 0.46594669528572275,
+              "p50": 0.45789999421685934,
+              "p95": 0.6724050137563607,
+              "max": 19.462700001895428
+            },
+            "preprocess": {
+              "mean": 1.0977276707680805,
+              "mean_trim10": 1.0827225215199137,
+              "p50": 1.061399991158396,
+              "p95": 1.6010500126867553,
+              "max": 3.3418999810237437
+            },
+            "inference": {
+              "mean": 41.24869523681934,
+              "mean_trim10": 39.79794960221429,
+              "p50": 36.14565001043957,
+              "p95": 71.94309000478825,
+              "max": 139.22790001379326
+            },
+            "postprocess": {
+              "mean": 0.23469810023841536,
+              "mean_trim10": 0.22466493262285242,
+              "p50": 0.21220000053290278,
+              "p95": 0.4338050013757305,
+              "max": 1.121000008424744
+            },
+            "q_read": {
+              "mean": 12.235728331588568,
+              "mean_trim10": 12.399322399176699,
+              "p50": 12.40694998705294,
+              "p95": 12.855534999107476,
+              "max": 20.254200004274026
+            },
+            "q_inflight": {
+              "mean": 1.244364950597496,
+              "mean_trim10": 1.251644920539926,
+              "p50": 1.269900007173419,
+              "p95": 1.7822800087742507,
+              "max": 8.314500009873882
+            },
+            "q_output": {
+              "mean": 0.13318213096893924,
+              "mean_trim10": 0.11051437297383102,
+              "p50": 0.0948999950196594,
+              "p95": 0.28153500607004384,
+              "max": 6.2300999998115
+            },
+            "q_reorder": {
+              "mean": 21.357187582458764,
+              "mean_trim10": 20.03219944903947,
+              "p50": 18.50765000563115,
+              "p95": 54.184404997795355,
+              "max": 110.77479997766204
+            }
+          },
+          "e2e_ms": {
+            "mean": 78.08246186668599,
+            "mean_trim10": 77.06546505501233,
+            "p50": 75.03059999726247,
+            "p95": 105.91220001224428,
+            "max": 154.7728999867104
+          },
+          "stage_sum_mean_ms": 78.07806935584127,
+          "service_sum_mean_ms": 43.10760636022751,
+          "wait_sum_mean_ms": 34.970462995613765,
+          "wait_stages": [
+            "q_read",
+            "q_inflight",
+            "q_output",
+            "q_reorder"
+          ],
+          "unaccounted_mean_ms": 0.004392510844724029,
+          "throughput_fps": 386.5783036600812,
+          "throughput_implied_by_e2e_fps": 12.806973244610921,
+          "concurrency_littles_law": 30.184985654026445,
+          "pipelined": true,
+          "bottleneck_stage": "inference",
+          "overlap_ceiling_x": 1.0450659375462832,
+          "bottleneck_p95_over_p50": 1.9903664751916117,
+          "drift": {
+            "first_decile_ms": 76.89678925602664,
+            "last_decile_ms": 75.3400479338341,
+            "ratio": 0.9797554444437284
+          },
+          "order": {
+            "emitted": 3832,
+            "order_violations": 0,
+            "first_violation_at_frame": null,
+            "in_submission_order": true
+          },
+          "reorder": {
+            "cap": 80,
+            "max_depth": 39,
+            "forced_flushes": 0,
+            "out_of_order_arrivals": 3603,
+            "max_displacement": 38,
+            "arrivals": 3832
+          },
+          "errors": [],
+          "source": {
+            "kind": "video",
+            "path": "clips/bbb_360_2MB.mp4",
+            "frame_count": 300,
+            "fps": 30.0,
+            "width": 640,
+            "height": 360,
+            "restarts": 12
+          }
+        },
+        {
+          "frames_counted": 3638,
+          "frames_warmup_discarded": 200,
+          "stages_ms": {
+            "read": {
+              "mean": 0.5296443100650542,
+              "mean_trim10": 0.4721824983624137,
+              "p50": 0.46439998550340533,
+              "p95": 0.6656200042925772,
+              "max": 17.715900001348928
+            },
+            "preprocess": {
+              "mean": 1.1267753436367467,
+              "mean_trim10": 1.1140872022466592,
+              "p50": 1.0932000004686415,
+              "p95": 1.6036900124163365,
+              "max": 3.268700005719438
+            },
+            "inference": {
+              "mean": 41.23180002730454,
+              "mean_trim10": 39.89825308470719,
+              "p50": 36.45684999355581,
+              "p95": 69.6700049971696,
+              "max": 132.01880000997335
+            },
+            "postprocess": {
+              "mean": 0.21894716869952918,
+              "mean_trim10": 0.20962950524670074,
+              "p50": 0.20160000713076442,
+              "p95": 0.4144799837376918,
+              "max": 1.400300010573119
+            },
+            "q_read": {
+              "mean": 12.22575423307397,
+              "mean_trim10": 12.39403747713568,
+              "p50": 12.399699990055524,
+              "p95": 12.813420011661947,
+              "max": 19.74690001225099
+            },
+            "q_inflight": {
+              "mean": 1.2165776250329443,
+              "mean_trim10": 1.2270194869394606,
+              "p50": 1.2428500049281865,
+              "p95": 1.7443349861423483,
+              "max": 7.313400012208149
+            },
+            "q_output": {
+              "mean": 0.12001308411630633,
+              "mean_trim10": 0.10375901032459656,
+              "p50": 0.0906999921426177,
+              "p95": 0.2417350071482357,
+              "max": 2.2535999887622893
+            },
+            "q_reorder": {
+              "mean": 20.106989389915906,
+              "mean_trim10": 18.79879267190455,
+              "p50": 18.161400003009476,
+              "p95": 51.43559998832642,
+              "max": 98.27489999588579
+            }
+          },
+          "e2e_ms": {
+            "mean": 76.7809196261215,
+            "mean_trim10": 75.76405681122944,
+            "p50": 74.70210001338273,
+            "p95": 103.12015500676353,
+            "max": 147.74769998621196
+          },
+          "stage_sum_mean_ms": 76.77650118184499,
+          "service_sum_mean_ms": 43.10716684970587,
+          "wait_sum_mean_ms": 33.66933433213913,
+          "wait_stages": [
+            "q_read",
+            "q_inflight",
+            "q_output",
+            "q_reorder"
+          ],
+          "unaccounted_mean_ms": 0.0044184442765100584,
+          "throughput_fps": 386.17780753909494,
+          "throughput_implied_by_e2e_fps": 13.024069063895293,
+          "concurrency_littles_law": 29.65108720205107,
+          "pipelined": true,
+          "bottleneck_stage": "inference",
+          "overlap_ceiling_x": 1.0454835059628593,
+          "bottleneck_p95_over_p50": 1.9110264603081348,
+          "drift": {
+            "first_decile_ms": 74.97947355426051,
+            "last_decile_ms": 75.81256501381118,
+            "ratio": 1.0111109270318868
+          },
+          "order": {
+            "emitted": 3838,
+            "order_violations": 0,
+            "first_violation_at_frame": null,
+            "in_submission_order": true
+          },
+          "reorder": {
+            "cap": 80,
+            "max_depth": 36,
+            "forced_flushes": 0,
+            "out_of_order_arrivals": 3575,
+            "max_displacement": 35,
+            "arrivals": 3838
+          },
+          "errors": [],
+          "source": {
+            "kind": "video",
+            "path": "clips/bbb_360_2MB.mp4",
+            "frame_count": 300,
+            "fps": 30.0,
+            "width": 640,
+            "height": 360,
+            "restarts": 12
+          }
+        },
+        {
+          "frames_counted": 3646,
+          "frames_warmup_discarded": 200,
+          "stages_ms": {
+            "read": {
+              "mean": 0.5314073233325081,
+              "mean_trim10": 0.47193661608261894,
+              "p50": 0.46455000119749457,
+              "p95": 0.6635750105488114,
+              "max": 16.719100007321686
+            },
+            "preprocess": {
+              "mean": 1.1146061716196258,
+              "mean_trim10": 1.1017968907608742,
+              "p50": 1.0838500165846199,
+              "p95": 1.6182750114239752,
+              "max": 3.073300002142787
+            },
+            "inference": {
+              "mean": 41.15632561714469,
+              "mean_trim10": 39.79589731708274,
+              "p50": 36.269000003812835,
+              "p95": 69.4854499961366,
+              "max": 131.33959998958744
+            },
+            "postprocess": {
+              "mean": 0.21904144287552557,
+              "mean_trim10": 0.20776734779313458,
+              "p50": 0.20080001559108496,
+              "p95": 0.4135499766562134,
+              "max": 2.989300002809614
+            },
+            "q_read": {
+              "mean": 12.214591579800533,
+              "mean_trim10": 12.373153902391516,
+              "p50": 12.390849995426834,
+              "p95": 12.809525011107326,
+              "max": 21.44630000111647
+            },
+            "q_inflight": {
+              "mean": 1.2246374930895623,
+              "mean_trim10": 1.2313709450209878,
+              "p50": 1.24379999761004,
+              "p95": 1.7955750008695759,
+              "max": 9.46160001331009
+            },
+            "q_output": {
+              "mean": 0.12610532073327047,
+              "mean_trim10": 0.1064010059053544,
+              "p50": 0.09449999197386205,
+              "p95": 0.2345249886275269,
+              "max": 4.719299991847947
+            },
+            "q_reorder": {
+              "mean": 19.77345990103426,
+              "mean_trim10": 18.439458383798453,
+              "p50": 18.003849996603094,
+              "p95": 51.705174992093816,
+              "max": 98.13640001812018
+            }
+          },
+          "e2e_ms": {
+            "mean": 76.36460060330467,
+            "mean_trim10": 75.2897357925554,
+            "p50": 72.5232499971753,
+            "p95": 103.35582498373697,
+            "max": 146.69860000140034
+          },
+          "stage_sum_mean_ms": 76.36017484962997,
+          "service_sum_mean_ms": 43.021380554972346,
+          "wait_sum_mean_ms": 33.338794294657625,
+          "wait_stages": [
+            "q_read",
+            "q_inflight",
+            "q_output",
+            "q_reorder"
+          ],
+          "unaccounted_mean_ms": 0.004425753674695443,
+          "throughput_fps": 387.6863002849277,
+          "throughput_implied_by_e2e_fps": 13.095072744435006,
+          "concurrency_littles_law": 29.605509480631348,
+          "pipelined": true,
+          "bottleneck_stage": "inference",
+          "overlap_ceiling_x": 1.0453163616980112,
+          "bottleneck_p95_over_p50": 1.9158358374598645,
+          "drift": {
+            "first_decile_ms": 75.39686126368068,
+            "last_decile_ms": 79.71440054849494,
+            "ratio": 1.0572641780102066
+          },
+          "order": {
+            "emitted": 3846,
+            "order_violations": 0,
+            "first_violation_at_frame": null,
+            "in_submission_order": true
+          },
+          "reorder": {
+            "cap": 80,
+            "max_depth": 36,
+            "forced_flushes": 0,
+            "out_of_order_arrivals": 3591,
+            "max_displacement": 35,
+            "arrivals": 3846
+          },
+          "errors": [],
+          "source": {
+            "kind": "video",
+            "path": "clips/bbb_360_2MB.mp4",
+            "frame_count": 300,
+            "fps": 30.0,
+            "width": 640,
+            "height": 360,
+            "restarts": 12
+          }
+        }
+      ]
+    }
+  ],
+  "knee": 4
+}
