@@ -73,6 +73,17 @@ class OnnxBackend:
             opts.intra_op_num_threads = intra_threads
             opts.inter_op_num_threads = 1
 
+        if backend == "cuda":
+            # CUDA and cuDNN installed as pip packages live in
+            # site-packages/nvidia/, which is not on PATH, so the provider DLL
+            # fails to load with Windows error 126 and ONNX Runtime falls back
+            # to CPU. preload_dlls() puts them where the loader will find them.
+            # Harmless when the runtime came from a system CUDA install.
+            try:
+                ort.preload_dlls()
+            except Exception:
+                pass
+
         if backend == "dml":
             # DirectML supports neither the memory-pattern planner nor the
             # parallel execution mode. Left on, they are a documented way to get

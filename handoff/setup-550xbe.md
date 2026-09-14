@@ -46,9 +46,12 @@ structural rather than incidental, and it belongs in the write-up.
 **Hold the onnxruntime version still across the venvs** as far as the wheels
 allow, and record it per venv when they do not. The engine already varies by
 construction; letting the engine *version* vary on top of it adds a second
-uncontrolled difference to the same comparison for no gain. The
-`onnxruntime-openvino` flavour tends to lag the others, so it is usually the one
-that sets the version everything else should match.
+uncontrolled difference to the same comparison for no gain.
+
+On this machine the version is not a free choice: the newest `onnxruntime-gpu`
+is a CUDA 13 build and CUDA 13 does not support Pascal, so the CUDA venv has to
+go back to a CUDA 12 build and everything else should follow it. §5b works out
+which version that is. Install nothing unpinned until that is settled.
 
 ---
 
@@ -98,6 +101,14 @@ Three things to read off it.
 `AzureExecutionProvider` alongside `CPUExecutionProvider` is what the plain
 `onnxruntime` wheel ships and means nothing is wrong. No accelerator provider is
 present yet, which is correct at this step.
+
+And a warning about this field in general: **a provider in that list is not a
+provider that works.** `get_available_providers()` reports what was compiled
+into the wheel, not what can create a session — the provider DLL and its CUDA or
+cuDNN dependencies are loaded later, and that is where the failure lands. On
+this machine `CUDAExecutionProvider` appeared here and still could not run a
+single frame (§5b). Treat the fingerprint as a statement about the wheel, and
+`run_sync` completing as the statement about the machine.
 
 **The GPU driver is 451.67, from 2020, and it blocks the CUDA path outright.**
 See §5b before doing anything about it — it is the shipped OEM driver and
@@ -202,39 +213,89 @@ without it.
 
 ### 5b. CUDA (the one worth having)
 
-**Update the GPU driver first. The shipped one cannot run this path at all.**
+Two things must both be true before this works, and the default install gets
+both wrong on this machine. **Do not `pip install onnxruntime-gpu` unpinned.**
 
-The 550XBE came with 451.67, released mid-2020. A driver exposes a maximum CUDA
-runtime version, and 451.67 tops out at CUDA 11.0 — the CUDA 12.x runtime that
-current `onnxruntime-gpu` wheels are built against needs a 527-or-newer driver
-on Windows. No combination of pip packages works around that; the ceiling is in
-the driver.
+#### The constraint
 
-So the order is: install the newest NVIDIA driver that still lists the MX150
-among its supported products, reboot, confirm with
-`nvidia-smi` that both the driver version and the reported CUDA version moved,
-and only then build the venv. Pascal support is in its final branch, so whatever
-works is also roughly the last thing that will — pin it and record it in the
-findings the way [`frozen-baseline.md`](frozen-baseline.md) records the gram's
-NPU driver.
+The MX150 is Pascal, and **CUDA 13 dropped Pascal**. Current `onnxruntime-gpu`
+wheels on PyPI are CUDA 13 builds, so the newest wheel is the one version of the
+package that categorically cannot run on this GPU. Measured here, 2026-09-15,
+with `onnxruntime-gpu` 1.30.0 installed and the CUDA EP visible in
+`env_fingerprint`:
 
-```powershell
-nvidia-smi        # driver version, and the CUDA version it can host
-python -m venv .venv-cuda
-.venv-cuda\Scripts\python.exe -m pip install numpy opencv-python psutil onnxruntime-gpu
-.venv-cuda\Scripts\python.exe -m bench.env_fingerprint
+```
+Error loading "...\onnxruntime\capi\onnxruntime_providers_cuda.dll"
+which depends on "cublasLt64_13.dll" which is missing. (Error 126)
+Failed to create CUDAExecutionProvider. Require cuDNN 9.* and CUDA 13.*
+!! requested 'cuda' but the session is running on ['CPUExecutionProvider']
+   Aborting so a CPU measurement is not saved under the 'cudacheck' tag.
 ```
 
-`CUDAExecutionProvider` appears or it does not. If it does not:
+**The number in `cublasLt64_NN.dll` is the CUDA major the wheel needs.** `_13`
+means a CUDA 13 build and no Pascal support; `_12` is the one to get. That rule
+outlives any version table, so use it rather than trusting a release note.
 
-- **CUDA 13 dropped Pascal**, so the runtime must be 12.x, and the
-  `onnxruntime-gpu` wheel must be built against the same CUDA major you have
-  installed. Check ONNX Runtime's current CUDA/cuDNN requirement table for the
-  version you install rather than assuming — the pairing is exact, and getting
-  it wrong is the error-127 failure mode again.
-- `onnxruntime-gpu` does not bundle the CUDA runtime or cuDNN. They come from
-  the CUDA Toolkit or from the `nvidia-*-cu12` pip packages, and on Windows the
-  DLLs have to be findable at import time.
+#### The target
+
+| | |
+|---|---|
+| GPU | MX150, Pascal, sm_61 |
+| CUDA | **12.x** — the last major that supports Pascal |
+| cuDNN | 9.x |
+| `onnxruntime-gpu` | the newest release that still links `cublasLt64_12` |
+| driver | newest that still lists Pascal among supported products |
+
+As of 2026-09 the ONNX Runtime side of that is expected to be **1.26.x**, with a
+cp313 Windows wheel, so Python 3.13.14 does not have to move. Confirm before
+committing to a multi-gigabyte download rather than taking the number on faith —
+install the candidate and read the error, which names the CUDA major it wants.
+
+Whatever version it lands on, **pin the other venvs to it too.** CUDA on Pascal
+is the most constrained of the three flavours, so it is the one that sets the
+version for the whole grid; §0 asks for the engine version to be held still and
+this is what holds it. Among the CUDA 12 candidates, note that the gram ran
+1.24.1 — matching it removes one more difference when comparing shapes across
+the two machines.
+
+#### The order
+
+The driver comes first, because the rest cannot be tested without it. The 550XBE
+shipped with **451.67**, from mid-2020, which tops out at CUDA 11.0 — below the
+target, so nothing else can be evaluated until it moves. Install the newest
+NVIDIA driver that still supports Pascal, reboot, and confirm with `nvidia-smi`
+that both the driver version and the CUDA version it reports have changed. That
+branch is the last one Pascal will get, so whatever works is roughly the final
+answer: record it the way [`frozen-baseline.md`](frozen-baseline.md) records the
+gram's NPU driver.
+
+```powershell
+nvidia-smi        # driver version, and the highest CUDA it can host
+
+python -m venv .venv-cuda
+.venv-cuda\Scripts\python.exe -m pip install numpy opencv-python psutil
+.venv-cuda\Scripts\python.exe -m pip install "onnxruntime-gpu[cuda,cudnn]==1.26.0"
+.venv-cuda\Scripts\python.exe -c "import onnxruntime as ort; ort.preload_dlls(); ort.print_debug_info()"
+```
+
+The `[cuda,cudnn]` extra pulls the CUDA and cuDNN runtimes as pip packages, so
+the CUDA Toolkit does not have to be installed first. They land in
+`site-packages/nvidia/`, which is not on `PATH`; `ort.preload_dlls()` is what
+makes the loader find them, and `backends.py` calls it before creating a CUDA
+session for exactly this reason. `print_debug_info()` prints the CUDA and cuDNN
+versions ONNX Runtime actually resolved — check them against the table above
+before running anything.
+
+If the extras route does not resolve, fall back to a system CUDA 12.x Toolkit
+plus cuDNN 9 on `PATH`. The `preload_dlls()` call is harmless either way.
+
+Then the real test, which is a session creation and not a provider listing:
+
+```powershell
+.venv-cuda\Scripts\python.exe -m bench.run_sync --model models/resnet50_224.onnx `
+    --backend cuda --source clips/bbb_360_2MB.mp4 --frames 200 --warmup 50 `
+    --no-idle-gate --tag cudacheck
+```
 
 A 2 GB card is not a constraint here. ResNet50 at 224, batch 1, FP32 is about
 100 MB of weights and the pipeline holds a few dozen decoded frames; the MX150's
@@ -365,7 +426,9 @@ there, running it here at least separates them on *this* machine.
 | a run aborts with "requested X but running on CPUExecutionProvider" | working as designed. The provider did not load; fix the install rather than passing `--allow-fallback` |
 | provider loads, numbers look like CPU | the silent fallback. Check `fell_back_to_cpu` and `actual_providers` in the saved JSON — every result stores them |
 | Windows error 127 on import or session create | ABI mismatch between `onnxruntime-*` and its runtime (`openvino`, CUDA, cuDNN). Match the versions, do not upgrade one side |
+| Windows error 126 loading `onnxruntime_providers_cuda.dll` | the CUDA runtime it links is absent. Read the DLL it names: `cublasLt64_13` means a CUDA 13 wheel, which Pascal cannot use at all — downgrade the wheel rather than install CUDA 13. `cublasLt64_12` missing means the right wheel with no runtime: `preload_dlls()`, the `[cuda,cudnn]` extra, or CUDA on `PATH` |
 | `CUDAExecutionProvider` never appears, whatever you install | check the driver before the wheels. `nvidia-smi` reports the highest CUDA version the driver can host, and the 550XBE shipped with 451.67, which caps at 11.0 |
+| a provider is listed but no run ever succeeds | listing is about the wheel, running is about the machine. See §2 |
 | `settled: false` in the result | the idle gate gave up. The run is marked contaminated on purpose; close things or raise `--max-busy-pct` to your real floor |
 | `drift` above 1.05x | not steady state. A throttling laptop is two machines and their average describes neither. Longer cooldown, or shorter runs |
 | last repeat is always slowest | heat accumulating between repeats, not within one. Raise `--cooldown` |
