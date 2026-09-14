@@ -1,0 +1,105 @@
+{
+  "meta": {
+    "tag": "videocheck",
+    "args": {
+      "model": "models/resnet50_224.onnx",
+      "backend": "cpu",
+      "ov_device": null,
+      "source": "clips/bbb_360_2MB.mp4",
+      "frames": 280,
+      "warmup": 20,
+      "top_k": 5,
+      "intra_threads": 4,
+      "tag": "videocheck",
+      "out_dir": "results"
+    },
+    "backend": {
+      "requested_backend": "cpu",
+      "openvino_device": null,
+      "actual_providers": [
+        "CPUExecutionProvider"
+      ],
+      "fell_back_to_cpu": false,
+      "input_shape": [
+        "1",
+        "3",
+        "224",
+        "224"
+      ]
+    },
+    "source": {
+      "kind": "video",
+      "path": "clips/bbb_360_2MB.mp4",
+      "frame_count": 300,
+      "fps": 30.0,
+      "width": 640,
+      "height": 360,
+      "restarts": 0
+    },
+    "model_input_hw": [
+      224,
+      224
+    ],
+    "env": {
+      "timestamp_utc": "2026-09-14T08:03:36+00:00",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "python": "3.13.14",
+      "cpu_name": "Intel(R) Core(TM) Ultra 7 255H",
+      "cpu_count_logical": 16,
+      "gpus_nvidia_smi": [],
+      "ram_total_gb": 31.5,
+      "cpu_freq_mhz_at_start": 2000.0,
+      "onnxruntime_version": "1.30.0",
+      "onnxruntime_available_providers": [
+        "AzureExecutionProvider",
+        "CPUExecutionProvider"
+      ],
+      "opencv_version": "5.0.0"
+    }
+  },
+  "result": {
+    "frames_counted": 260,
+    "frames_warmup_discarded": 20,
+    "stages_ms": {
+      "read": {
+        "mean": 0.4482846147416589,
+        "p50": 0.42034999933093786,
+        "p95": 0.6737449773936531,
+        "max": 0.9042999881785363
+      },
+      "preprocess": {
+        "mean": 0.6781784607133327,
+        "p50": 0.6313500052783638,
+        "p95": 0.9714350031572393,
+        "max": 2.1169999963603914
+      },
+      "inference": {
+        "mean": 23.016819616112535,
+        "p50": 22.492049989523366,
+        "p95": 33.149665001837995,
+        "max": 57.442399993306026
+      },
+      "postprocess": {
+        "mean": 0.1313726929276107,
+        "p50": 0.1152500044554472,
+        "p95": 0.18547498621046538,
+        "max": 0.7407999946735799
+      }
+    },
+    "e2e_ms": {
+      "mean": 24.284584231253785,
+      "p50": 23.854800005210564,
+      "p95": 34.89874998631421,
+      "max": 59.32629999006167
+    },
+    "stage_sum_mean_ms": 24.274655384495137,
+    "unaccounted_mean_ms": 0.00992884675864758,
+    "throughput_fps": 41.127340090038885,
+    "throughput_implied_by_e2e_fps": 41.17838668668742,
+    "drift": {
+      "first_decile_ms": 18.50268461678822,
+      "last_decile_ms": 27.325880769729757,
+      "ratio": 1.4768603224710377
+    }
+  }
+}

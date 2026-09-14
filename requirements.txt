@@ -1,0 +1,28 @@
+# Core. Install exactly one onnxruntime flavour per environment.
+numpy
+opencv-python
+psutil                      # required for the idle gate and clock sampling
+onnxruntime                 # CPU only
+
+# --- Intel CPU / iGPU / NPU ----------------------------------------------
+# Replaces plain onnxruntime in the same environment:
+#   pip uninstall -y onnxruntime
+#   pip install onnxruntime-openvino==1.24.1 "openvino==2025.4.1"
+# The openvino version must match the ABI onnxruntime-openvino was built
+# against. 2026.3.1 loads but the provider fails with Windows error 127
+# (missing procedure) and ONNX Runtime silently falls back to CPU.
+# onnxruntime-openvino==1.24.1
+# openvino==2025.4.1
+#
+# onnxruntime-openvino does not bundle the OpenVINO DLLs; bench/backends.py
+# calls openvino.utils.add_openvino_libs_to_path() before creating a session.
+# Then: --backend openvino --ov-device CPU | GPU | NPU
+
+# --- NVIDIA ---------------------------------------------------------------
+# MX150 is Pascal (sm_61). If CUDAExecutionProvider does not appear in
+# `python -m bench.env_fingerprint`, stay on CPU and record that.
+#   pip uninstall -y onnxruntime && pip install onnxruntime-gpu
+
+# --- Model export only. Not needed to run a benchmark. --------------------
+#   pip install torch torchvision onnx
+# `onnx` is required by the pinned TorchScript export path in prepare_models.py.

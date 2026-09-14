@@ -1,0 +1,426 @@
+{
+  "meta": {
+    "tag": "gram-npu-1080",
+    "args": {
+      "model": "models\\resnet50_224.onnx",
+      "backend": "openvino",
+      "ov_device": "NPU",
+      "source": "clips\\bbb_1080_10MB.mp4",
+      "frames": 300,
+      "warmup": 100,
+      "top_k": 5,
+      "intra_threads": null,
+      "repeat": 5,
+      "cooldown": 60.0,
+      "max_busy_pct": 25.0,
+      "no_idle_gate": false,
+      "allow_fallback": false,
+      "tag": "gram-npu-1080",
+      "out_dir": "results"
+    },
+    "backend": {
+      "requested_backend": "openvino",
+      "openvino_device": "NPU",
+      "actual_providers": [
+        "OpenVINOExecutionProvider",
+        "CPUExecutionProvider"
+      ],
+      "fell_back_to_cpu": false,
+      "input_shape": [
+        "1",
+        "3",
+        "224",
+        "224"
+      ]
+    },
+    "sources": [
+      {
+        "kind": "video",
+        "path": "clips\\bbb_1080_10MB.mp4",
+        "frame_count": 600,
+        "fps": 60.0,
+        "width": 1920,
+        "height": 1080,
+        "restarts": 0
+      },
+      {
+        "kind": "video",
+        "path": "clips\\bbb_1080_10MB.mp4",
+        "frame_count": 600,
+        "fps": 60.0,
+        "width": 1920,
+        "height": 1080,
+        "restarts": 0
+      },
+      {
+        "kind": "video",
+        "path": "clips\\bbb_1080_10MB.mp4",
+        "frame_count": 600,
+        "fps": 60.0,
+        "width": 1920,
+        "height": 1080,
+        "restarts": 0
+      },
+      {
+        "kind": "video",
+        "path": "clips\\bbb_1080_10MB.mp4",
+        "frame_count": 600,
+        "fps": 60.0,
+        "width": 1920,
+        "height": 1080,
+        "restarts": 0
+      },
+      {
+        "kind": "video",
+        "path": "clips\\bbb_1080_10MB.mp4",
+        "frame_count": 600,
+        "fps": 60.0,
+        "width": 1920,
+        "height": 1080,
+        "restarts": 0
+      }
+    ],
+    "model_input_hw": [
+      224,
+      224
+    ],
+    "idle_gate": {
+      "checked": true,
+      "settled": true,
+      "busy_pct": 9.1,
+      "samples": [
+        9.1
+      ],
+      "threshold_pct": 25.0
+    },
+    "env": {
+      "timestamp_utc": "2026-09-14T08:27:55+00:00",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "python": "3.13.14",
+      "cpu_name": "Intel(R) Core(TM) Ultra 7 255H",
+      "cpu_count_logical": 16,
+      "gpus_nvidia_smi": [],
+      "ram_total_gb": 31.5,
+      "cpu_freq_mhz_at_start": 2000.0,
+      "onnxruntime_version": "1.24.1",
+      "onnxruntime_available_providers": [
+        "OpenVINOExecutionProvider",
+        "CPUExecutionProvider"
+      ],
+      "opencv_version": "5.0.0"
+    }
+  },
+  "runs": [
+    {
+      "frames_counted": 200,
+      "frames_warmup_discarded": 100,
+      "stages_ms": {
+        "read": {
+          "mean": 4.624021500785602,
+          "mean_trim10": 4.532623889422717,
+          "p50": 4.371449991595,
+          "p95": 6.332465013838371,
+          "max": 7.83170000067912
+        },
+        "preprocess": {
+          "mean": 0.8709064997674432,
+          "mean_trim10": 0.86324111034628,
+          "p50": 0.904649990843609,
+          "p95": 1.037455011100974,
+          "max": 1.585899997735396
+        },
+        "inference": {
+          "mean": 5.1882229988405015,
+          "mean_trim10": 5.155729998498121,
+          "p50": 5.123299997649156,
+          "p95": 5.78842001123121,
+          "max": 6.384799984516576
+        },
+        "postprocess": {
+          "mean": 0.09625950187910348,
+          "mean_trim10": 0.0931215488598862,
+          "p50": 0.08629998774267733,
+          "p95": 0.15996499569155273,
+          "max": 0.20169999334029853
+        }
+      },
+      "e2e_ms": {
+        "mean": 10.786391000729054,
+        "mean_trim10": 10.6848894451913,
+        "p50": 10.487399995326996,
+        "p95": 12.451160002092365,
+        "max": 15.028099995106459
+      },
+      "stage_sum_mean_ms": 10.77941050127265,
+      "unaccounted_mean_ms": 0.006980499456403777,
+      "throughput_fps": 92.61911306573163,
+      "throughput_implied_by_e2e_fps": 92.70941503348152,
+      "bottleneck_stage": "inference",
+      "overlap_ceiling_x": 2.0776690793132264,
+      "bottleneck_p95_over_p50": 1.129822578003874,
+      "drift": {
+        "first_decile_ms": 10.797965002711862,
+        "last_decile_ms": 11.015554999175947,
+        "ratio": 1.0201510188641507
+      },
+      "cpu_freq_mhz": {
+        "before": 2000.0,
+        "after": 1500.0
+      }
+    },
+    {
+      "frames_counted": 200,
+      "frames_warmup_discarded": 100,
+      "stages_ms": {
+        "read": {
+          "mean": 6.370695001678541,
+          "mean_trim10": 6.317918890272267,
+          "p50": 6.166550010675564,
+          "p95": 8.279354992555449,
+          "max": 10.409400012576953
+        },
+        "preprocess": {
+          "mean": 1.0120964999077842,
+          "mean_trim10": 0.9904672217089683,
+          "p50": 0.97339999047108,
+          "p95": 1.3999699949636117,
+          "max": 2.0760000043082982
+        },
+        "inference": {
+          "mean": 5.841843000234803,
+          "mean_trim10": 5.803722777960098,
+          "p50": 5.60490001225844,
+          "p95": 6.730954999511596,
+          "max": 7.307399995625019
+        },
+        "postprocess": {
+          "mean": 0.11777250008890405,
+          "mean_trim10": 0.11380333324066466,
+          "p50": 0.10569998994469643,
+          "p95": 0.18210501730209214,
+          "max": 0.5026999861001968
+        }
+      },
+      "e2e_ms": {
+        "mean": 13.35242400149582,
+        "mean_trim10": 13.310485001743977,
+        "p50": 13.24990001739934,
+        "p95": 15.49389499996323,
+        "max": 18.4828000201378
+      },
+      "stage_sum_mean_ms": 13.342407001910033,
+      "unaccounted_mean_ms": 0.010016999585786834,
+      "throughput_fps": 74.78536880987463,
+      "throughput_implied_by_e2e_fps": 74.89276852562305,
+      "bottleneck_stage": "read",
+      "overlap_ceiling_x": 2.094340884062821,
+      "bottleneck_p95_over_p50": 1.342623505561811,
+      "drift": {
+        "first_decile_ms": 12.471895005728584,
+        "last_decile_ms": 14.193874997727107,
+        "ratio": 1.1380688332613116
+      },
+      "cpu_freq_mhz": {
+        "before": 2000.0,
+        "after": 1500.0
+      }
+    },
+    {
+      "frames_counted": 200,
+      "frames_warmup_discarded": 100,
+      "stages_ms": {
+        "read": {
+          "mean": 6.493969998555258,
+          "mean_trim10": 6.442621664933136,
+          "p50": 6.419849989470094,
+          "p95": 7.6524699936271645,
+          "max": 9.280600002966821
+        },
+        "preprocess": {
+          "mean": 1.0576864996983204,
+          "mean_trim10": 1.041017777525768,
+          "p50": 1.0702500003390014,
+          "p95": 1.5031050017569212,
+          "max": 1.7995999951381236
+        },
+        "inference": {
+          "mean": 5.410955499537522,
+          "mean_trim10": 5.3758983325678855,
+          "p50": 5.237649995251559,
+          "p95": 6.133170009707101,
+          "max": 6.6331000125501305
+        },
+        "postprocess": {
+          "mean": 0.11681600124575198,
+          "mean_trim10": 0.1120672233001743,
+          "p50": 0.10645001020748168,
+          "p95": 0.17513999191578464,
+          "max": 0.43569999979808927
+        }
+      },
+      "e2e_ms": {
+        "mean": 13.090597000991693,
+        "mean_trim10": 13.045713334253783,
+        "p50": 12.96935000573285,
+        "p95": 14.517629999318158,
+        "max": 16.506900021340698
+      },
+      "stage_sum_mean_ms": 13.079427999036852,
+      "unaccounted_mean_ms": 0.011169001954840496,
+      "throughput_fps": 76.31000406069187,
+      "throughput_implied_by_e2e_fps": 76.39071005884941,
+      "bottleneck_stage": "read",
+      "overlap_ceiling_x": 2.0140881466878797,
+      "bottleneck_p95_over_p50": 1.1920013717109943,
+      "drift": {
+        "first_decile_ms": 12.732840003445745,
+        "last_decile_ms": 13.122699999075849,
+        "ratio": 1.030618463400514
+      },
+      "cpu_freq_mhz": {
+        "before": 2000.0,
+        "after": 1500.0
+      }
+    },
+    {
+      "frames_counted": 200,
+      "frames_warmup_discarded": 100,
+      "stages_ms": {
+        "read": {
+          "mean": 5.960927000269294,
+          "mean_trim10": 5.941957222562956,
+          "p50": 5.993650003802031,
+          "p95": 7.364889988093637,
+          "max": 9.02739999582991
+        },
+        "preprocess": {
+          "mean": 1.0477385022386443,
+          "mean_trim10": 1.0358211130046078,
+          "p50": 1.0587500146357343,
+          "p95": 1.3865299828466955,
+          "max": 1.6948000120464712
+        },
+        "inference": {
+          "mean": 6.305764001008356,
+          "mean_trim10": 6.27678111211733,
+          "p50": 6.1163000063970685,
+          "p95": 7.1974099875660595,
+          "max": 8.219400013331324
+        },
+        "postprocess": {
+          "mean": 0.1199434997397475,
+          "mean_trim10": 0.11747166637279507,
+          "p50": 0.1144499983638525,
+          "p95": 0.16916000604396683,
+          "max": 0.27249997947365046
+        }
+      },
+      "e2e_ms": {
+        "mean": 13.44710499906796,
+        "mean_trim10": 13.42678610995386,
+        "p50": 13.40925000840798,
+        "p95": 15.52599499700591,
+        "max": 17.25030000670813
+      },
+      "stage_sum_mean_ms": 13.434373003256042,
+      "unaccounted_mean_ms": 0.01273199581191875,
+      "throughput_fps": 74.33634731775794,
+      "throughput_implied_by_e2e_fps": 74.36544892520074,
+      "bottleneck_stage": "inference",
+      "overlap_ceiling_x": 2.130490928792728,
+      "bottleneck_p95_over_p50": 1.1767588215159905,
+      "drift": {
+        "first_decile_ms": 13.9666600007331,
+        "last_decile_ms": 11.542139998346101,
+        "ratio": 0.826406599554959
+      },
+      "cpu_freq_mhz": {
+        "before": 2000.0,
+        "after": 2000.0
+      }
+    },
+    {
+      "frames_counted": 200,
+      "frames_warmup_discarded": 100,
+      "stages_ms": {
+        "read": {
+          "mean": 5.306982998881722,
+          "mean_trim10": 5.248262221155326,
+          "p50": 4.919100014376454,
+          "p95": 7.408370001940057,
+          "max": 7.862099999329075
+        },
+        "preprocess": {
+          "mean": 0.9402454992232379,
+          "mean_trim10": 0.9229116662431301,
+          "p50": 0.94524999440182,
+          "p95": 1.2752149952575553,
+          "max": 1.716600003419444
+        },
+        "inference": {
+          "mean": 5.678224498551572,
+          "mean_trim10": 5.649044998669221,
+          "p50": 5.553599999984726,
+          "p95": 6.4035200091893785,
+          "max": 6.935100012924522
+        },
+        "postprocess": {
+          "mean": 0.11914250106201507,
+          "mean_trim10": 0.11577333401267727,
+          "p50": 0.1076500047929585,
+          "p95": 0.19213000778108835,
+          "max": 0.3805000160355121
+        }
+      },
+      "e2e_ms": {
+        "mean": 12.053426999045769,
+        "mean_trim10": 11.993311109836213,
+        "p50": 11.678099996061064,
+        "p95": 14.352434994361829,
+        "max": 15.358800010289997
+      },
+      "stage_sum_mean_ms": 12.044595497718547,
+      "unaccounted_mean_ms": 0.008831501327222213,
+      "throughput_fps": 82.88223600481436,
+      "throughput_implied_by_e2e_fps": 82.96395706210083,
+      "bottleneck_stage": "inference",
+      "overlap_ceiling_x": 2.1211904356354596,
+      "bottleneck_p95_over_p50": 1.1530394715512442,
+      "drift": {
+        "first_decile_ms": 11.421484994934872,
+        "last_decile_ms": 12.641115000587888,
+        "ratio": 1.1067838381956365
+      },
+      "cpu_freq_mhz": {
+        "before": 2000.0,
+        "after": 1500.0
+      }
+    }
+  ],
+  "across_runs": {
+    "throughput_fps": {
+      "n": 5,
+      "mean": 80.18661385177408,
+      "min": 74.33634731775794,
+      "max": 92.61911306573163,
+      "stdev": 7.750170731845261,
+      "cv": 0.09665167737562212
+    },
+    "e2e_p50_ms": {
+      "n": 5,
+      "mean": 12.358800004585646,
+      "min": 10.487399995326996,
+      "max": 13.40925000840798,
+      "stdev": 1.248575813029229,
+      "cv": 0.10102726903631046
+    },
+    "overlap_ceiling_x": {
+      "n": 5,
+      "mean": 2.087555894898423,
+      "min": 2.0140881466878797,
+      "max": 2.130490928792728,
+      "stdev": 0.046141073604763924,
+      "cv": 0.022102916485984236
+    }
+  }
+}

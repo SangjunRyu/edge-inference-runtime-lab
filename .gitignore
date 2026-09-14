@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.venv/
+models/*.onnx
+*.mp4
+clips/*.mp4
