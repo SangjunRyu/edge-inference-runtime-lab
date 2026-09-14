@@ -57,9 +57,21 @@ should be re-run with `--intra-threads` pinned:
 | openvino/GPU x 720p | 6% | 8% | 5% |
 | openvino/NPU x 720p | 3% | 1% | 5% |
 
+The `openvino/CPU` row was added later with the same settings and drops
+straight into the grid (`gram__openvino-cpu__*.json`), so it is 4 backends x 3
+resolutions now.
+
+## W2 -- overlapped pipeline
+
+| file | what it is |
+|---|---|
+| `ab-*.json` | paired sync-vs-async, alternating in one process. cpu/gpu/npu x 360p/1080p |
+| `sweep-npu360-10s__*.json` | in-flight depth sweep, NPU 360p, 10 s per point. The clean curve: knee at 4 |
+| `sweep-npu__*.json` | same at 1080p. No knee -- the limit never binds |
+| `sweep-gpu360__*.json` | Arc iGPU, re-run with a stall watchdog and one process per depth |
+| `sweep-npu360__*.json` | superseded by the `-10s` file: fixed frame count, 0.55-0.98 s per run |
+
 ## Still to run
 
-- `openvino/CPU` row -- the `cpu` row uses ONNX Runtime's own kernels, so
-  comparing it with the OpenVINO rows mixes a change of engine with a change of
-  device. Same engine on the CPU would separate them.
-- CPU row with `--intra-threads` pinned.
+- CPU row of the W1 grid with `--intra-threads` pinned. W2 showed pinning
+  removes the bimodality, but the grid was measured before that.

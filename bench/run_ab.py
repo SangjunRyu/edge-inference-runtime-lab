@@ -49,6 +49,11 @@ def parse_args():
     p.add_argument("--queue-size", type=int, default=4)
     p.add_argument("--reorder", choices=("on", "off"), default="on")
     p.add_argument("--reorder-cap", type=int, default=None)
+    p.add_argument("--stall-timeout-s", type=float, default=20.0,
+                   help="async side: give up on an outstanding request after "
+                        "this long. The sync side cannot be protected the same "
+                        "way -- a blocked session.run() is not interruptible -- "
+                        "so a stalled sync run is detected afterwards instead.")
     p.add_argument("--stall-every", type=int, default=0)
     p.add_argument("--stall-ms", type=float, default=40.0)
     p.add_argument("--pairs", type=int, default=5,
@@ -72,6 +77,7 @@ def _child_args(args) -> Namespace:
         top_k=args.top_k, queue_size=args.queue_size, inflight=args.inflight,
         reorder=args.reorder, reorder_cap=args.reorder_cap,
         stall_every=args.stall_every, stall_ms=args.stall_ms,
+        stall_timeout_s=args.stall_timeout_s,
     )
 
 
@@ -128,8 +134,17 @@ def main() -> int:
     bad = [p for p in pairs
            if p["async"]["order"]["order_violations"]
            or p["sync"]["order"]["order_violations"]]
-    tp = [p["throughput_ratio"] for p in pairs]
-    lat = [p["e2e_p50_ratio"] for p in pairs]
+    # A pair where either side counted no frames is not a slow pair: on the Arc
+    # iGPU one sync run blocked inside session.run() and came out at 0.0 FPS,
+    # which as a ratio of 0.00 dragged the reported spread to 68% and made the
+    # comparison unreadable. Such a pair is dropped and counted, not averaged.
+    dead = [p for p in pairs
+            if not p["sync"].get("frames_counted")
+            or not p["async"].get("frames_counted")
+            or p["async"].get("stalls")]
+    usable = [p for p in pairs if p not in dead]
+    tp = [p["throughput_ratio"] for p in usable]
+    lat = [p["e2e_p50_ratio"] for p in usable]
     tp_s, lat_s = noise.spread(tp), noise.spread(lat)
 
     w = 70
@@ -154,7 +169,12 @@ def main() -> int:
           f"{100 * lat_s['cv']:.1f}%)")
     print("-" * w)
 
-    if bad:
+    if dead:
+        print(f" {len(dead)} of {len(pairs)} pairs dropped: a run stalled or "
+              f"counted no frames.")
+    if not usable:
+        print(" No usable pair. Nothing is reported for this configuration.")
+    elif bad:
         print(f" REFUSED: {len(bad)} of {len(pairs)} pairs emitted frames out "
               f"of submission order.")
         print(" A pipeline that reorders its output is not a faster pipeline,")
@@ -183,6 +203,7 @@ def main() -> int:
     out.write_text(json.dumps(
         {"meta": meta, "pairs": pairs,
          "throughput_ratio": tp_s, "e2e_p50_ratio": lat_s,
+         "pairs_dropped": len(dead), "pairs_used": len(usable),
          "order_clean": not bad}, indent=2), encoding="utf-8")
     print(f"\nsaved -> {out}")
     return 1 if bad else 0

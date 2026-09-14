@@ -12,17 +12,47 @@ speedup for any configuration that violated it.
 
 Raw data: `results/ab-*.json`. Regenerate with `python -m bench.run_ab`.
 
-## The result depends entirely on where inference runs
+## The result depends on where inference runs and on how much host work there is
 
-| configuration | sync FPS | async FPS | **throughput** | **latency (E2E p50)** | ratio CV |
-|---|---|---|---|---|---|
-| CPU, 4 threads pinned | 38-49 | 31-40 | **0.85x** | 12.9x worse | 6.2% |
-| CPU, threads unpinned | 42-78 | 85-106 | 1.37x | 7.9x worse | 23.8% |
-| **NPU (OpenVINO), 1080p** | 52-58 | 161-176 | **3.09x** | **0.83x better** | 6.5% |
+Every row is 4-5 pairs, all frames in submission order, no pair dropped.
 
-On the NPU async wins on both axes. On the CPU with a pinned thread pool it
-**loses**, and the loss is measured tightly enough (6.2% ratio CV) to be a
-result rather than noise.
+| device | clip | **throughput** | **latency (E2E p50)** | ratio CV |
+|---|---|---|---|---|
+| CPU (ORT), 4 threads pinned | 360p | **0.85x** | 12.90x worse | 6.2% |
+| CPU (ORT), threads unpinned | 360p | 1.37x | 7.9x worse | 23.8% |
+| Arc iGPU (OpenVINO) | 360p | 1.06x | 9.89x worse | 1.6% |
+| Arc iGPU (OpenVINO) | 1080p | 1.57x | 1.98x worse | 10.2% |
+| NPU (OpenVINO) | 360p | 1.44x | 7.25x worse | 12.7% |
+| **NPU (OpenVINO)** | **1080p** | **3.09x** | **0.83x better** | 6.5% |
+
+Two variables move the answer, and they are separable:
+
+**Where inference runs.** On the CPU with a pinned pool async *loses*, measured
+tightly enough (6.2% ratio CV) to be a result rather than noise. Off the host it
+always wins by some margin.
+
+**How much host work there is to hide.** At 360p the host stages are tiny --
+`read` is 0.47 ms on the NPU row -- so there is almost nothing for overlap to
+hide behind inference, and even the NPU manages only 1.44x. At 1080p decode
+costs 5-8 ms and the same device reaches 3.09x. The Arc iGPU moves the same way,
+1.06x to 1.57x.
+
+So "async is faster" is not a property of the pipeline. It is a property of the
+pair (device, workload), and W1's overlap ceiling predicts it from sequential
+measurements alone:
+
+| device | clip | W1 ceiling | W2 measured | |
+|---|---|---|---|---|
+| Arc iGPU | 360p | 1.83x | 1.06x | under |
+| Arc iGPU | 1080p | 1.64x | 1.57x | close |
+| NPU | 360p | 1.39x | **1.44x** | matches |
+| NPU | 1080p | 2.14x | 3.09x | exceeds |
+
+Three of four land at or below the ceiling, and the NPU at 360p matches it to
+within 4%. The 1080p NPU row exceeds its ceiling because the stage service
+times themselves fell in async mode -- the effect recorded below as
+unexplained, which is exactly where a prediction from sequential timings would
+be expected to break.
 
 ## Why CPU async loses: concurrency is subdivided, not added
 
@@ -191,6 +221,50 @@ shape anything.
 
 So the textbook curve requires the limit to bind. Whether depth is worth tuning
 is a property of the workload, not of the pipeline.
+
+## The Arc iGPU is not a usable instrument under concurrent load
+
+The first attempt at the GPU sweep took **60 minutes** against a 7-minute
+estimate. One inference at depth 8 blocked for **398 seconds**:
+
+```
+depth run     FPS  frames  E2E p50    E2E max  infer p50   infer max    wall
+    8   1     0.2      63     52.5   398354.9      29.26    398053.3    405s
+    8   2   149.7     988     83.8      397.8      42.91       244.1      7s
+    8   3   283.4    2488     50.1       94.2      27.13        70.6      9s
+    4   3   275.7    2568     33.2      960.0      12.92       938.9      9s
+```
+
+That is not throttling, which moves gradually. It is a driver-level stall, and
+it never occurred once in any NPU run. The same load on a paired run put one
+*sync* GPU pass at 0.0 FPS, which as a ratio of 0.00 dragged that comparison's
+spread to 68% and made it unreadable.
+
+Re-run with a stall watchdog and one process per depth, the hang did not
+reproduce -- worst inference 163 ms, no stalls, no depth killed -- but the
+run-to-run spread remained wide where the NPU's was not:
+
+| depth | per-run FPS | CV |
+|---|---|---|
+| 1 | 193.0 / 56.5 / 96.0 | **61.0%** |
+| 2 | 200.6 / 304.0 / 307.8 | 22.5% |
+| 4 | 299.0 / 292.8 / 300.5 | 1.4% |
+| 8 | 373.3 / 282.0 / 322.9 | 14.0% |
+| 16 | 386.4 / 362.3 / 369.1 | 3.3% |
+
+Depth 1 varies 3.4x between runs with nothing flagged. The knee test therefore
+finds saturation at 2 and calls every later step noise -- while the curve still
+climbs 37.6% from depth 2 to 16. Individually insignificant steps summing to a
+significant total is a limit of testing adjacent pairs, and it is reported that
+way rather than resolved: **the Arc data is too noisy to locate a knee.**
+
+This is W1 finding 3 at its extreme. An integrated GPU runs inference on the
+same silicon that decodes video and drives the display, and under concurrent
+load it produces multi-hundred-second tails. For an edge deployment that is
+disqualifying, and it is an argument for the separate NPU block that DEEPX
+builds: the NPU sweep produced no stall at any depth.
+
+None of it would have been visible from p50 alone.
 
 ## Measurement duration changed the answer's quality
 

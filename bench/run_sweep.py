@@ -29,6 +29,9 @@ from __future__ import annotations
 import argparse
 import json
 import statistics
+import subprocess
+import sys
+import tempfile
 from argparse import Namespace
 from pathlib import Path
 
@@ -60,6 +63,14 @@ def parse_args():
     p.add_argument("--max-busy-pct", type=float, default=25.0)
     p.add_argument("--no-idle-gate", action="store_true")
     p.add_argument("--allow-fallback", action="store_true")
+    p.add_argument("--stall-timeout-s", type=float, default=20.0,
+                   help="passed to run_async: give up on an outstanding "
+                        "request after this long")
+    p.add_argument("--in-process", action="store_true",
+                   help="run every depth in this process (default: one "
+                        "subprocess per depth)")
+    p.add_argument("--depth-timeout-s", type=float, default=0.0,
+                   help="kill a depth that exceeds this; 0 = computed")
     p.add_argument("--tag", default="sweep")
     p.add_argument("--out-dir", default="results")
     return p.parse_args()
@@ -73,6 +84,62 @@ def _child_args(args, depth: int) -> Namespace:
         reorder=args.reorder, reorder_cap=args.reorder_cap,
         stall_every=0, stall_ms=0.0,
     )
+
+
+def _depth_budget(args) -> float:
+    """How long a single depth may take before it is killed.
+
+    A stalled request cannot be cancelled -- ONNX Runtime has no API for it --
+    so the watchdog inside run_async only stops *waiting*; the request stays in
+    the session. Isolating each depth in its own process is what actually
+    contains that, and this budget is the outer bound: if a depth exceeds it,
+    the process is killed and the depth is dropped rather than left to poison
+    the rest of the sweep.
+    """
+    if args.depth_timeout_s > 0:
+        return args.depth_timeout_s
+    per_run = (args.duration_s or 12.0) + args.stall_timeout_s + 25.0
+    return args.repeat * per_run + (args.repeat - 1) * args.cooldown + 60.0
+
+
+def _run_depth_isolated(args, depth: int, height: int, width: int,
+                        tmpdir: str) -> tuple[list[dict], str | None]:
+    """Run one depth in a fresh process. Returns (runs, failure reason)."""
+    tag = f"_sweepdepth{depth}"
+    cmd = [sys.executable, "-u", "-m", "bench.run_async",
+           "--model", args.model, "--backend", args.backend,
+           "--frames", str(args.frames), "--warmup", str(args.warmup),
+           "--top-k", str(args.top_k), "--inflight", str(depth),
+           "--queue-size", str(args.queue_size), "--reorder", args.reorder,
+           "--repeat", str(args.repeat), "--cooldown", str(args.cooldown),
+           "--stall-timeout-s", str(args.stall_timeout_s),
+           "--no-idle-gate", "--tag", tag, "--out-dir", tmpdir]
+    if args.source:
+        cmd += ["--source", args.source]
+    if args.ov_device:
+        cmd += ["--ov-device", args.ov_device]
+    if args.reorder_cap is not None:
+        cmd += ["--reorder-cap", str(args.reorder_cap)]
+    if args.intra_threads is not None:
+        cmd += ["--intra-threads", str(args.intra_threads)]
+    if args.duration_s:
+        cmd += ["--duration-s", str(args.duration_s)]
+    if args.allow_fallback:
+        cmd += ["--allow-fallback"]
+
+    budget = _depth_budget(args)
+    try:
+        rc = subprocess.run(cmd, timeout=budget).returncode
+    except subprocess.TimeoutExpired:
+        return [], f"killed after {budget:.0f}s"
+    if rc != 0:
+        return [], f"exited {rc}"
+
+    hits = sorted(Path(tmpdir).glob(f"{tag}__*.json"))
+    if not hits:
+        return [], "produced no result file"
+    d = json.loads(hits[0].read_text(encoding="utf-8"))
+    return d.get("runs", []), None
 
 
 def main() -> int:
@@ -95,27 +162,63 @@ def main() -> int:
         print("idle gate:")
         gate = noise.idle_gate(max_busy_pct=args.max_busy_pct)
 
-    points = []
+    isolated = not args.in_process
+    if isolated:
+        print(f"one subprocess per depth, budget {_depth_budget(args):.0f}s each")
+    tmpdir = tempfile.mkdtemp(prefix="sweep_")
+
+    points, killed = [], []
     for di, depth in enumerate(args.depths):
         print(f"\n--- inflight {depth} ---")
-        runs = []
-        for i in range(max(1, args.repeat)):
-            rec, src, info = run_async.measure_once(
-                backend, _child_args(args, depth), height, width)
-            info["source"] = src
-            r = rec.result()
-            r.update({k: info[k] for k in ("order", "reorder", "errors", "source")})
-            runs.append(r)
-            print(f"  run {i + 1}: {r['throughput_fps']:7.2f} FPS   "
-                  f"E2E p50 {r['e2e_ms']['p50']:7.2f} ms   "
-                  f"resident {r['concurrency_littles_law']:5.2f}   "
-                  f"violations {r['order']['order_violations']}")
-            if i < args.repeat - 1:
-                noise.cooldown(args.cooldown, verbose=False)
+        if isolated:
+            runs, why = _run_depth_isolated(args, depth, height, width, tmpdir)
+            if why:
+                print(f"  !! depth {depth} dropped: {why}")
+                killed.append([depth, why])
+                if di < len(args.depths) - 1:
+                    noise.cooldown(args.between_depths, verbose=False)
+                continue
+        else:
+            runs = []
+            for i in range(max(1, args.repeat)):
+                rec, src, info = run_async.measure_once(
+                    backend, _child_args(args, depth), height, width)
+                info["source"] = src
+                r = rec.result()
+                r.update({k: info[k] for k in
+                          ("order", "reorder", "errors", "stalls", "source")})
+                runs.append(r)
+                print(f"  run {i + 1}: {r['throughput_fps']:7.2f} FPS   "
+                      f"E2E p50 {r['e2e_ms']['p50']:7.2f} ms   "
+                      f"resident {r['concurrency_littles_law']:5.2f}   "
+                      f"violations {r['order']['order_violations']}")
+                if i < args.repeat - 1:
+                    noise.cooldown(args.cooldown, verbose=False)
 
-        tp = [r["throughput_fps"] for r in runs]
-        e50 = [r["e2e_ms"]["p50"] for r in runs]
-        e95 = [r["e2e_ms"]["p95"] for r in runs]
+        # A run that produced no counted frames is not a slow run either: at a
+        # low duration the warm-up can swallow the whole budget, leaving a
+        # throughput of 0.0 that would otherwise be averaged in as if real.
+        empty = [r for r in runs if not r.get("frames_counted")]
+        # A stalled run is not a slow run. Averaging one in produces a point
+        # that describes neither the stall nor the steady state: the Arc iGPU
+        # sweep reported 144 FPS at depth 8 as the mean of 0.2, 149.7 and
+        # 283.4, which is a number no configuration ever achieved.
+        stalled = [r for r in runs if r.get("stalls")]
+        clean = [r for r in runs
+                 if not r.get("stalls") and r.get("frames_counted")]
+        if empty:
+            print(f"  !! {len(empty)} run(s) counted no frames -- warm-up "
+                  f"({args.warmup}) may exceed what --duration-s allows")
+        if not clean:
+            print(f"  !! depth {depth} has no usable run; dropping")
+            killed.append([depth, "no clean run"])
+            if di < len(args.depths) - 1:
+                noise.cooldown(args.between_depths, verbose=False)
+            continue
+
+        tp = [r["throughput_fps"] for r in clean]
+        e50 = [r["e2e_ms"]["p50"] for r in clean]
+        e95 = [r["e2e_ms"]["p95"] for r in clean]
         viol = sum(r["order"]["order_violations"] for r in runs)
         points.append({
             "inflight": depth,
@@ -123,12 +226,16 @@ def main() -> int:
             "e2e_p50": noise.spread(e50),
             "e2e_p95": noise.spread(e95),
             "resident": statistics.median(
-                r["concurrency_littles_law"] for r in runs),
+                r["concurrency_littles_law"] for r in clean),
             "q_inflight_p50": statistics.median(
-                r["stages_ms"]["q_inflight"]["p50"] for r in runs),
+                r["stages_ms"]["q_inflight"]["p50"] for r in clean),
             "inference_p50": statistics.median(
-                r["stages_ms"]["inference"]["p50"] for r in runs),
+                r["stages_ms"]["inference"]["p50"] for r in clean),
+            "inference_max_ms": max(
+                r["stages_ms"]["inference"]["max"] for r in runs),
             "order_violations": viol,
+            "stalled_runs": len(stalled),
+            "clean_runs": len(clean),
             "source": runs[0].get("source"),
             "seconds_measured": statistics.median(
                 r["frames_counted"] / r["throughput_fps"] for r in runs
@@ -138,8 +245,8 @@ def main() -> int:
         if di < len(args.depths) - 1:
             noise.cooldown(args.between_depths, verbose=False)
 
-    ok = [p for p in points if not p["order_violations"]]
-    bad = [p for p in points if p["order_violations"]]
+    ok = [p for p in points if not p["order_violations"] and not p["stalled_runs"]]
+    bad = [p for p in points if p["order_violations"] or p["stalled_runs"]]
 
     w = 88
     print("\n" + "=" * w)
@@ -150,7 +257,13 @@ def main() -> int:
           f"{'E2E p50':>10}{'E2E p95':>10}{'q_infl':>9}{'infer':>8}{'resident':>10}")
     base = ok[0]["throughput"]["mean"] if ok else 0.0
     for p in points:
-        flag = "  ORDER VIOLATIONS" if p["order_violations"] else ""
+        flag = ""
+        if p["order_violations"]:
+            flag += "  ORDER VIOLATIONS"
+        if p["stalled_runs"]:
+            flag += (f"  {p['stalled_runs']}/{p['stalled_runs'] + p['clean_runs']}"
+                     f" RUNS STALLED (worst inference "
+                     f"{p['inference_max_ms'] / 1000:.0f}s)")
         rel = (p["throughput"]["mean"] / base) if base else 0.0
         print(f" {p['inflight']:>6}{p['throughput']['mean']:>9.1f}"
               f"{100 * p['throughput']['cv']:>6.1f}%{rel:>10.2f}"
@@ -199,9 +312,12 @@ def main() -> int:
             dt = deepest["throughput"]["mean"] / kp["throughput"]["mean"]
             print(f" Going on to {deepest['inflight']} buys {100 * (dt - 1):+.1f}%"
                   f" throughput for {dl:.2f}x the latency.")
+    if killed:
+        print(f" Depths killed or failed outright: {killed}")
     if bad:
-        print(f" Excluded for order violations: "
-              f"{[p['inflight'] for p in bad]}")
+        print(f" Excluded from the curve: "
+              f"{[p['inflight'] for p in bad]}"
+              f"  (order violations or stalled runs)")
     print("=" * w)
 
     meta = {"tag": args.tag, "mode": "sweep", "args": vars(args),
@@ -213,8 +329,11 @@ def main() -> int:
            f"{args.tag}__sweep__{args.backend}{dev_slug}"
            f"__{Path(args.model).stem}__{src_slug}.json")
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps({"meta": meta, "points": points, "knee": knee},
-                              indent=2), encoding="utf-8")
+    meta["isolated_per_depth"] = isolated
+    meta["depth_budget_s"] = _depth_budget(args)
+    out.write_text(json.dumps({"meta": meta, "points": points, "knee": knee,
+                               "killed_depths": killed}, indent=2),
+                   encoding="utf-8")
     print(f"\nsaved -> {out}")
     return 0
 

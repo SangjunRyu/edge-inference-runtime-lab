@@ -75,6 +75,7 @@ Full write-up in [`docs/findings-w1.md`](docs/findings-w1.md).
 ```
 inference p50 (ms)      360p    720p   1080p      overlap ceiling (x)
 cpu (ORT CPU EP)       14.39   11.87   11.91      1.10   1.29   1.41
+openvino/CPU           17.39   17.61   17.36      1.06   1.17   1.29
 openvino/GPU (Arc)      2.39    2.53    3.43      1.83   2.19   1.64
 openvino/NPU            3.05    3.42    5.32      1.39   1.98   2.14
 ```
@@ -85,10 +86,15 @@ openvino/NPU            3.05    3.42    5.32      1.39   1.98   2.14
    against 30% run-to-run noise.
 2. **Measured "inference" is not device time.** It rises with *source*
    resolution even though the model always sees 224x224 — +74% on the NPU from
-   360p to 1080p, against 2% within-cell noise. `session.run()` includes host
-   copy, submit and wait. DEEPX's SDK already splits this into `get_latency()`
-   and `get_npu_inference_time()`; this grid reached the same distinction from
-   the other side.
+   360p to 1080p, against 2% within-cell noise. `session.run()` on an offloaded
+   device includes host copy, submit and **wait**. The `openvino/CPU` row is the
+   control that confirms it: a CPU backend has no submit-and-wait path, and it
+   is the flattest row in the grid at **CV 1%**. DEEPX's SDK already splits this
+   into `get_latency()` and `get_npu_inference_time()`; this grid reached the
+   same distinction from the other side.
+   *Engine and device also separate now:* OpenVINO's CPU kernels are 1.46x
+   slower than ORT's, and the NPU is 3.3x faster than OpenVINO on CPU — the
+   "4-6x" quoted earlier was one stacked on the other.
 3. **Inference on the iGPU contends with video decode.** `read` agrees across
    backends to within 3% at 720p, but at 1080p the GPU row is double the CPU
    row — same silicon doing decode and inference. It is the only cell in the
@@ -96,8 +102,9 @@ openvino/NPU            3.05    3.42    5.32      1.39   1.98   2.14
    *falls* at 1080p.
 4. **The CPU cells are bimodal, not noisy** — per-run inference switches
    between two levels rather than drifting, consistent with a hybrid P/E-core
-   part and an unpinned thread pool. Pinning `--intra-threads` is the untested
-   fix.
+   part and an unpinned thread pool. W2 confirmed the fix: pinning
+   `--intra-threads 4` removed it and cut the paired-ratio CV from 23.8% to
+   6.2%, and changed the CPU async answer from 1.37x to 0.85x.
 
 ### W2 — overlapped pipeline
 
@@ -105,14 +112,24 @@ Paired measurement: sync and async alternate in one process sharing one
 session, and the ratio within each pair is reported. Full write-up in
 [`docs/findings-w2.md`](docs/findings-w2.md).
 
-| configuration | throughput | latency (E2E p50) | ratio CV |
-|---|---|---|---|
-| CPU, 4 threads pinned | **0.85x** | 12.9x worse | 6.2% |
-| CPU, threads unpinned | 1.37x | 7.9x worse | 23.8% |
-| **NPU (OpenVINO), 1080p** | **3.09x** | **0.83x better** | 6.5% |
+| device | clip | throughput | latency (E2E p50) | ratio CV |
+|---|---|---|---|---|
+| CPU (ORT), 4 threads pinned | 360p | **0.85x** | 12.90x worse | 6.2% |
+| CPU (ORT), threads unpinned | 360p | 1.37x | 7.9x worse | 23.8% |
+| Arc iGPU (OpenVINO) | 360p | 1.06x | 9.89x worse | 1.6% |
+| Arc iGPU (OpenVINO) | 1080p | 1.57x | 1.98x worse | 10.2% |
+| NPU (OpenVINO) | 360p | 1.44x | 7.25x worse | 12.7% |
+| **NPU (OpenVINO)** | **1080p** | **3.09x** | **0.83x better** | 6.5% |
 
 Every run in every configuration emitted all frames in submission order;
 `run_ab` refuses to report a speedup for any configuration that did not.
+
+Two variables move the answer and they separate cleanly: **where inference
+runs** (on CPU with a pinned pool async *loses*) and **how much host work there
+is to hide** (360p leaves almost nothing to overlap, so even the NPU manages
+only 1.44x; 1080p decode costs 5-8 ms and the same device reaches 3.09x).
+W1's overlap ceiling predicts it from sequential timings alone — NPU at 360p,
+ceiling 1.39x against 1.44x measured.
 
 **Overlap pays only when inference runs somewhere other than the host.**
 `session.run_async` executes on ONNX Runtime's intra-op pool — the pool that

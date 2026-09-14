@@ -11,19 +11,15 @@ cannot define a cell.
 ## 1. Making inference faster moves the bottleneck to the host
 
 ```
-inference p50 (ms)      360p    720p   1080p
-cpu (ORT CPU EP)       14.39   11.87   11.91
-openvino/GPU (Arc)      2.39    2.53    3.43
-openvino/NPU            3.05    3.42    5.32
-
-overlap ceiling (x)     360p    720p   1080p
-cpu                     1.10    1.29    1.41
-openvino/GPU            1.83    2.19    1.64
-openvino/NPU            1.39    1.98    2.14
+inference p50 (ms)      360p    720p   1080p      overlap ceiling (x)
+cpu (ORT CPU EP)       14.39   11.87   11.91      1.10   1.29   1.41
+openvino/CPU           17.39   17.61   17.36      1.06   1.17   1.29
+openvino/GPU (Arc)      2.39    2.53    3.43      1.83   2.19   1.64
+openvino/NPU            3.05    3.42    5.32      1.39   1.98   2.14
 ```
 
-Inference drops 4-6x on the accelerators and the overlap ceiling roughly
-doubles, from 1.10-1.41x on CPU to as much as 2.19x. That is the whole
+Inference drops 3-7x once it leaves the host and the overlap ceiling roughly
+doubles, from 1.06-1.41x on the two CPU rows to as much as 2.19x. That is the whole
 hypothesis: overlap does not make inference faster, it removes idle time, so
 the gain available is set by stage balance. The faster the accelerator, the
 smaller inference's share, and the more there is to overlap.
@@ -37,22 +33,38 @@ is 1.10x, and the machine's own run-to-run noise in that cell is 30%.
 
 ## 2. Measured "inference" is not device time
 
-`inference` should not depend on the source clip — the model always receives a
-224x224 tensor. It does:
+`inference` should not depend on the source clip -- the model always receives a
+224x224 tensor. It does, on the accelerators only:
 
 | | cross-clip CV | within-cell CV | verdict |
 |---|---|---|---|
-| cpu | 11% | 30% | can't tell, cell too noisy |
+| cpu (ORT CPU EP) | 11% | 30% | can't tell, cell too noisy |
+| **openvino/CPU** | **1%** | 1% | **flat -- the control** |
 | openvino/GPU | 20% | 10% | **real** |
 | openvino/NPU | 31% | 6% | **real** |
 
-The NPU 360p cell is the tightest in the grid — five runs at 2.97 / 3.14 / 3.02
-/ 3.08 / 3.05 ms, CV 2%. Against that, 1080p at 5.32 ms is +74%, far outside
-the noise.
+```
+inference p50 (ms)      360p    720p   1080p
+cpu (ORT CPU EP)       14.39   11.87   11.91
+openvino/CPU           17.39   17.61   17.36     <- CV 1%
+openvino/GPU            2.39    2.53    3.43
+openvino/NPU            3.05    3.42    5.32
+```
 
-The stage timer wraps `session.run()`, which is input copy, submit and wait —
-host work — not just device compute. Decoding 1080p keeps the CPU busy and the
-host side of the call slows down with it.
+The NPU 360p cell is the tightest in the grid -- five runs at 2.97 / 3.14 / 3.02
+/ 3.08 / 3.05 ms, CV 2%. Against that, 1080p at 5.32 ms is +74%, far outside the
+noise.
+
+The stage timer wraps `session.run()`, which for an offloaded device is input
+copy, submit, **wait**, output copy -- host work -- not just device compute.
+Decoding 1080p keeps the CPU busy and the host side of the call slows with it.
+
+**`openvino/CPU` is the control that confirms the mechanism.** On a CPU backend
+there is no submit-and-wait path: `session.run()` is computation on the calling
+thread. If the resolution effect came from anything else -- cache pressure,
+memory bandwidth, thermal -- it should appear here too, and more strongly, since
+decode and inference are competing for the same cores. It does not appear at
+all: 17.39 / 17.61 / 17.36 ms, **CV 1%**, the flattest row in the grid.
 
 **DEEPX's SDK already separates these.** `dx_rt` exposes `get_latency()` and
 `get_npu_inference_time()` as different calls, and their performance notes use
@@ -60,20 +72,37 @@ the gap between them to tell a CPU-side bottleneck from an NPU-side one. This
 grid arrived at the same distinction from the other direction: measure at the
 application boundary and the two are silently mixed.
 
+## 2b. Engine and device, finally separated
+
+The `cpu` row uses ONNX Runtime's own kernels while the GPU and NPU rows use
+OpenVINO, so every earlier CPU-versus-NPU statement carried an uncontrolled
+second variable. The `openvino/CPU` row removes it:
+
+| comparison | holds constant | effect |
+|---|---|---|
+| ORT CPU -> OpenVINO CPU | the device | OpenVINO is **1.46x slower** (11.9 -> 17.4 ms) |
+| OpenVINO CPU -> OpenVINO NPU | the engine | the NPU is **3.3x faster** (17.4 -> 5.32 ms) |
+
+The "4-6x" quoted before this row existed was a 1.46x engine penalty stacked on
+a 3.3x device gain. The device advantage is real but smaller than it looked.
+
 ## 3. Inference on the iGPU contends with video decode
 
 `read` should depend only on the clip. At 720p it does, almost perfectly:
 
 ```
 read p50 (ms)           360p    720p   1080p
-cpu                     0.37    2.38    3.86
+cpu (ORT CPU EP)        0.37    2.38    3.86
+openvino/CPU            0.37    2.39    4.75
 openvino/NPU            0.47    2.35    4.78
 openvino/GPU            0.71    2.24    7.70
                                CV 3%
 ```
 
-At 720p all three backends agree within 3%. At 1080p the GPU row is double the
-CPU row. The Arc iGPU is running inference while OpenCV decodes, and on an
+At 720p all four backends agree within 3%. At 1080p three of the four land
+between 3.86 and 4.78 ms and **only the GPU is double** at 7.70.
+
+The Arc iGPU is running inference while OpenCV decodes, and on an
 integrated part the media engine, the execution units and the memory bandwidth
 are the same silicon. 720p decode is light enough not to collide; 1080p is not.
 The NPU sits in between, as a separate block that still shares memory.
@@ -112,9 +141,11 @@ the machine and the OS is free to land it on different core types from run to
 run. The OpenVINO cells do not show it; that execution provider manages its own
 threading and affinity.
 
-**Untested fix:** pin `--intra-threads` and re-measure the CPU row. Until that
-is done the correct statement is "the CPU cells were unstable in this
-configuration", not "the CPU cannot be measured".
+**Confirmed in W2:** pinning `--intra-threads 4` removed the two-level
+behaviour and cut the paired-ratio CV from 23.8% to 6.2%. It also changed the
+answer -- the CPU async result went from 1.37x to 0.85x -- which is why the
+confound mattered. The correct statement was "the CPU cells were unstable in
+this configuration", not "the CPU cannot be measured".
 
 The idle gate reported all nine cells below threshold (6-22% background), so
 this is not contention from other processes.
@@ -131,13 +162,18 @@ document should be quoted on its own.
 
 ## Not established
 
-- **Engine vs device is confounded in the CPU row.** `cpu` is ONNX Runtime's
-  own CPU kernels; `openvino/GPU` and `openvino/NPU` are the OpenVINO provider.
-  Comparing them mixes a change of engine with a change of device. An
-  `openvino/CPU` row would separate the two and has not been run.
-- **CPU row with pinned threads** (finding 4).
+- **The W1 grid's CPU row still has unpinned threads.** W2 showed pinning fixes
+  the bimodality, but the grid above was measured before that and has not been
+  re-run, so its `cpu` row carries 27-54% within-cell noise.
 - **`read` across backends at 1080p** came out at 37% cross-axis against 24%
-  within-cell — under the 2x bar this report uses, so finding 3 rests on the
-  360p and 720p columns plus the mechanism, not on the 1080p column alone.
-- **Async has not been built.** Every number here is the sequential pipeline.
-  The ceiling is what overlap could reach, not what it does reach.
+  within-cell -- under the 2x bar this report uses. With the `openvino/CPU` row
+  added, three of four backends now agree at 1080p and only the GPU stands
+  apart, which is stronger than the statistic alone suggests, but the formal
+  test is still not met.
+
+## What W2 did with this
+
+Every number above is the sequential pipeline, and the overlap ceiling is what
+overlap *could* reach. `docs/findings-w2.md` measures what it does reach, and
+the ceiling turns out to predict it: NPU at 360p, ceiling 1.39x against 1.44x
+measured.

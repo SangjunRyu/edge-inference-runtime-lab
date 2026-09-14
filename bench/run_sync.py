@@ -19,6 +19,7 @@ smaller than that spread is not a finding.
 from __future__ import annotations
 
 import argparse
+import time
 from pathlib import Path
 
 from bench import env_fingerprint, noise
@@ -38,6 +39,8 @@ def parse_args():
     p.add_argument("--source", default=None,
                    help="video/image path; omitted = synthetic frames")
     p.add_argument("--frames", type=int, default=300)
+    p.add_argument("--duration-s", type=float, default=0.0,
+                   help="measure for this long instead of for a frame count")
     p.add_argument("--warmup", type=int, default=20)
     p.add_argument("--top-k", type=int, default=5)
     p.add_argument("--intra-threads", type=int, default=None,
@@ -68,7 +71,14 @@ def measure_once(backend, args, height: int, width: int):
     checker = OrderChecker()
     idx = 0
     frames = source.frames()
+    # Both modes must stop on the same rule. Giving the async path a deadline
+    # and leaving this one on a frame count would make every paired comparison
+    # measure the two for different lengths of time.
+    deadline = (time.perf_counter() + getattr(args, "duration_s", 0.0)
+                if getattr(args, "duration_s", 0.0) else None)
     while True:
+        if deadline is not None and time.perf_counter() >= deadline:
+            break
         with Timer() as t_e2e:
             # Read is timed by timing the pull from the source. The source
             # generator decodes lazily, so the decode happens inside this

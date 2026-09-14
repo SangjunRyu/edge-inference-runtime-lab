@@ -73,6 +73,9 @@ def parse_args():
     p.add_argument("--intra-threads", type=int, default=None)
     p.add_argument("--inflight", type=int, default=4,
                    help="max inference requests in flight; the sweep variable")
+    p.add_argument("--stall-timeout-s", type=float, default=30.0,
+                   help="give up waiting on an outstanding request after this "
+                        "long and record the stall, instead of blocking")
     p.add_argument("--queue-size", type=int, default=4,
                    help="bound on each inter-stage queue (DX-APP uses 4)")
     p.add_argument("--reorder", choices=("on", "off"), default="on",
@@ -110,6 +113,7 @@ class AsyncPipeline:
         self.slots = threading.Semaphore(args.inflight)
         self.error: list[tuple[str, str]] = []
         self.submitted = 0
+        self.stalls: list[str] = []
 
     # -- workers ---------------------------------------------------------
     def _read_worker(self, source) -> None:
@@ -180,8 +184,18 @@ class AsyncPipeline:
             # comes out almost right (196 of 200) and nothing looks wrong.
             # Acquiring every permit means every release has happened, which
             # means every completion callback has run.
+            timeout = getattr(self.args, "stall_timeout_s", 30.0)
             for _ in range(self.args.inflight):
-                self.slots.acquire()
+                if not self.slots.acquire(timeout=timeout):
+                    # An outstanding request never completed. Measured on the
+                    # Arc iGPU: one inference blocked for 398 s under
+                    # concurrent load, which is a driver-level stall rather
+                    # than slowness. Waiting for it would hang the process, so
+                    # give up and record it -- a run that stalled is a result,
+                    # but it must not be silently averaged in with clean ones.
+                    self.stalls.append(
+                        f"inference did not complete within {timeout:.0f}s")
+                    break
             self.output_q.put(_SENTINEL)
 
     def _on_complete(self, results, rec, err) -> None:
@@ -253,8 +267,14 @@ class AsyncPipeline:
             t.start()
 
         t_first = time.perf_counter()
+        timeout = getattr(self.args, "stall_timeout_s", 30.0)
         while True:
-            rec = self.result_q.get()
+            try:
+                rec = self.result_q.get(timeout=timeout)
+            except queue.Empty:
+                self.stalls.append(
+                    f"no frame reached the consumer for {timeout:.0f}s")
+                break
             if rec is _SENTINEL:
                 break
             if use_reorder:
@@ -275,6 +295,7 @@ class AsyncPipeline:
             "reorder": buf.stats() if use_reorder else {"enabled": False},
             "order": checker.stats(),
             "errors": self.error,
+            "stalls": self.stalls,
         }
 
     def _emit(self, rec: dict, checker: OrderChecker, rec_out: Recorder) -> None:
@@ -339,12 +360,16 @@ def main() -> int:
                   f"out-of-order arrivals {ro['out_of_order_arrivals']}  "
                   f"max displacement {ro['max_displacement']}  "
                   f"forced flushes {ro['forced_flushes']}")
+        if info["stalls"]:
+            print(f" !! STALLED: {info['stalls'][0]} -- this run is not "
+                  f"comparable with clean ones")
         if info["errors"]:
             print(f" !! errors: {info['errors'][:3]}")
 
         r = rec.result()
         r.update({k: info[k] for k in
-                  ("submitted", "reorder", "order", "errors", "cpu_freq_mhz")})
+                  ("submitted", "reorder", "order", "errors", "stalls",
+                   "cpu_freq_mhz")})
         results.append(r)
         sources.append(src)
         infos.append(info)

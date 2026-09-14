@@ -1,0 +1,477 @@
+{
+  "meta": {
+    "tag": "gram",
+    "args": {
+      "model": "models/resnet50_224.onnx",
+      "backend": "openvino",
+      "ov_device": "CPU",
+      "source": "clips/bbb_1080_10MB.mp4",
+      "frames": 300,
+      "duration_s": 0.0,
+      "warmup": 100,
+      "top_k": 5,
+      "intra_threads": null,
+      "repeat": 5,
+      "cooldown": 60.0,
+      "max_busy_pct": 15.0,
+      "no_idle_gate": true,
+      "allow_fallback": false,
+      "tag": "gram",
+      "out_dir": "results"
+    },
+    "backend": {
+      "requested_backend": "openvino",
+      "openvino_device": "CPU",
+      "actual_providers": [
+        "OpenVINOExecutionProvider",
+        "CPUExecutionProvider"
+      ],
+      "fell_back_to_cpu": false,
+      "input_shape": [
+        "1",
+        "3",
+        "224",
+        "224"
+      ]
+    },
+    "sources": [
+      {
+        "kind": "video",
+        "path": "clips/bbb_1080_10MB.mp4",
+        "frame_count": 600,
+        "fps": 60.0,
+        "width": 1920,
+        "height": 1080,
+        "restarts": 0
+      },
+      {
+        "kind": "video",
+        "path": "clips/bbb_1080_10MB.mp4",
+        "frame_count": 600,
+        "fps": 60.0,
+        "width": 1920,
+        "height": 1080,
+        "restarts": 0
+      },
+      {
+        "kind": "video",
+        "path": "clips/bbb_1080_10MB.mp4",
+        "frame_count": 600,
+        "fps": 60.0,
+        "width": 1920,
+        "height": 1080,
+        "restarts": 0
+      },
+      {
+        "kind": "video",
+        "path": "clips/bbb_1080_10MB.mp4",
+        "frame_count": 600,
+        "fps": 60.0,
+        "width": 1920,
+        "height": 1080,
+        "restarts": 0
+      },
+      {
+        "kind": "video",
+        "path": "clips/bbb_1080_10MB.mp4",
+        "frame_count": 600,
+        "fps": 60.0,
+        "width": 1920,
+        "height": 1080,
+        "restarts": 0
+      }
+    ],
+    "model_input_hw": [
+      224,
+      224
+    ],
+    "idle_gate": {
+      "checked": false,
+      "reason": "disabled"
+    },
+    "env": {
+      "timestamp_utc": "2026-09-14T14:07:48+00:00",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "python": "3.13.14",
+      "cpu_name": "Intel(R) Core(TM) Ultra 7 255H",
+      "cpu_count_logical": 16,
+      "gpus_nvidia_smi": [],
+      "ram_total_gb": 31.5,
+      "cpu_freq_mhz_at_start": 2000.0,
+      "onnxruntime_version": "1.24.1",
+      "onnxruntime_available_providers": [
+        "OpenVINOExecutionProvider",
+        "CPUExecutionProvider"
+      ],
+      "opencv_version": "5.0.0"
+    }
+  },
+  "runs": [
+    {
+      "frames_counted": 200,
+      "frames_warmup_discarded": 100,
+      "stages_ms": {
+        "read": {
+          "mean": 4.826465500809718,
+          "mean_trim10": 4.817777778306562,
+          "p50": 4.799550006282516,
+          "p95": 5.382100002316292,
+          "max": 5.972100014332682
+        },
+        "preprocess": {
+          "mean": 0.7779375000973232,
+          "mean_trim10": 0.770231666521997,
+          "p50": 0.7513999880757183,
+          "p95": 0.9336750066722742,
+          "max": 1.2042000016663224
+        },
+        "inference": {
+          "mean": 22.645561000535963,
+          "mean_trim10": 22.291273333313356,
+          "p50": 21.211150000453927,
+          "p95": 29.473470004450064,
+          "max": 45.52129999501631
+        },
+        "postprocess": {
+          "mean": 0.14733499876456335,
+          "mean_trim10": 0.14232444292348292,
+          "p50": 0.1404999929945916,
+          "p95": 0.1871399988885969,
+          "max": 0.6190999993123114
+        }
+      },
+      "e2e_ms": {
+        "mean": 28.411311499221483,
+        "mean_trim10": 28.045731665851136,
+        "p50": 26.99130000837613,
+        "p95": 35.900395004136946,
+        "max": 51.21070001041517
+      },
+      "stage_sum_mean_ms": 28.397299000207568,
+      "service_sum_mean_ms": 28.397299000207568,
+      "wait_sum_mean_ms": 0,
+      "wait_stages": [],
+      "unaccounted_mean_ms": 0.014012499013915658,
+      "throughput_fps": 35.174409658807775,
+      "throughput_implied_by_e2e_fps": 35.19724881505036,
+      "concurrency_littles_law": 0.9993511096176125,
+      "pipelined": false,
+      "bottleneck_stage": "inference",
+      "overlap_ceiling_x": 1.2539896450141146,
+      "bottleneck_p95_over_p50": 1.3895272063900035,
+      "drift": {
+        "first_decile_ms": 30.338340005255304,
+        "last_decile_ms": 27.21766999893589,
+        "ratio": 0.897137746963781
+      },
+      "cpu_freq_mhz": {
+        "before": 2000.0,
+        "after": 2000.0
+      },
+      "order": {
+        "emitted": 300,
+        "order_violations": 0,
+        "first_violation_at_frame": null,
+        "in_submission_order": true
+      }
+    },
+    {
+      "frames_counted": 200,
+      "frames_warmup_discarded": 100,
+      "stages_ms": {
+        "read": {
+          "mean": 4.715110499237198,
+          "mean_trim10": 4.697160554901024,
+          "p50": 4.696250005508773,
+          "p95": 5.047580011887476,
+          "max": 6.202800024766475
+        },
+        "preprocess": {
+          "mean": 0.7099994998134207,
+          "mean_trim10": 0.7052577776549798,
+          "p50": 0.6957500008866191,
+          "p95": 0.7927899801870806,
+          "max": 0.9169999975711107
+        },
+        "inference": {
+          "mean": 19.60680999865872,
+          "mean_trim10": 19.30429888776012,
+          "p50": 17.471250001108274,
+          "p95": 27.06031498964876,
+          "max": 33.440500003052875
+        },
+        "postprocess": {
+          "mean": 0.14596599983633496,
+          "mean_trim10": 0.14479055567385835,
+          "p50": 0.1449999981559813,
+          "p95": 0.16390499658882618,
+          "max": 0.21639998885802925
+        }
+      },
+      "e2e_ms": {
+        "mean": 25.190134999284055,
+        "mean_trim10": 24.899578332810457,
+        "p50": 23.229550002724864,
+        "p95": 32.43833500018809,
+        "max": 38.84580000885762
+      },
+      "stage_sum_mean_ms": 25.177885997545673,
+      "service_sum_mean_ms": 25.177885997545673,
+      "wait_sum_mean_ms": 0,
+      "wait_stages": [],
+      "unaccounted_mean_ms": 0.012249001738382503,
+      "throughput_fps": 39.66956330221994,
+      "throughput_implied_by_e2e_fps": 39.698080221817854,
+      "concurrency_littles_law": 0.999281654945565,
+      "pipelined": false,
+      "bottleneck_stage": "inference",
+      "overlap_ceiling_x": 1.284139847291225,
+      "bottleneck_p95_over_p50": 1.548848250006852,
+      "drift": {
+        "first_decile_ms": 23.975580002297647,
+        "last_decile_ms": 28.659934998722747,
+        "ratio": 1.1953802575777597
+      },
+      "cpu_freq_mhz": {
+        "before": 2000.0,
+        "after": 2000.0
+      },
+      "order": {
+        "emitted": 300,
+        "order_violations": 0,
+        "first_violation_at_frame": null,
+        "in_submission_order": true
+      }
+    },
+    {
+      "frames_counted": 200,
+      "frames_warmup_discarded": 100,
+      "stages_ms": {
+        "read": {
+          "mean": 4.719134999322705,
+          "mean_trim10": 4.698230554802446,
+          "p50": 4.67959999514278,
+          "p95": 5.038015003083274,
+          "max": 6.8069999979343265
+        },
+        "preprocess": {
+          "mean": 0.7013885016203858,
+          "mean_trim10": 0.6997955573347604,
+          "p50": 0.6954500131541863,
+          "p95": 0.7628250154084526,
+          "max": 0.8159000135492533
+        },
+        "inference": {
+          "mean": 19.078195501933806,
+          "mean_trim10": 18.798392223834526,
+          "p50": 17.253250000067055,
+          "p95": 26.50606999959564,
+          "max": 27.59620000142604
+        },
+        "postprocess": {
+          "mean": 0.1463185006286949,
+          "mean_trim10": 0.1460677782435798,
+          "p50": 0.14870001177769154,
+          "p95": 0.16071000136435032,
+          "max": 0.2041999832727015
+        }
+      },
+      "e2e_ms": {
+        "mean": 24.656836499780184,
+        "mean_trim10": 24.381817221971385,
+        "p50": 22.84930000314489,
+        "p95": 32.05206500861095,
+        "max": 33.255500020459294
+      },
+      "stage_sum_mean_ms": 24.64503750350559,
+      "service_sum_mean_ms": 24.64503750350559,
+      "wait_sum_mean_ms": 0,
+      "wait_stages": [],
+      "unaccounted_mean_ms": 0.011798996274592355,
+      "throughput_fps": 40.52612027604309,
+      "throughput_implied_by_e2e_fps": 40.55670320922617,
+      "concurrency_littles_law": 0.999245921616821,
+      "pipelined": false,
+      "bottleneck_stage": "inference",
+      "overlap_ceiling_x": 1.2917908038528862,
+      "bottleneck_p95_over_p50": 1.5362943213303362,
+      "drift": {
+        "first_decile_ms": 23.464285004592966,
+        "last_decile_ms": 24.38799000083236,
+        "ratio": 1.0393664241658582
+      },
+      "cpu_freq_mhz": {
+        "before": 2000.0,
+        "after": 2000.0
+      },
+      "order": {
+        "emitted": 300,
+        "order_violations": 0,
+        "first_violation_at_frame": null,
+        "in_submission_order": true
+      }
+    },
+    {
+      "frames_counted": 200,
+      "frames_warmup_discarded": 100,
+      "stages_ms": {
+        "read": {
+          "mean": 4.871316999779083,
+          "mean_trim10": 4.860627777492886,
+          "p50": 4.843599992454983,
+          "p95": 5.200784985208884,
+          "max": 6.147899985080585
+        },
+        "preprocess": {
+          "mean": 0.7787099989946,
+          "mean_trim10": 0.7792705542265644,
+          "p50": 0.7789499941281974,
+          "p95": 0.8283299917820841,
+          "max": 0.9352999913971871
+        },
+        "inference": {
+          "mean": 17.357745500048622,
+          "mean_trim10": 17.35083555573106,
+          "p50": 17.33710001280997,
+          "p95": 18.32899998407811,
+          "max": 18.91119999345392
+        },
+        "postprocess": {
+          "mean": 0.14639800021541305,
+          "mean_trim10": 0.14598388920098337,
+          "p50": 0.14714999997522682,
+          "p95": 0.1575250062160194,
+          "max": 0.20959999528713524
+        }
+      },
+      "e2e_ms": {
+        "mean": 23.166350999526912,
+        "mean_trim10": 23.153313888663735,
+        "p50": 23.126850006519817,
+        "p95": 24.251859996002164,
+        "max": 25.319999986095354
+      },
+      "stage_sum_mean_ms": 23.15417049903772,
+      "service_sum_mean_ms": 23.15417049903772,
+      "wait_sum_mean_ms": 0,
+      "wait_stages": [],
+      "unaccounted_mean_ms": 0.012180500489193946,
+      "throughput_fps": 43.142146130517006,
+      "throughput_implied_by_e2e_fps": 43.16605580310949,
+      "concurrency_littles_law": 0.9994461001324388,
+      "pipelined": false,
+      "bottleneck_stage": "inference",
+      "overlap_ceiling_x": 1.3339388170527595,
+      "bottleneck_p95_over_p50": 1.0572125655695155,
+      "drift": {
+        "first_decile_ms": 23.167054998339154,
+        "last_decile_ms": 23.11809500097297,
+        "ratio": 0.9978866542437227
+      },
+      "cpu_freq_mhz": {
+        "before": 1500.0,
+        "after": 2000.0
+      },
+      "order": {
+        "emitted": 300,
+        "order_violations": 0,
+        "first_violation_at_frame": null,
+        "in_submission_order": true
+      }
+    },
+    {
+      "frames_counted": 200,
+      "frames_warmup_discarded": 100,
+      "stages_ms": {
+        "read": {
+          "mean": 4.769300999323605,
+          "mean_trim10": 4.767591666152132,
+          "p50": 4.751199987367727,
+          "p95": 5.114799996954389,
+          "max": 5.365199991501868
+        },
+        "preprocess": {
+          "mean": 0.7224815008521546,
+          "mean_trim10": 0.7189311122702848,
+          "p50": 0.716649999958463,
+          "p95": 0.8172800226020627,
+          "max": 1.1464999988675117
+        },
+        "inference": {
+          "mean": 17.6583709991246,
+          "mean_trim10": 17.49929833264711,
+          "p50": 17.35940000799019,
+          "p95": 18.959199987875763,
+          "max": 33.21449999930337
+        },
+        "postprocess": {
+          "mean": 0.14317599896457978,
+          "mean_trim10": 0.14309888841429105,
+          "p50": 0.1458499755244702,
+          "p95": 0.15541999018751085,
+          "max": 0.17579999985173345
+        }
+      },
+      "e2e_ms": {
+        "mean": 23.30583250062773,
+        "mean_trim10": 23.149104445150847,
+        "p50": 23.05460000934545,
+        "p95": 24.777275005180854,
+        "max": 39.72000000067055
+      },
+      "stage_sum_mean_ms": 23.29332949826494,
+      "service_sum_mean_ms": 23.29332949826494,
+      "wait_sum_mean_ms": 0,
+      "wait_stages": [],
+      "unaccounted_mean_ms": 0.012503002362791449,
+      "throughput_fps": 42.87654564807388,
+      "throughput_implied_by_e2e_fps": 42.90771419442174,
+      "concurrency_littles_law": 0.9992735910795286,
+      "pipelined": false,
+      "bottleneck_stage": "inference",
+      "overlap_ceiling_x": 1.3191097581662368,
+      "bottleneck_p95_over_p50": 1.0921575618482908,
+      "drift": {
+        "first_decile_ms": 23.176610001246445,
+        "last_decile_ms": 23.359380004694685,
+        "ratio": 1.0078859679408858
+      },
+      "cpu_freq_mhz": {
+        "before": 2000.0,
+        "after": 2000.0
+      },
+      "order": {
+        "emitted": 300,
+        "order_violations": 0,
+        "first_violation_at_frame": null,
+        "in_submission_order": true
+      }
+    }
+  ],
+  "across_runs": {
+    "throughput_fps": {
+      "n": 5,
+      "mean": 40.277757003132336,
+      "min": 35.174409658807775,
+      "max": 43.142146130517006,
+      "stdev": 3.218468793702279,
+      "cv": 0.07990685264454979
+    },
+    "e2e_p50_ms": {
+      "n": 5,
+      "mean": 23.85032000602223,
+      "min": 22.84930000314489,
+      "max": 26.99130000837613,
+      "stdev": 1.7613724032436169,
+      "cv": 0.07385110148622193
+    },
+    "overlap_ceiling_x": {
+      "n": 5,
+      "mean": 1.2965937742754445,
+      "min": 1.2539896450141146,
+      "max": 1.3339388170527595,
+      "stdev": 0.03120457659917152,
+      "cv": 0.02406657907686553
+    }
+  }
+}
