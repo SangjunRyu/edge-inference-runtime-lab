@@ -43,6 +43,13 @@ device — the same confound `findings-w1.md` already records as unresolved
 between the ORT CPU row and the OpenVINO rows. It is not new, but it is now
 structural rather than incidental, and it belongs in the write-up.
 
+**Hold the onnxruntime version still across the venvs** as far as the wheels
+allow, and record it per venv when they do not. The engine already varies by
+construction; letting the engine *version* vary on top of it adds a second
+uncontrolled difference to the same comparison for no gain. The
+`onnxruntime-openvino` flavour tends to lag the others, so it is usually the one
+that sets the version everything else should match.
+
 ---
 
 ## 1. Clone
@@ -69,9 +76,36 @@ Call the venv interpreter by path rather than activating it. `activate` needs a
 relaxed PowerShell execution policy, and an environment activated earlier in
 `PATH` can silently win.
 
-Expect `cpu_name` to read `i7-8565U`, `ram_total_gb` near 7.8, `gpus_nvidia_smi`
-to list the MX150 once the NVIDIA driver is installed, and
-`onnxruntime_available_providers` to be `["CPUExecutionProvider"]`.
+Measured on the 550XBE, 2026-09-15:
+
+```json
+{
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.13.14",
+  "cpu_name": "Intel(R) Core(TM) i7-8565U CPU @ 1.80GHz",
+  "cpu_count_logical": 8,
+  "gpus_nvidia_smi": ["GeForce MX150, 2048 MiB, 451.67"],
+  "ram_total_gb": 7.9,
+  "cpu_freq_mhz_at_start": 1792.0,
+  "onnxruntime_version": "1.30.0",
+  "onnxruntime_available_providers": ["AzureExecutionProvider", "CPUExecutionProvider"],
+  "opencv_version": "5.0.0"
+}
+```
+
+Three things to read off it.
+
+`AzureExecutionProvider` alongside `CPUExecutionProvider` is what the plain
+`onnxruntime` wheel ships and means nothing is wrong. No accelerator provider is
+present yet, which is correct at this step.
+
+**The GPU driver is 451.67, from 2020, and it blocks the CUDA path outright.**
+See §5b before doing anything about it — it is the shipped OEM driver and
+updating it is a precondition, not a tuning step.
+
+`onnxruntime` is 1.30.0 here against 1.24.1 on the gram. That is fine — no
+cross-machine absolute comparison is meaningful anyway — but see §0 about
+holding it still *within* this machine.
 
 ## 3. Assets
 
@@ -153,7 +187,10 @@ Look for `DmlExecutionProvider` in the provider list, then:
 that completes and writes a file is a run that actually reached the GPU.
 
 DirectML needs no CUDA and no cuDNN — the GPU driver and DX12 are the whole
-dependency, and the MX150 has both. `backends.py` turns off the memory-pattern
+dependency, and the MX150 has both even on the 2020 driver the machine shipped
+with. That is why this is the first thing to try: it is the one accelerator path
+that does not depend on the driver update §5b requires. Update the driver
+anyway, but a DML row can be measured before you do. `backends.py` turns off the memory-pattern
 planner and forces sequential execution for this backend, which the DirectML EP
 requires.
 
@@ -165,7 +202,24 @@ without it.
 
 ### 5b. CUDA (the one worth having)
 
+**Update the GPU driver first. The shipped one cannot run this path at all.**
+
+The 550XBE came with 451.67, released mid-2020. A driver exposes a maximum CUDA
+runtime version, and 451.67 tops out at CUDA 11.0 — the CUDA 12.x runtime that
+current `onnxruntime-gpu` wheels are built against needs a 527-or-newer driver
+on Windows. No combination of pip packages works around that; the ceiling is in
+the driver.
+
+So the order is: install the newest NVIDIA driver that still lists the MX150
+among its supported products, reboot, confirm with
+`nvidia-smi` that both the driver version and the reported CUDA version moved,
+and only then build the venv. Pascal support is in its final branch, so whatever
+works is also roughly the last thing that will — pin it and record it in the
+findings the way [`frozen-baseline.md`](frozen-baseline.md) records the gram's
+NPU driver.
+
 ```powershell
+nvidia-smi        # driver version, and the CUDA version it can host
 python -m venv .venv-cuda
 .venv-cuda\Scripts\python.exe -m pip install numpy opencv-python psutil onnxruntime-gpu
 .venv-cuda\Scripts\python.exe -m bench.env_fingerprint
@@ -173,7 +227,7 @@ python -m venv .venv-cuda
 
 `CUDAExecutionProvider` appears or it does not. If it does not:
 
-- **CUDA 13 dropped Pascal.** The runtime must be 12.x, and the
+- **CUDA 13 dropped Pascal**, so the runtime must be 12.x, and the
   `onnxruntime-gpu` wheel must be built against the same CUDA major you have
   installed. Check ONNX Runtime's current CUDA/cuDNN requirement table for the
   version you install rather than assuming — the pairing is exact, and getting
@@ -181,9 +235,10 @@ python -m venv .venv-cuda
 - `onnxruntime-gpu` does not bundle the CUDA runtime or cuDNN. They come from
   the CUDA Toolkit or from the `nvidia-*-cu12` pip packages, and on Windows the
   DLLs have to be findable at import time.
-- The NVIDIA driver must still support Pascal. It is supported by the current
-  branch, but it is the last one that will be, so pin what works and record the
-  version.
+
+A 2 GB card is not a constraint here. ResNet50 at 224, batch 1, FP32 is about
+100 MB of weights and the pipeline holds a few dozen decoded frames; the MX150's
+memory is the least of this backend's problems.
 
 CUDA is worth the extra effort even though DirectML is easier, because two of
 the open threads need it: CUDA events are how the inference timer gets split
@@ -310,6 +365,7 @@ there, running it here at least separates them on *this* machine.
 | a run aborts with "requested X but running on CPUExecutionProvider" | working as designed. The provider did not load; fix the install rather than passing `--allow-fallback` |
 | provider loads, numbers look like CPU | the silent fallback. Check `fell_back_to_cpu` and `actual_providers` in the saved JSON — every result stores them |
 | Windows error 127 on import or session create | ABI mismatch between `onnxruntime-*` and its runtime (`openvino`, CUDA, cuDNN). Match the versions, do not upgrade one side |
+| `CUDAExecutionProvider` never appears, whatever you install | check the driver before the wheels. `nvidia-smi` reports the highest CUDA version the driver can host, and the 550XBE shipped with 451.67, which caps at 11.0 |
 | `settled: false` in the result | the idle gate gave up. The run is marked contaminated on purpose; close things or raise `--max-busy-pct` to your real floor |
 | `drift` above 1.05x | not steady state. A throttling laptop is two machines and their average describes neither. Longer cooldown, or shorter runs |
 | last repeat is always slowest | heat accumulating between repeats, not within one. Raise `--cooldown` |
