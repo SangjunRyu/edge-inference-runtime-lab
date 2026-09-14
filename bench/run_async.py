@@ -75,7 +75,7 @@ def parse_args():
     p.add_argument("--reorder", choices=("on", "off"), default="on",
                    help="'off' publishes completion order, to show the defect")
     p.add_argument("--reorder-cap", type=int, default=None,
-                   help="force-flush threshold; defaults to 2x --inflight")
+                   help="force-flush threshold; default 4x(inflight+queue-size)")
     p.add_argument("--stall-every", type=int, default=0,
                    help="delay postprocess of every Nth frame, to force "
                         "out-of-order completion deliberately")
@@ -215,7 +215,16 @@ class AsyncPipeline:
 
     # -- driver ----------------------------------------------------------
     def run(self, source, rec_out: Recorder) -> dict:
-        cap = self.args.reorder_cap or max(2, 2 * self.args.inflight)
+        # A completion can be displaced by more than the in-flight limit: the
+        # gap has to survive the output queue and the postprocess worker too.
+        # Measured displacement reached 13 with inflight=4, against an earlier
+        # default of 2x inflight = 8, which fired the force-flush path and left
+        # real order violations behind. The cap only exists to stop a frame
+        # that never arrives from stalling the consumer forever, and holding a
+        # few more records costs almost nothing, so it is set well clear of the
+        # displacement the pipeline can actually produce.
+        cap = self.args.reorder_cap or max(
+            16, 4 * (self.args.inflight + self.args.queue_size))
         buf = ReorderBuffer(cap=cap)
         checker = OrderChecker()
         use_reorder = self.args.reorder == "on"

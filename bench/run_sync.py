@@ -25,6 +25,7 @@ from bench import env_fingerprint, noise
 from bench.backends import OnnxBackend, available
 from bench.harness import Recorder, Timer
 from bench.pipeline import postprocess, preprocess
+from bench.reorder import OrderChecker
 from bench.sources import make_source
 
 
@@ -55,10 +56,17 @@ def parse_args():
     return p.parse_args()
 
 
-def measure_once(backend, args, height: int, width: int) -> tuple[Recorder, dict]:
-    """One complete pass. The source is rebuilt per run so repeats are independent."""
+def measure_once(backend, args, height: int, width: int):
+    """One complete pass. The source is rebuilt per run so repeats are independent.
+
+    Order is checked here too. A sequential pipeline cannot emit out of order,
+    so this must report zero -- which is what makes the same check meaningful
+    when the async pipeline reports zero.
+    """
     source = make_source(args.source, args.frames)
     rec = Recorder(warmup=args.warmup)
+    checker = OrderChecker()
+    idx = 0
     frames = source.frames()
     while True:
         with Timer() as t_e2e:
@@ -76,12 +84,14 @@ def measure_once(backend, args, height: int, width: int) -> tuple[Recorder, dict
                 logits = backend.run(tensor)
             with Timer() as t_post:
                 _ = postprocess(logits, args.top_k)
+            checker.observe(idx)
+            idx += 1
         rec.add_frame(
             {"read": t_read.elapsed, "preprocess": t_pre.elapsed,
              "inference": t_inf.elapsed, "postprocess": t_post.elapsed},
             t_e2e.elapsed,
         )
-    return rec, source.describe()
+    return rec, source.describe(), checker.stats()
 
 
 def print_repeat_summary(results: list[dict]) -> dict:
@@ -141,7 +151,7 @@ def main() -> int:
     runs, results, sources = [], [], []
     for i in range(max(1, args.repeat)):
         clock_before = noise.clock()
-        rec, src = measure_once(backend, args, height, width)
+        rec, src, order = measure_once(backend, args, height, width)
         clock_after = noise.clock()
         title = (f"{Path(args.model).name} | {args.backend}{dev} "
                  f"-> {backend.actual_providers[0]} | source={src['kind']}"
@@ -151,6 +161,9 @@ def main() -> int:
             print(f" cpu clock     {clock_before:.0f} -> {clock_after:.0f} MHz")
         r = rec.result()
         r["cpu_freq_mhz"] = {"before": clock_before, "after": clock_after}
+        r["order"] = order
+        print(f" order         emitted {order['emitted']}  violations "
+              f"{order['order_violations']}")
         results.append(r)
         runs.append(rec)
         sources.append(src)
