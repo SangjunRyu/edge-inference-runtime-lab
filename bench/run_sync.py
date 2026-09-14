@@ -168,8 +168,14 @@ def main() -> int:
         "idle_gate": gate,
         "env": env_fingerprint.collect(),
     }
-    slug = f"{args.backend}{'-' + backend.ov_device.lower() if backend.ov_device else ''}"
-    out = Path(args.out_dir) / f"{args.tag}_{slug}_{Path(args.model).stem}.json"
+    # The source belongs in the filename. Without it a backend sweep and a
+    # resolution sweep collide on the same path and silently overwrite each
+    # other -- the two axes this project exists to separate.
+    dev_slug = "-" + backend.ov_device.lower() if backend.ov_device else ""
+    src_slug = Path(args.source).stem if args.source else "synthetic"
+    out = (Path(args.out_dir) /
+           f"{args.tag}__{args.backend}{dev_slug}__{Path(args.model).stem}"
+           f"__{src_slug}.json")
     out.parent.mkdir(parents=True, exist_ok=True)
     import json
     out.write_text(json.dumps(
