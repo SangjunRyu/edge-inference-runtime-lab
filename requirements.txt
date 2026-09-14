@@ -22,6 +22,19 @@ onnxruntime                 # CPU only
 # MX150 is Pascal (sm_61). If CUDAExecutionProvider does not appear in
 # `python -m bench.env_fingerprint`, stay on CPU and record that.
 #   pip uninstall -y onnxruntime && pip install onnxruntime-gpu
+# onnxruntime-gpu bundles neither the CUDA runtime nor cuDNN, and CUDA 13 has
+# dropped Pascal, so the runtime must be 12.x and must match the major the
+# wheel was built against.
+#
+# --- Any DX12 GPU ---------------------------------------------------------
+# Reaches the MX150 with no CUDA and no cuDNN; the driver is the whole
+# dependency. Windows only. backends.py disables the memory-pattern planner
+# and forces sequential execution for this provider, as DirectML requires.
+#   pip uninstall -y onnxruntime && pip install onnxruntime-directml
+#   --backend dml
+#
+# These four flavours all install the same `onnxruntime` package and cannot
+# share an environment. One venv each; see handoff/setup-550xbe.md.
 
 # --- Model export only. Not needed to run a benchmark. --------------------
 #   pip install torch torchvision onnx

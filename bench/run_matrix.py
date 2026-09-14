@@ -28,11 +28,20 @@ import time
 from pathlib import Path
 
 # (backend, ov_device) -- ov_device is None for the plain ONNX Runtime CPU EP.
+# The default is the set the gram had. It is a default and not a fixture: the
+# accelerators a machine owns are a property of the machine, so --backends
+# replaces the list rather than requiring this file to be edited per host.
 BACKENDS: list[tuple[str, str | None]] = [
     ("cpu", None),
     ("openvino", "GPU"),
     ("openvino", "NPU"),
 ]
+
+
+def parse_backend(spec: str) -> tuple[str, str | None]:
+    """``cpu`` | ``cuda`` | ``dml`` | ``openvino:GPU`` -> (backend, device)."""
+    backend, _, dev = spec.partition(":")
+    return backend, (dev.upper() or None)
 
 CLIPS = ["clips/bbb_360_2MB.mp4", "clips/bbb_720_5MB.mp4", "clips/bbb_1080_10MB.mp4"]
 
@@ -59,6 +68,10 @@ def parse_args():
                    help="seconds to rest between cells, on top of --cooldown")
     p.add_argument("--out-dir", default="results")
     p.add_argument("--clips", nargs="+", default=CLIPS)
+    p.add_argument("--backends", nargs="+", default=None,
+                   metavar="SPEC",
+                   help="backends for this host, e.g. cpu dml openvino:GPU; "
+                        "default is the gram's cpu openvino:GPU openvino:NPU")
     p.add_argument("--force", action="store_true", help="re-run existing cells")
     p.add_argument("--dry-run", action="store_true")
     return p.parse_args()
@@ -76,7 +89,9 @@ def main() -> int:
         print(f"clips not found: {missing}\n  python -m bench.get_clips")
         return 1
 
-    cells = [(b, d, c) for b, d in BACKENDS for c in args.clips]
+    backends = ([parse_backend(s) for s in args.backends]
+                if args.backends else BACKENDS)
+    cells = [(b, d, c) for b, d in backends for c in args.clips]
     todo = [x for x in cells
             if args.force or not out_path(args.out_dir, args.tag, x[0], x[1],
                                           args.model, x[2]).exists()]
@@ -85,7 +100,7 @@ def main() -> int:
     per_cell = args.repeat * args.frames * 0.015 + (args.repeat - 1) * args.cooldown
     total_min = (len(todo) * (per_cell + args.between_cells)) / 60
 
-    print(f"matrix: {len(BACKENDS)} backends x {len(args.clips)} clips "
+    print(f"matrix: {len(backends)} backends x {len(args.clips)} clips "
           f"= {len(cells)} cells")
     print(f"to run: {len(todo)}  (skipping {len(cells) - len(todo)} already present)")
     print(f"rough estimate: {total_min:.0f} min\n")

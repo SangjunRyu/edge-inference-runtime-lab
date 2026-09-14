@@ -119,28 +119,16 @@ Items 2 and 3 are one grid cell each. Item 1 is the one that matters.
 
 ## First session on the new machine
 
-```powershell
-git clone https://github.com/SangjunRyu/DEEPX-poc.git edge-inference-runtime-lab
-cd edge-inference-runtime-lab
-python -m venv .venv
-.venv\Scripts\python.exe -m pip install -r requirements.txt
-.venv\Scripts\python.exe -m bench.env_fingerprint        # settle the backend question first
-```
+Step by step, with the commands: [`setup-550xbe.md`](setup-550xbe.md). Clone,
+one venv per onnxruntime flavour, regenerate the gitignored model and clips,
+prove the harness on CPU, then work down the backend list above until something
+off-host answers.
 
-`models/*.onnx` and `clips/*.mp4` are gitignored and do not come with the clone.
-Regenerate both:
+The one thing worth knowing before starting: **no single onnxruntime wheel
+serves both the MX150 and the UHD 620**, so the grid is assembled from more than
+one environment. `run_matrix --backends` exists for that.
 
-```powershell
-.venv\Scripts\python.exe -m pip install torch torchvision onnx
-.venv\Scripts\python.exe -m bench.prepare_models --models resnet50 --sizes 224
-.venv\Scripts\python.exe -m bench.get_clips
-```
-
-Torch is needed for the export and for nothing else. On a machine with 8 GB of
-RAM and a laptop SSD it is worth uninstalling afterwards — the ONNX file is
-102 MB and the wheels that produced it are an order of magnitude larger.
-
-Then, before any comparison is run:
+And before any comparison is run:
 
 **Re-measure the instrument.** `docs/protocol.md` §"The instrument is a laptop"
 is not a general statement about laptops, it is a characterisation of one
@@ -156,6 +144,8 @@ claim.
 
 ## Also carried over
 
+- [`setup-550xbe.md`](setup-550xbe.md) — clone to first grid on the new machine,
+  with the install traps that machine has and the gram did not.
 - [`frozen-baseline.md`](frozen-baseline.md) — the exact environment the existing
   results were produced in, and which of them can never be regenerated.
 - [`open-threads.md`](open-threads.md) — every open question in the repository,

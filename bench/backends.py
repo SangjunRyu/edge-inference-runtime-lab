@@ -9,6 +9,13 @@ available depending on the onnxruntime-gpu / CUDA runtime combination. That is
 a normal outcome, not a failure: ``available()`` reports it and the run
 continues on CPU. Record which provider actually served the session -- asking
 for CUDA and silently getting CPU is the classic way to publish a wrong number.
+
+``dml`` is the same device reached over DirectML instead of CUDA. It needs no
+CUDA runtime and no cuDNN, so on a machine where the CUDA EP will not load it is
+the remaining way to put inference on a discrete GPU -- which is the property
+the whole comparison rests on. It is a different engine as well as a different
+path to the same silicon, so a dml row and a cuda row are not interchangeable
+evidence about the device.
 """
 from __future__ import annotations
 
@@ -17,6 +24,8 @@ import numpy as np
 BACKENDS = {
     "cpu": ["CPUExecutionProvider"],
     "cuda": ["CUDAExecutionProvider", "CPUExecutionProvider"],
+    # Any DX12 GPU, from the onnxruntime-directml wheel. Windows only.
+    "dml": ["DmlExecutionProvider", "CPUExecutionProvider"],
     # OpenVINO is optional and only reaches Intel CPU/iGPU, never the MX150.
     "openvino": ["OpenVINOExecutionProvider", "CPUExecutionProvider"],
 }
@@ -63,6 +72,13 @@ class OnnxBackend:
         if intra_threads is not None:
             opts.intra_op_num_threads = intra_threads
             opts.inter_op_num_threads = 1
+
+        if backend == "dml":
+            # DirectML supports neither the memory-pattern planner nor the
+            # parallel execution mode. Left on, they are a documented way to get
+            # a crash or a wrong answer rather than a slow one.
+            opts.enable_mem_pattern = False
+            opts.execution_mode = ort.ExecutionMode.ORT_SEQUENTIAL
 
         providers: list = list(BACKENDS[backend])
         if backend == "openvino" and ov_device:
