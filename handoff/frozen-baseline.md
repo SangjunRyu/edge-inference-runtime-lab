@@ -69,7 +69,7 @@ aborts on an unrequested fallback unless `--allow-fallback` is passed.
 | `gram__openvino-npu__*` (3) | Intel AI Boost NPU | **gone with the machine** |
 | `gram-npu-1080_*`, `noisetest_*`, `npucheck_*` | NPU | gone |
 | `ab-npu__ab4__openvino-npu__*` | NPU | gone |
-| `sweep-npu__*`, `sweep-npu360__*` | NPU | gone |
+| `sweep-npu__*`, `sweep-npu360__*`, `sweep-npu360-10s__*` | NPU | gone |
 | `gram__openvino-gpu__*` (3) | Arc 140T (Xe2) | gone; the UHD 620 is not a substitute |
 | `gram__cpu__*`, `ab-pinned__*`, `w1*`, `ceilcheck_*`, `videocheck_*`, `smoke_*` | CPU | reproducible in kind, not in value — different CPU |
 
@@ -81,10 +81,19 @@ name the 550XBE, not the phase.
 
 ## Known defects in the stored results
 
+Three sweep files exist and they are not equivalent.
+
+| file | duration | status |
+|---|---|---|
+| `sweep-npu360__*` | 300 frames | superseded by the 10 s re-run |
+| `sweep-npu360-10s__*` | 10 s per point | **current**; backs the 360p table in `findings-w2.md` |
+| `sweep-npu__*` (1080p) | 300 frames | **still the only 1080p data**, and not re-run |
+
 **`sweep-npu360__*.json` carries `"knee": 16`, which is wrong.** It was written
 by an earlier `run_sweep.py` whose knee rule compared the gain against a raw CV.
 The current rule compares two means against their combined standard error at
-2 sigma, and under it the same stored points give **knee = 4**:
+2 sigma, and under it the same stored points give **knee = 4** — which is what
+the 10 s re-run then found independently:
 
 ```
   1 -> 2   throughput  +51.2%  (needs > 14.2%)   gain
@@ -95,18 +104,21 @@ The current rule compares two means against their combined standard error at
 
 `sweep-npu__*.json` stores `"knee": 2`, which both rules agree on.
 
-**Neither sweep used `--duration-s`.** Both ran a fixed 300 frames per point, so
-the fast depths got less wall-clock time and less thermal exposure than the slow
-ones — a bias pointing at the exact comparison the sweep exists to make. The
-deadline option was added afterwards.
+**The 1080p sweep still uses a fixed frame count.** 300 frames at those rates is
+0.55-0.98 s of measurement per run, and a different duration at every depth, so
+the fast points got less thermal exposure than the slow ones. On 360p, switching
+to 10 s per point cut the run-to-run CVs from 5.9 / 10.7 / 0.4 / 0.6 / 3.2% to
+2.7 / 1.8 / 0.3 / 0.5 / 0.2%. The 1080p table in `findings-w2.md` has not had
+that treatment, and its headline claim — that the in-flight limit never binds
+because decode cannot feed it — currently rests on the noisier data.
 
-**Neither sweep records `source` or `seconds_measured` per point.** Those fields
-postdate the runs. The source is recoverable from the filename and from
-`meta.args.source`.
+**The two fixed-count files record no `source` or `seconds_measured` per point.**
+Those fields postdate the runs. The source is recoverable from the filename and
+from `meta.args.source`.
 
-The stored `points` are unaffected by any of this; only the derived `knee` on
-the 360p file and the cross-depth fairness are. Re-running both under the
-current script is item 1 of the pre-return list in [`README.md`](README.md).
+The stored `points` are unaffected by any of this. Re-running the 1080p sweep
+with `--duration-s` is item 1 of the pre-return list in [`README.md`](README.md)
+and is the last piece of NPU data the project can still collect.
 
 ## The instrument's own numbers
 

@@ -78,12 +78,14 @@ is subdivided, not added" mechanism predicts a *larger* per-request penalty at
 `--intra-threads 4` than the ~4.5x measured on 16 logical cores, because there
 is less parallelism to subdivide.
 
-**W2 sweep — `run_sweep` carries over; the knees do not.** Both stored curves are
-NPU. The shape of the finding is the transferable part: the knee sits where the
-slowest stage is, so at 1080p it was decode and depth bought 1.19x, while at
-360p it was inference and depth bought 1.73x. On the MX150, inference is slow,
-so the prediction is a 1080p curve that saturates at depth 1-2 and a 360p curve
-that keeps climbing further than the NPU's did.
+**W2 sweep — `run_sweep` carries over; the knees do not.** Every stored curve is
+NPU. The shape of the finding is the transferable part: **the in-flight limit
+only shapes the pipeline when it actually binds.** At 360p it bound, and depth
+bought 1.69x with a knee at 4; at 1080p decode could never feed more than two
+outstanding requests, `q_inflight` sat at 0.00 ms from depth 2 and the curve had
+no knee at all. On the MX150 inference is slow, so the prediction is that the
+limit binds at both resolutions and 1080p acquires the knee it did not have
+here. A curve that contradicts that is the more interesting outcome.
 
 **W3 — unblocked and cheap.** Correctness under overlap needs no fast hardware.
 `--stall-every` forces out-of-order completion deliberately, so the reorder
@@ -97,10 +99,11 @@ it is the phase worth the most against the roles this repository is aimed at.
 
 Ordered by what cannot be recovered afterwards.
 
-1. **Re-run both sweeps under the current `run_sweep.py`**, with `--duration-s`
-   set. The committed curves came from an earlier version: the 360p file carries
-   a stale `knee: 16` from the superseded CV rule, and neither used the
-   wall-clock deadline. This is the only NPU data that will ever exist.
+1. **Re-run the 1080p sweep with `--duration-s`.** 360p has been redone at 10 s
+   per point and its CVs fell from as much as 10.7% to 0.2-2.7%. The 1080p table
+   in `findings-w2.md` still rests on the fixed-count run, and it is the table
+   carrying the stronger claim — that the in-flight limit never binds because
+   decode cannot feed it. This is the last NPU data the project can collect.
 2. **Run the missing `openvino --ov-device CPU` row.** `findings-w1.md` lists it
    under "Not established": the `cpu` row is ONNX Runtime's own kernels while the
    accelerator rows are the OpenVINO provider, so every CPU-vs-NPU comparison in

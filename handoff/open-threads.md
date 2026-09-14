@@ -50,11 +50,12 @@ latency figure in the W2 table is currently unattributed and the test either
 attributes it or retracts it.
 
 ### Split the inference timer the way `dx_rt` does
-New, from the sweep. At 360p, measured `inference` p50 climbs 3.49 → 36.06 ms
-from depth 1 to 16 while throughput is flat. Nothing on the device got slower;
-queue wait moved inside the timed region, because the timer wraps the call
-boundary and the call boundary is where requests wait. W1 finding 2 reached the
-same conclusion from source resolution at +74%; depth makes it 10x.
+The case for it is now made and published; the change itself is not. At 360p,
+measured `inference` p50 climbs 3.52 → 36.27 ms from depth 1 to 16 while
+throughput is flat (`findings-w2.md`, "In-flight depth"). Nothing on the device
+got slower; queue wait moved inside the timed region, because the timer wraps
+the call boundary and the call boundary is where requests wait. W1 finding 2
+reached the same conclusion from source resolution at +74%; depth makes it 10x.
 
 `dx_rt` exposes `get_latency()` and `get_npu_inference_time()` separately for
 exactly this reason. Doing the same here means recording submit time, device
@@ -98,25 +99,16 @@ The first question of the first session. `cuda` on sm_61, else DirectML, else
 the UHD 620. See [`README.md`](README.md) for the order and the fallback.
 
 ### The depth curve on a slow accelerator
-`run_sweep` carries over; the two stored knees do not — both are NPU. The
-transferable claim is that the knee sits where the slowest stage is: at 1080p it
-was decode and depth bought 1.19x; at 360p it was inference and depth bought
-1.73x, flat from 4. On the MX150 inference is slow, so the prediction is a 1080p
-curve saturating at depth 1-2 and a 360p curve still climbing past where the
-NPU's flattened. A curve that contradicts this is more interesting than one that
-confirms it.
+`run_sweep` carries over; the stored knees do not — every curve is NPU. The
+transferable claim is that **the in-flight limit only shapes the pipeline when it
+binds**: at 360p it bound and depth bought 1.69x with a knee at 4, while at
+1080p decode could never feed more than two outstanding requests and there was
+no knee at all. On the MX150 inference is slow, so the prediction is that the
+limit binds at both resolutions and 1080p acquires the knee it lacked here. A
+curve that contradicts that is the more interesting outcome.
 
-### `q_inflight` collapses after depth 1
-New, from the sweep, unverified. At 1080p it is 3.42 ms at depth 1 and 0.00 ms
-at every depth after. The expected mechanism is that with a single permit the
-submitter always waits for the previous completion, while from two permits
-onward there is normally one free. The explanation is plausible and has not been
-checked against the per-frame records.
-
-### `resident` at depth 1 is ~7 frames, not ~1
-New, from the sweep, unverified. Little's Law reports 6.99 frames resident at
-360p and 6.80 at 1080p with `inflight=1`. Three bounded queues of 4 sit between
-the stages, so frames resident in the *pipeline* should exceed requests in
-flight — but the arithmetic has not been reconciled against the queue depths,
-and W2 quotes 1.00 resident for the sequential pipeline, which is the number
-this one should be compared against rather than to `inflight`.
+### The 1080p sweep has not been re-run at fixed duration
+Carried from the pre-return list rather than resolved. If it is not done before
+the machine goes back, `findings-w2.md`'s 1080p section keeps resting on
+0.55-0.98 s of measurement per run, and the 360p re-run showed that duration was
+worth 5-10x in CV. Nothing on the new machine can repair it.
