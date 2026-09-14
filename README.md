@@ -99,8 +99,39 @@ openvino/NPU            3.05    3.42    5.32      1.39   1.98   2.14
    part and an unpinned thread pool. Pinning `--intra-threads` is the untested
    fix.
 
-Async has not been built yet: the ceiling is what overlap could reach, not what
-it does reach.
+### W2 — overlapped pipeline
+
+Paired measurement: sync and async alternate in one process sharing one
+session, and the ratio within each pair is reported. Full write-up in
+[`docs/findings-w2.md`](docs/findings-w2.md).
+
+| configuration | throughput | latency (E2E p50) | ratio CV |
+|---|---|---|---|
+| CPU, 4 threads pinned | **0.85x** | 12.9x worse | 6.2% |
+| CPU, threads unpinned | 1.37x | 7.9x worse | 23.8% |
+| **NPU (OpenVINO), 1080p** | **3.09x** | **0.83x better** | 6.5% |
+
+Every run in every configuration emitted all frames in submission order;
+`run_ab` refuses to report a speedup for any configuration that did not.
+
+**Overlap pays only when inference runs somewhere other than the host.**
+`session.run_async` executes on ONNX Runtime's intra-op pool — the pool that
+also does the computation — so on CPU in-flight requests do not add
+parallelism, they subdivide it: four requests on four threads make each
+inference ~4.5x slower and the pipeline loses to the sequential one. On the
+NPU inference is off the host, queue waits fall to ~0.05 ms, and throughput
+moves from one frame per sum of stages (1/19.4 ms = 52 FPS) to one frame per
+slowest stage (1/6.16 ms = 162 FPS, 176 measured). Little's Law confirms it
+independently: 1.00 frames resident sequentially, 3.13 overlapped.
+
+The latency improvement is **not** an overlap effect — overlap cannot shorten a
+frame's own service time. The stage times themselves fell (`read` 9.75 → 5.05
+ms for identical work), which is recorded as an open question rather than
+claimed as a pipeline result.
+
+With reordering disabled, 138 of 200 frames are emitted out of submission order
+while the frame count is exactly right — the defect DEEPX's `FrameReorderBuffer`
+prevents. Restoring order costs ~7 ms of mean latency and no throughput.
 
 ## Findings from reading DX-APP
 
