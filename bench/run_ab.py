@@ -41,6 +41,7 @@ def parse_args():
     p.add_argument("--ov-device", default=None)
     p.add_argument("--source", default=None)
     p.add_argument("--frames", type=int, default=300)
+    p.add_argument("--duration-s", type=float, default=0.0)
     p.add_argument("--warmup", type=int, default=100)
     p.add_argument("--top-k", type=int, default=5)
     p.add_argument("--intra-threads", type=int, default=None)
@@ -67,6 +68,7 @@ def _child_args(args) -> Namespace:
     """The subset of the arguments the two measure_once functions read."""
     return Namespace(
         source=args.source, frames=args.frames, warmup=args.warmup,
+        duration_s=args.duration_s,
         top_k=args.top_k, queue_size=args.queue_size, inflight=args.inflight,
         reorder=args.reorder, reorder_cap=args.reorder_cap,
         stall_every=args.stall_every, stall_ms=args.stall_ms,

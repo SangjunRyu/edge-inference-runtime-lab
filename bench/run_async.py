@@ -65,6 +65,9 @@ def parse_args():
     p.add_argument("--ov-device", default=None)
     p.add_argument("--source", default=None)
     p.add_argument("--frames", type=int, default=300)
+    p.add_argument("--duration-s", type=float, default=0.0,
+                   help="measure for this long instead of for a frame count; "
+                        "set --frames high enough not to run out first")
     p.add_argument("--warmup", type=int, default=100)
     p.add_argument("--top-k", type=int, default=5)
     p.add_argument("--intra-threads", type=int, default=None)
@@ -113,7 +116,16 @@ class AsyncPipeline:
         try:
             frames = source.frames()
             idx = 0
+            deadline = (time.perf_counter() + self.args.duration_s
+                        if getattr(self.args, "duration_s", 0) else None)
             while True:
+                # A fixed frame count measures for a different length of time
+                # at every throughput, so the fast points get less thermal
+                # exposure than the slow ones and the comparison is unfair.
+                # A deadline equalises that. (MLPerf's loadgen does the same:
+                # replay the samples, but require a minimum duration.)
+                if deadline is not None and time.perf_counter() >= deadline:
+                    break
                 # Time the pull, not the loop body: the generator decodes
                 # lazily, so timing anything after the frame is in hand
                 # measures nothing and reports read as 0.00 ms.
