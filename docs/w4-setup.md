@@ -29,46 +29,91 @@ already installed and already version-matched to the Python results. Nothing to
 download, and no chance of the C++ and Python sides running different OpenVINO
 builds.
 
-## What has to be installed
+## No Microsoft toolchain is needed, and phase 0 already passed
 
-| # | what | size | needed by | note |
-|---|---|---|---|---|
-| 1 | **MSVC Build Tools**, "Desktop development with C++" | ~3-6 GB | phase 0 | the actual gate; `cl` is not on this machine |
-| 2 | **CMake** | ~50 MB | phase 0 | not on this machine either |
-| 3 | **OpenCV 5.0.0 for Windows** (`opencv-5.0.0-windows.exe`) | 186 MB | phase 1 | self-extracting, prebuilt `opencv_world500.lib` |
-| 4 | `nlohmann/json.hpp` | 900 KB | phase 1 | single header, drop in `cpp/third_party/` |
+Installing MSVC on a company laptop is a policy question as much as a licensing
+one, and it turns out to be unnecessary. MSYS2 is already on this machine from
+earlier work, and its **UCRT64** environment already carries the toolchain:
 
-Full Visual Studio is not needed — Build Tools is the compiler without the IDE.
-`opencv-python` does **not** provide C++ headers, so item 3 is a real download
-even though Python already has OpenCV.
+```
+gcc    16.1.0   (MinGW-w64 UCRT64)   installed
+cmake   4.4.0                        installed
+ninja   1.13.2                       installed
+```
 
-Nothing here is built from source. That is deliberate: building ONNX Runtime or
-OpenCV would cost a day and buy nothing.
+GCC under MinGW is GPL-with-runtime-exception; nothing here is Microsoft's.
+
+### The risk that had to be tested first
+
+MinGW and MSVC do not share a C++ ABI, so **MSVC-built C++ libraries cannot be
+linked from GCC.** Every prebuilt library here -- OpenVINO, OpenCV's official
+Windows package, the ONNX Runtime zip -- is built with MSVC. That would normally
+end the idea.
+
+It does not, because OpenVINO ships a **C** API alongside the C++ one, and C has
+a stable ABI. `openvino_c.dll` and `openvino_c.lib` are both in the pip wheel,
+with headers under `include/openvino/c/`.
+
+Tested rather than assumed:
+
+```
+gcc -O2 -I<openvino>/include probe.c -o probe.exe     -L<openvino>/libs -l:openvino_c.dll
+
+OpenVINO 2025.4.1-20426-82bbf0292c5-releases/2025/4
+  OpenVINO Runtime
+devices: CPU GPU NPU
+```
+
+GCC links the MSVC-built import library, and all three devices enumerate.
+**Phase 0's success criterion is met on a toolchain with no Microsoft software
+in it.**
+
+Every call the port needs exists in the C API, including the two that matter
+most:
+
+| call | needed for |
+|---|---|
+| `ov_infer_request_start_async` + `ov_infer_request_set_callback` | the submit/collect split that makes W2 asynchronous rather than threaded |
+| `ov_tensor_create_from_host_ptr` | phase 3's input tensor over a reused buffer |
+| `ov_infer_request_wait`, `ov_infer_request_set_input_tensor`, `ov_core_compile_model` | the rest of the pipeline |
+
+### C API, and why that is not a consolation prize
+
+The C++ API would be less verbose, but wrapping a C API in RAII is itself the
+thing W4 set out to demonstrate: `std::unique_ptr` with custom deleters over
+`ov_core_t*`, `ov_compiled_model_t*`, `ov_infer_request_t*`, with ownership
+explicit at every boundary. It is also the portable choice -- the same source
+builds under MSVC on the 550XBE later, where the C++ API would not have built
+here at all.
+
+## What is still to install
+
+| what | download | installed | needed by |
+|---|---|---|---|
+| `mingw-w64-ucrt-x86_64-opencv` 4.13.0 | 20 MB | 166 MB | phase 1 (decode, resize) |
+| `mingw-w64-ucrt-x86_64-nlohmann-json` | 118 KB | 938 KB | phase 1 (the shared JSON schema) |
+
+```bash
+pacman -S mingw-w64-ucrt-x86_64-opencv mingw-w64-ucrt-x86_64-nlohmann-json
+```
+
+Both are permissive-licensed (Apache 2.0 and MIT) and built for the MinGW ABI,
+so the C++ linking problem above does not arise for them.
+
+**One caution, because this MSYS2 is used for other work.** MSYS2 does not
+support partial upgrades: if the package database is stale, `pacman -S` can pull
+libraries newer than the installed base and break the existing toolchain. Run
+`pacman -Syu` first, close the shell when it asks, and reopen before installing.
+That is the standard MSYS2 procedure and it is worth following on a machine
+whose GCC is already doing another job.
 
 ### Later, on the 550XBE only
 
 | what | why |
 |---|---|
-| ONNX Runtime `onnxruntime-win-x64-1.24.4.zip` (71 MB) | C++ headers + libs for the CPU provider |
-| `Microsoft.ML.OnnxRuntime.DirectML` NuGet 1.24.4 | the only prebuilt C++ path to the MX150 |
-
-## Which engine, and the honesty cost
-
-OpenVINO reaches Intel CPU, the Arc iGPU and the NPU — the gram's three
-backends — and it is already installed. ONNX Runtime reaches the CPU from its
-release zip and the MX150 through DirectML. Reaching the NPU *through ONNX
-Runtime* in C++ would need ORT built from source with the OpenVINO EP, which is
-exactly the day this setup is arranged to avoid.
-
-So: **OpenVINO C++ now, ONNX Runtime C++ added later**, behind one backend
-interface — the same shape `bench/backends.py` already has.
-
-The cost has to be stated. The Python GPU and NPU rows ran OpenVINO *as an ONNX
-Runtime execution provider*; native OpenVINO is a different code path, so C++
-against Python on those devices is not perfectly like-for-like. That is a
-measurable difference rather than a fatal one: `compare_backends` already shows
-OpenVINO-CPU and ORT-CPU agreeing to 2.6e-06, and the same tool can be pointed
-at the C++ build. Measure it; do not assume it away.
+| MSVC Build Tools + Visual Studio | the personal machine, where this concern does not apply |
+| ONNX Runtime `onnxruntime-win-x64-1.24.4.zip` (71 MB) | C++ headers and libs for the CPU provider |
+| `Microsoft.ML.OnnxRuntime.DirectML` NuGet 1.24.4 | the only prebuilt path to the MX150 |
 
 ## Order of work
 
