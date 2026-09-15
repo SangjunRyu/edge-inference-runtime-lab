@@ -238,7 +238,10 @@ def report(args, pairs: list, reanalysed: bool = False) -> int:
     # new is that the same figures over every pair are printed underneath, so
     # the cost of admissibility is visible and neither set is chosen after the
     # answer is known.
+    # Falling back to every pair when none is admissible is not the same
+    # thing as every pair being admissible, and the header has to say which.
     src = usable or pairs
+    fell_back = not usable
 
     w = 78
     print("\n" + "=" * w)
@@ -250,7 +253,10 @@ def report(args, pairs: list, reanalysed: bool = False) -> int:
                   else "cpp first in every pair" if orders == {True}
                   else "python first in every pair")
     print(f" {len(pairs)} PAIRS, alternating in one session, {order_note}"
-          + (f"  ({skipped} excluded for drift)" if skipped else ""))
+          + ("  (NO pair held steady within itself; reporting all"
+                          f" {len(pairs)} anyway)" if fell_back
+                             else f"  ({skipped} excluded for drift)" if skipped
+                             else ""))
     print("-" * w)
     print(f" {'stage':<13}{'cpp ms':>9}{'python ms':>11}{'cpp/python':>12}"
           f"{'per-pair range':>17}{'CV':>8}")
@@ -286,7 +292,8 @@ def report(args, pairs: list, reanalysed: bool = False) -> int:
 
     tp = tp_of(src)
     print("-" * w)
-    label = f"   {len(src)} steady pair(s)" if skipped else ""
+    label = ("" if fell_back
+             else f"   {len(src)} steady pair(s)" if skipped else "")
     if len(src) < 2:
         # One pair has no spread, so its CV is 0.0 and every steadiness test
         # passes trivially -- the same trap run_ab had. Report the observation
@@ -297,7 +304,7 @@ def report(args, pairs: list, reanalysed: bool = False) -> int:
         print(f" throughput    cpp/python x{tp['mean']:.2f}  "
               f"(min {tp['min']:.2f}, max {tp['max']:.2f},"
               f" CV {100 * tp['cv']:.1f}%){label}")
-    if skipped:
+    if skipped and not fell_back:
         # What admissibility removed, so its cost is on the page rather than in
         # a decision no one can see.
         t2 = tp_of(pairs)
