@@ -410,20 +410,153 @@ that held. Those are broken runs, not warm ones. The rule stayed, and the
 figures over every pair are now printed beneath the admissible ones so the cost
 of admissibility is on the page instead of in a decision nobody can see.
 
+## Closing W4: phase 3 re-read, and an experiment that answers itself
+
+Two things were left open. `compare_variants` had the same two faults the
+sequential comparison found -- it ran A first in every pair and judged its
+control by level rather than spread -- so phase 3's numbers were read under
+criteria since retracted. And `--fused` had only ever been measured in the
+sequential runner.
+
+Both are closed now. Neither closed the way it was expected to.
+
+### Phase 3 does not survive the corrected criteria
+
+The corrections were carried across and `--reanalyse` applied them to the pairs
+already on disk, at no cost in machine time:
+
+| run | what it claimed | control | control CV | verdict |
+|---|---|---|---|---|
+| `--fused` | preprocess 0.61x | `inference` | **35%** | fails |
+| `--reuse-tensor` | inference 0.98x | `read` | **15%** | fails |
+
+Under the old criterion -- is the control's *level* near 1.00? -- both passed,
+at 1.09 and 0.98. Under the corrected one both controls move further than the
+bar allows, which means the pairing did not cancel the machine and every row
+carries that movement as well as the flag. **The level was fine and the spread
+was not**, which is exactly the failure the sequential comparison was rebuilt
+to catch after being fooled by it once.
+
+The effect on the two conclusions is not symmetrical:
+
+* **`--reuse-tensor` "not supported" survives, and strengthens.** It was
+  already a 2% effect against a 25% spread. The control now adds that the run
+  could not have detected a real effect either. An absence of evidence is
+  exactly what a run of that quality is entitled to report.
+* **`--fused` 0.61x loses its support.** The direction still rests on two
+  independent measurements (0.61 and 0.40) and on the mechanism -- one pass
+  over the resized image instead of five, which cannot be slower -- but the run
+  that produced the number no longer clears the bar.
+
+A counterbalanced re-measurement was run to replace it. **It failed harder**:
+six pairs at 1080p, control at CV 49%, per-run throughput swinging from 107 to
+370 FPS inside one session. After a day of measuring, the laptop could no
+longer support a 1080p paired comparison. That is the honest description, and
+it is preferable to a number quoted from it.
+
+### The async question answers itself, exactly
+
+`--fused` in the overlapped runner was meant to ask whether removing host work
+from the critical path raises throughput. It turns out not to need a
+measurement at all.
+
+In a **sequential** runner a frame costs the *sum* of its stages, so any stage
+that gets cheaper makes the frame cheaper. In a **pipelined** runner the
+steady-state rate is set by the *slowest* stage; the others run concurrently
+and their savings have nowhere to go. That is Amdahl's law in the form a
+pipeline actually takes, and it turns the question into arithmetic on a table
+that already exists.
+
+Service time per frame at each stage -- the stage's own time divided by how
+many servers it has -- on the NPU at 360p, four in flight, one collector, taken
+from the GIL run whose per-stage CVs were 1-6%:
+
+```
+read          0.376 ms       one reader thread
+preprocess    0.410 ms       one worker
+inference    15.716 / 4  =   3.929 ms    four in flight
+postprocess   0.018 ms       one collector
+                             bottleneck: inference, ceiling 255 FPS
+```
+
+Preprocessing is **10% of the bottleneck**. Halving it leaves the bottleneck
+exactly where it was:
+
+> **best possible throughput gain: x1.0000.**
+
+Not "about one", not "within noise". Preprocessing would have to grow **9.6x**
+before halving it could buy a single frame per second.
+
+At 1080p, where host work is much larger, the answer is the same for a more
+interesting reason:
+
+```
+read          1.208 ms
+preprocess    0.609 ms
+inference     4.935 / 4  =   1.234 ms
+```
+
+Read and inference land **within 2% of each other**: the pipeline is
+decode-bound and device-bound at once. Preprocessing reaches 49% of the
+bottleneck here -- far closer than at 360p -- and still does not bind, so the
+gain is again **x1.0000**. What would help at 1080p is a second decoder thread.
+That is a different experiment, and a better one.
+
+The conclusion is robust in the safe direction. Dividing inference by the
+in-flight count assumes the device really delivers four-way concurrency; if it
+delivers less, the inference service time is *larger* and preprocessing is even
+further from binding. The ceiling is an upper bound the stage table permits,
+not a prediction -- measured throughput sits below it -- but the *gain* is
+what is being computed, and it does not depend on reaching the ceiling.
+
+| cell | preprocess as a share of the bottleneck | best possible gain from 0.56x preprocess |
+|---|---|---|
+| sequential, 360p | 2.5% of the **sum** | x1.011 |
+| sequential, 1080p | 9.0% of the **sum** | x1.041 |
+| overlapped, 360p | 10% of the **max** | **x1.0000** |
+| overlapped, 1080p | 49% of the **max** | **x1.0000** |
+
+So the measurements run to answer this could not have answered it. Their
+throughput ratios came back at CV 38% and 41%, for an effect whose true size is
+**zero**. This experiment was not underpowered by a little.
+
+### What that is worth
+
+This is the sharpest thing W4 produced, and it is the GIL result arriving from
+the other side.
+
+> **A host-side optimisation that is real sequentially can be provably
+> worthless once the pipeline overlaps -- and the stage table says so before
+> anything is measured.**
+
+Python's orchestration costs 25% sequentially and 4% overlapped. Fused
+preprocessing is worth 4.1% sequentially and exactly 0% overlapped. Both are the
+same fact: **overlap does not make host work cheaper, it makes host work stop
+counting**, and a stage that is off the critical path has no cost to save.
+
+It also changes what the fused path is *for*. It is not a throughput
+optimisation in this pipeline and cannot be made into one by measuring it
+better. It is a latency and memory-traffic optimisation -- it removes three
+intermediate buffers and roughly 1.8 MB per frame of host memory traffic -- and
+those are terms [W5](w5-plan.md) is built to report, where they are counted
+rather than raced for.
+
+The cheapest lesson is the practical one. **Compute the ceiling from the stage
+table before spending an hour of machine time.** Both fused measurements cost
+about an hour each; one line of arithmetic on data already sitting in
+`results/` would have said in advance that one of them had nothing to find.
+
 ## Still to do
 
-- **Everything above, on a machine that holds still.** Every pair in every
-  phase-3 run drifted out of the 0.95-1.05 band after hours of measurement.
-  Stage ratios survive that far better than rates do, which is why they are
-  what gets quoted, but the fused preprocess deserves a tight number and does
-  not have one.
-- **The fused path in the async runner.** `--fused` is wired through both, but
-  only the sequential one has been measured with it.
-- **`compare_variants` has the same two faults.** It forms its ratios inside
-  pairs already, but it runs A before B in every pair and judges its control by
-  level rather than spread. Phase 3's numbers were read under both, so they
-  deserve a re-read once the fixes are carried across -- and re-reading is free
-  now, which is the point of `--reanalyse`.
+- **A machine that holds still.** Every pair in every phase-3 run, original
+  and re-measured, left the 0.95-1.05 band. Stage ratios survive that far
+  better than rates do, which is why they are what gets quoted.
+- **A tight number for the fused preprocess**, which it still does not have.
+  The direction is not in doubt; the size needs a steady machine, and the
+  ceiling calculation above says to measure it as memory traffic and latency
+  rather than throughput, because throughput cannot move.
+- **A second decoder thread at 1080p**, which the same calculation says is the
+  optimisation that would actually bind there.
 - **The OpenVINO EP's 10-16%.** The control's level says ONNX Runtime's
   provider costs that much over the C API per inference on this path. It is
   reproducible across three runs and entirely unattributed: it could be the
