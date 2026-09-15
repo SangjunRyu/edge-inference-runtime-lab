@@ -36,7 +36,14 @@ STAGES = ("read", "preprocess", "inference", "postprocess")
 
 def parse_args():
     p = argparse.ArgumentParser(description="paired C++ variant comparison")
-    p.add_argument("--cpp", default="cpp/build/run_sync_cpp.exe")
+    p.add_argument("--cpp", default="cpp/build/run_sync_cpp.exe",
+                   help="binary for the A side")
+    p.add_argument("--cpp-b", default=None,
+                   help="binary for the B side; defaults to --cpp. Giving a "
+                        "different one pairs two programs rather than two flag "
+                        "sets -- which is how the sequential and overlapped "
+                        "runners get compared without the drift that made "
+                        "their separate runs incomparable.")
     p.add_argument("--model", required=True)
     p.add_argument("--device", default="CPU")
     p.add_argument("--source", default=None)
@@ -52,7 +59,11 @@ def parse_args():
                         'e.g. --variant "--fused"')
     p.add_argument("--control-stage", default=None,
                    help="stage neither side should change; default is picked "
-                        "from the variant flags")
+                        "from the variant flags. Pass 'none' when no stage "
+                        "qualifies -- comparing the sequential and overlapped "
+                        "runners changes every host stage by construction, and "
+                        "a control that the comparison itself moves reports "
+                        "drift that is not there.")
     p.add_argument("--pairs", type=int, default=4)
     p.add_argument("--cooldown", type=float, default=15.0)
     p.add_argument("--tag", default="variant")
@@ -60,9 +71,9 @@ def parse_args():
     return p.parse_args()
 
 
-def run_cpp(args, extra: list[str], tmpdir: str) -> dict:
+def run_cpp(args, extra: list[str], tmpdir: str, exe_path: str = None) -> dict:
     tag = "_var"
-    exe = str(Path(args.cpp).resolve())
+    exe = str(Path(exe_path or args.cpp).resolve())
     cmd = [exe, "--model", str(Path(args.model).resolve()),
            "--device", args.device, "--frames", str(args.frames),
            "--duration-s", str(args.duration_s), "--warmup-s", str(args.warmup_s),
@@ -93,8 +104,8 @@ def main() -> int:
 
     args.baseline = args.baseline.split()
     args.variant = args.variant.split()
-    if not args.variant:
-        print("--variant must name at least one flag")
+    if not args.variant and not args.cpp_b:
+        print("--variant must name at least one flag, or --cpp-b a binary")
         return 1
 
     control = args.control_stage
@@ -103,20 +114,20 @@ def main() -> int:
         # that touches the inference call must leave decoding alone.
         control = "inference" if "--fused" in args.variant else "read"
 
-    print(f"{Path(args.model).name} | {args.device} | "
-          f"A: {' '.join(args.baseline) or '(none)'} | "
-          f"B: {' '.join(args.variant)} | {args.pairs} pairs")
+    print(f"{Path(args.model).name} | {args.device} | {args.pairs} pairs")
+    print(f"  A: {Path(args.cpp).name} {' '.join(args.baseline)}")
+    print(f"  B: {Path(args.cpp_b or args.cpp).name} {' '.join(args.variant)}")
     print(f"  control stage: {control} (neither side should change it)")
 
     tmpdir = tempfile.mkdtemp(prefix="var_")
     pairs = []
     for i in range(max(1, args.pairs)):
         print(f"\n--- pair {i + 1}/{args.pairs} ---")
-        a = run_cpp(args, args.baseline, tmpdir)
+        a = run_cpp(args, args.baseline, tmpdir, args.cpp)
         print(f"  A  {a['throughput_fps']:7.2f} FPS  E2E p50 {a['e2e_ms']['p50']:6.3f}"
               f"  drift {a['drift']['ratio']:.2f}x")
         noise.cooldown(args.cooldown, verbose=False)
-        b = run_cpp(args, args.variant, tmpdir)
+        b = run_cpp(args, args.variant, tmpdir, args.cpp_b or args.cpp)
         print(f"  B  {b['throughput_fps']:7.2f} FPS  E2E p50 {b['e2e_ms']['p50']:6.3f}"
               f"  drift {b['drift']['ratio']:.2f}x")
         noise.cooldown(args.cooldown, verbose=False)
@@ -160,8 +171,15 @@ def main() -> int:
               f"CV {100 * tp['cv']:.1f}%)")
 
     # The control: a flag that should not touch this stage had better not.
+    if control == "none":
+        print(" No control stage: this comparison changes every host stage by")
+        print(" construction, so nothing here is untouched by the effect being")
+        print(" measured. Read the ratios as the design difference plus"
+              " whatever")
+        print(" drift the pairing did not cancel, and weigh them by the"
+              " per-pair CV.")
     c = ratios.get(control)
-    if c:
+    if c and control != "none":
         drift_left = abs(c["mean"] - 1.0)
         print(f" control       {control} B/A x{c['mean']:.2f}"
               f"  <- neither side changes this")

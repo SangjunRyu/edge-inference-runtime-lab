@@ -10,11 +10,24 @@ that was still warming up.
 
 What this is for, in order:
 
-1. **Cross-validation.** If the two implementations disagree about the *shape*
-   of a frame -- the stage shares -- that is a finding about the
-   instrumentation, and it matters more than either set of numbers.
+1. **Cross-validation.** In sync mode the control is `inference`: the same
+   model on the same silicon, which neither implementation performs, so the two
+   must agree there or one of them is mistiming and nothing else means
+   anything.
 2. **Phase 3.** Every C++ optimisation is measured against Python and against
    the previous C++ build with this, not against a number from yesterday.
+3. **The GIL.** `--mode async` runs both overlapped pipelines. W2 attributed
+   the CPU async loss to ONNX Runtime subdividing its intra-op pool between
+   concurrent requests, but Python's own orchestration overhead was never
+   separated from it -- the same pipeline in C++ on the same device is what
+   separates them.
+
+   The comparison is only fair if the structures match, so async mode pins the
+   C++ side to **one** postprocess collector: Python's async runner has a
+   single postprocess worker, and C++ with four would be measuring a different
+   design rather than a different language. The control in async mode is `read`
+   -- both decode the same clip with the same OpenCV, and neither pipeline's
+   concurrency changes what a decode costs.
 
     python -m bench.compare_impl --cpp cpp/build/run_sync_cpp.exe \\
         --model models/resnet50_224.onnx --device NPU \\
@@ -32,7 +45,7 @@ import tempfile
 from argparse import Namespace
 from pathlib import Path
 
-from bench import env_fingerprint, noise, run_sync
+from bench import env_fingerprint, noise, run_async, run_sync
 from bench.backends import OnnxBackend
 
 STAGES = ("read", "preprocess", "inference", "postprocess")
@@ -40,7 +53,15 @@ STAGES = ("read", "preprocess", "inference", "postprocess")
 
 def parse_args():
     p = argparse.ArgumentParser(description="paired C++ vs Python comparison")
-    p.add_argument("--cpp", default="cpp/build/run_sync_cpp.exe")
+    p.add_argument("--mode", choices=("sync", "async"), default="sync")
+    p.add_argument("--cpp", default=None,
+                   help="C++ binary; defaults to the one matching --mode")
+    p.add_argument("--inflight", type=int, default=4, help="async mode only")
+    p.add_argument("--queue-size", type=int, default=4, help="async mode only")
+    p.add_argument("--post-workers", type=int, default=1,
+                   help="async mode only; 1 matches Python's single "
+                        "postprocess worker, which is what makes the "
+                        "comparison about the language rather than the design")
     p.add_argument("--model", required=True)
     p.add_argument("--device", default="CPU", help="OpenVINO device: CPU|GPU|NPU")
     p.add_argument("--source", default=None)
@@ -72,6 +93,11 @@ def run_cpp(args, tmpdir: str) -> dict:
         cmd += ["--source", str(Path(args.source).resolve())]
     if args.fused:
         cmd += ["--fused"]
+    if args.mode == "async":
+        cmd += ["--inflight", str(args.inflight),
+                "--queue-size", str(args.queue_size),
+                "--post-workers", str(args.post_workers),
+                "--reorder", "on"]
 
     # The executable links OpenCV and the OpenVINO runtime; neither is on PATH
     # for a process started outside the MSYS2 shell, and the loader's failure
@@ -96,7 +122,14 @@ def run_cpp(args, tmpdir: str) -> dict:
 def run_python(args, backend, height: int, width: int) -> dict:
     ca = Namespace(source=args.source, frames=args.frames, warmup=0,
                    warmup_s=args.warmup_s, duration_s=args.duration_s,
-                   top_k=args.top_k)
+                   top_k=args.top_k, queue_size=args.queue_size,
+                   inflight=args.inflight, reorder="on", reorder_cap=None,
+                   stall_every=0, stall_ms=0.0, stall_timeout_s=30.0)
+    if args.mode == "async":
+        rec, _src, info = run_async.measure_once(backend, ca, height, width)
+        r = rec.result()
+        r.update({k: info[k] for k in ("order", "reorder", "errors", "stalls")})
+        return r
     rec, _src, order = run_sync.measure_once(backend, ca, height, width)
     r = rec.result()
     r["order"] = order
@@ -105,6 +138,9 @@ def run_python(args, backend, height: int, width: int) -> dict:
 
 def main() -> int:
     args = parse_args()
+    if args.cpp is None:
+        args.cpp = ("cpp/build/run_async_cpp.exe" if args.mode == "async"
+                    else "cpp/build/run_sync_cpp.exe")
     if not Path(args.cpp).exists():
         print(f"C++ binary not found: {args.cpp}\n"
               f"  cd cpp && cmake -S . -B build -G Ninja && cmake --build build")
@@ -112,8 +148,12 @@ def main() -> int:
 
     backend = OnnxBackend(args.model, "openvino", None, args.device)
     height, width = backend.hw
-    print(f"{Path(args.model).name} | openvino/{args.device} | "
+    print(f"{Path(args.model).name} | openvino/{args.device} | {args.mode} | "
           f"{args.duration_s:.0f}s per run | {args.pairs} pairs")
+    if args.mode == "async":
+        print(f"  in flight {args.inflight}, queue {args.queue_size}, "
+              f"{args.post_workers} collector(s) on the C++ side to match "
+              f"Python's one")
     print("  note: the Python side reaches the device through ONNX Runtime's "
           "OpenVINO\n        provider, the C++ side through OpenVINO directly. "
           "Different code\n        paths to the same silicon, not the same one "
@@ -192,27 +232,54 @@ def main() -> int:
     # only difference is the few microseconds of binding around the call. If
     # that disagrees, one of the two is mistiming, and no speed number above
     # means anything.
-    inf_ratio = ratios["inference"]
-    print(f" inference    cpp/python x{inf_ratio:.2f}"
-          f"  <- same model, same device: this is the cross-validation")
-    if inf_ratio < 0.85 or inf_ratio > 1.18:
-        print(" <-- CHECK: the two disagree about the one stage neither of them")
-        print("     performs. That is an instrumentation finding and it outranks")
-        print("     the speed numbers above.")
+    if args.mode == "sync":
+        # The control is `inference`: the same model on the same silicon,
+        # performed by neither implementation, so the two must agree there or
+        # one of them is mistiming and nothing else means anything.
+        c_ratio = ratios["inference"]
+        print(f" inference    cpp/python x{c_ratio:.2f}"
+              f"  <- the control: neither implementation performs this")
+        if c_ratio < 0.85 or c_ratio > 1.18:
+            print(" <-- CHECK: the two disagree about the one stage neither of")
+            print("     them performs. That is an instrumentation finding and it")
+            print("     outranks the speed numbers above.")
+        else:
+            print(" The control held, so the differences elsewhere are the")
+            print(" implementations rather than the timers.")
     else:
-        print(" The two agree on the stage neither of them performs, so the")
-        print(" differences elsewhere are the implementations, not the timers.")
+        # There is no control in async mode, and saying so is better than
+        # choosing a bad one. `read` was tried and came out at 0.44x: the
+        # Python reader decodes while three other Python threads contend for
+        # the interpreter lock, so the stage that "neither implementation
+        # changes" is changed by precisely the effect under test. The GIL
+        # reaches every host stage; that is what makes it worth measuring and
+        # what leaves nothing to hold still.
+        print(" No control stage in async mode. The interpreter lock reaches"
+              " every host")
+        print(" stage, so nothing here is untouched by the effect being"
+              " measured -- `read`")
+        print(" was tried and moved 0.44x. The timers were validated in sync"
+              " mode instead,")
+        print(" where `inference` agreed to 2%.")
+        print(f"\n This ratio is the GIL measurement. W2 attributed the CPU"
+              f" async loss to")
+        print(f" ONNX Runtime subdividing its intra-op pool between concurrent"
+              f" requests;")
+        print(f" what it could not separate was Python's own orchestration."
+              f" The same")
+        print(f" pipeline in C++ on this device runs at x{tp['mean']:.2f} of it.")
+
     if len(src) >= 2 and tp["cv"] > 0.10:
         print(f" WEAK: the per-pair ratios vary by {100 * tp['cv']:.0f}%;"
               f" quote the range, not the mean.")
     print("=" * w)
 
-    meta = {"tag": args.tag, "mode": "impl", "args": vars(args),
+    meta = {"tag": args.tag, "mode": f"impl-{args.mode}", "args": vars(args),
             "cpp_binary": str(Path(args.cpp).resolve()),
             "pairs_excluded_for_drift": skipped,
             "env": env_fingerprint.collect()}
     out = (Path(args.out_dir) /
-           f"{args.tag}__impl__openvino-{args.device.lower()}"
+           f"{args.tag}__impl{args.mode}__openvino-{args.device.lower()}"
            f"__{Path(args.model).stem}"
            f"__{Path(args.source).stem if args.source else 'synthetic'}.json")
     out.parent.mkdir(parents=True, exist_ok=True)

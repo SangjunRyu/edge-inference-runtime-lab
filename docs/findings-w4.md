@@ -218,6 +218,75 @@ frames of 479 are emitted out of order with the count perfectly correct.
 which is why `FrameReorderBuffer` exists: the buffer is the price of
 postprocessing concurrently, not an accident of their design.
 
+## The GIL, separated at last
+
+W2 attributed the CPU async loss to ONNX Runtime subdividing its intra-op pool
+between concurrent requests, and said plainly that Python's own orchestration
+had never been separated from it. `compare_impl --mode async` runs both
+overlapped pipelines alternately in one session, which separates them.
+
+NPU, 360p, in flight 4, 8 s per run, 4 pairs, 90 s cooldown:
+
+| stage | cpp ms | python ms | cpp/python |
+|---|---|---|---|
+| read | 0.376 | 0.341 | 1.10 |
+| preprocess | 0.410 | 0.899 | **0.46** |
+| inference | 15.716 | 16.893 | 0.93 |
+| postprocess | 0.018 | 0.183 | **0.10** |
+
+```
+throughput  cpp/python  x1.04   (min 1.00, max 1.09, CV 5.8%)
+```
+
+**Python's orchestration costs 4%.** The host stages are two to ten times
+faster in C++ -- preprocessing 2.2x, postprocessing 10x -- and it buys four
+percent of throughput, because inference is 77% of the C++ frame and the device
+does not care which language asked.
+
+So **W2's attribution survives.** The CPU async loss was ONNX Runtime splitting
+its thread pool, not the interpreter lock. That mattered to check: "Python is
+slow" is the explanation everyone reaches for, and here it would have been
+wrong.
+
+The comparison is only about the language because the structures were matched:
+the C++ side runs **one** collector, since Python's async runner has a single
+postprocess worker and C++ with four would have measured a different design.
+
+### Async mode has no control stage, and says so
+
+Sync mode validates the timers on `inference` -- the same model on the same
+silicon, performed by neither implementation, agreeing to 2%. Async mode has no
+equivalent. `read` was tried and came out at 0.44x: the Python reader decodes
+while three other Python threads contend for the interpreter lock, so the stage
+that "neither implementation changes" is changed by exactly the effect under
+test. The interpreter lock reaches every host stage; that is what makes it
+worth measuring and what leaves nothing to hold still. The tool reports the
+absence rather than picking a control it would then have to explain away.
+
+## C++ sequential against C++ overlapped
+
+Phase 2 quoted 142 FPS and 169 FPS from separate runs, which on this machine is
+not a comparison. Paired, NPU, 360p, in flight 4, one collector:
+
+```
+throughput  async/sync  x1.32   (min 1.14, max 1.65, CV 17.4%)
+```
+
+Consistent with the Python result in the same configuration (1.44x at 360p on
+the NPU), and with W1's overlap ceiling for that cell (1.39x).
+
+`read` came out at 0.83x in the overlapped runner -- the same direction as the
+9.75 to 5.05 ms drop W2 recorded in Python and left unexplained, though much
+smaller here. It is a second data point for that open question rather than an
+answer to it.
+
+The control check does not apply to this pairing and is switched off by
+`--control-stage none`. Comparing a sequential runner with an overlapped one
+changes every host stage by construction: a dedicated reader thread decodes
+continuously where an inline one decodes between inferences. A control that the
+comparison itself moves reports drift that is not there, which is what the
+first run of this did at `read` 0.83x.
+
 ## Still to do
 
 - **Everything above, on a machine that holds still.** Every pair in every
@@ -225,7 +294,5 @@ postprocessing concurrently, not an accident of their design.
   Stage ratios survive that far better than rates do, which is why they are
   what gets quoted, but the fused preprocess deserves a tight number and does
   not have one.
-- **The paired C++/Python async comparison**, which is the GIL measurement W2
-  could not separate from ONNX Runtime's thread-pool subdivision.
 - **The fused path in the async runner.** `--fused` is wired through both, but
   only the sequential one has been measured with it.
