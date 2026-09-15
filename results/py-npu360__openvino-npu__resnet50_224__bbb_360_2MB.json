@@ -1,0 +1,146 @@
+{
+  "meta": {
+    "tag": "py-npu360",
+    "args": {
+      "model": "models/resnet50_224.onnx",
+      "backend": "openvino",
+      "ov_device": "NPU",
+      "source": "clips/bbb_360_2MB.mp4",
+      "frames": 40000,
+      "duration_s": 10.0,
+      "warmup_s": 2.0,
+      "warmup": 20,
+      "top_k": 5,
+      "intra_threads": null,
+      "repeat": 1,
+      "cooldown": 0.0,
+      "max_busy_pct": 15.0,
+      "no_idle_gate": true,
+      "allow_fallback": false,
+      "tag": "py-npu360",
+      "out_dir": "results"
+    },
+    "backend": {
+      "requested_backend": "openvino",
+      "openvino_device": "NPU",
+      "actual_providers": [
+        "OpenVINOExecutionProvider",
+        "CPUExecutionProvider"
+      ],
+      "fell_back_to_cpu": false,
+      "input_shape": [
+        "1",
+        "3",
+        "224",
+        "224"
+      ]
+    },
+    "sources": [
+      {
+        "kind": "video",
+        "path": "clips/bbb_360_2MB.mp4",
+        "frame_count": 300,
+        "fps": 30.0,
+        "width": 640,
+        "height": 360,
+        "restarts": 3
+      }
+    ],
+    "model_input_hw": [
+      224,
+      224
+    ],
+    "idle_gate": {
+      "checked": false,
+      "reason": "disabled"
+    },
+    "env": {
+      "timestamp_utc": "2026-09-15T02:39:58+00:00",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "python": "3.13.14",
+      "cpu_name": "Intel(R) Core(TM) Ultra 7 255H",
+      "cpu_count_logical": 16,
+      "gpus_nvidia_smi": [],
+      "ram_total_gb": 31.5,
+      "cpu_freq_mhz_at_start": 2000.0,
+      "onnxruntime_version": "1.24.1",
+      "onnxruntime_available_providers": [
+        "OpenVINOExecutionProvider",
+        "CPUExecutionProvider"
+      ],
+      "opencv_version": "5.0.0"
+    }
+  },
+  "runs": [
+    {
+      "frames_counted": 928,
+      "frames_warmup_discarded": 241,
+      "warmup_seconds": 2.0,
+      "stages_ms": {
+        "read": {
+          "mean": 0.572916917290372,
+          "mean_trim10": 0.5143649874163492,
+          "p50": 0.5060499970568344,
+          "p95": 0.6866399897262454,
+          "max": 20.113099977606907
+        },
+        "preprocess": {
+          "mean": 0.9743698278255359,
+          "mean_trim10": 0.9613799762689315,
+          "p50": 0.9482500026933849,
+          "p95": 1.2069650038029067,
+          "max": 2.244500006781891
+        },
+        "inference": {
+          "mean": 6.85107403017449,
+          "mean_trim10": 6.860883572941191,
+          "p50": 6.967049994273111,
+          "p95": 7.195175014203414,
+          "max": 8.71329999063164
+        },
+        "postprocess": {
+          "mean": 0.14020506528297497,
+          "mean_trim10": 0.13837206315045966,
+          "p50": 0.13679999392479658,
+          "p95": 0.18901501316577193,
+          "max": 0.32890000147745013
+        }
+      },
+      "e2e_ms": {
+        "mean": 8.549853771753611,
+        "mean_trim10": 8.492535012282824,
+        "p50": 8.564050003769808,
+        "p95": 9.164599994255695,
+        "max": 28.732999984640628
+      },
+      "stage_sum_mean_ms": 8.538565840573373,
+      "service_sum_mean_ms": 8.538565840573373,
+      "wait_sum_mean_ms": 0,
+      "wait_stages": [],
+      "unaccounted_mean_ms": 0.011287931180238076,
+      "throughput_fps": 116.79122570577067,
+      "throughput_implied_by_e2e_fps": 116.96106467969402,
+      "concurrency_littles_law": 0.9985479016082106,
+      "pipelined": false,
+      "bottleneck_stage": "inference",
+      "overlap_ceiling_x": 1.246310549698717,
+      "bottleneck_p95_over_p50": 1.032743416527486,
+      "drift": {
+        "first_decile_ms": 9.103549998974854,
+        "last_decile_ms": 8.66408478348445,
+        "ratio": 0.9517259513552524
+      },
+      "cpu_freq_mhz": {
+        "before": 2000.0,
+        "after": 2000.0
+      },
+      "order": {
+        "emitted": 1169,
+        "order_violations": 0,
+        "first_violation_at_frame": null,
+        "in_submission_order": true
+      }
+    }
+  ],
+  "across_runs": null
+}
