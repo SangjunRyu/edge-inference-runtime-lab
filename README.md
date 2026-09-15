@@ -25,9 +25,16 @@ that reported the speedup, so the checks were built into W2.
 what was answered. The gap it identified -- nothing verified that the async
 pipeline produced the same *predictions*, only that it emitted them in the
 right order -- is now closed by `bench/verify_equivalence.py`: bit-identical
-top-5 across 300 frames at every depth tested, with a self-test proving the
-check can detect a fault and a sensitivity figure stating how much of the
-pairing it actually covers. W4 is planned in [`docs/w4-plan.md`](docs/w4-plan.md).
+top-5 across 300 frames at every depth tested, on CPU, Arc iGPU and NPU alike,
+with a self-test proving the check can detect a fault and a sensitivity figure
+stating how much of the pairing it actually covers.
+
+`bench/compare_backends.py` asks the neighbouring question — whether the
+backends agree with *each other*. OpenVINO's CPU kernels match ONNX Runtime's
+exactly; the two accelerators each flip the same two frames of 300, both at a
+margin of 0.0003 against a numerical spread of 0.004-0.006. They broke a tie
+differently rather than disagreeing about the image, and these FP32 numbers are
+the floor any later quantisation work would have to beat. W4 is planned in [`docs/w4-plan.md`](docs/w4-plan.md).
 
 ## The hypothesis under test
 

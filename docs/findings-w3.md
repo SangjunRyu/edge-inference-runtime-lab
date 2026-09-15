@@ -75,15 +75,18 @@ compares top-k per frame index. It reads results out of the **real** runners --
 now accept -- because a second implementation written for the test could not
 contain the bug the test is looking for.
 
-CPU, 360p, 300 frames, top-5, tolerance 1e-4:
+360p, 300 frames, top-5, tolerance 1e-4, in-flight 1 / 4 / 16 on each backend:
 
-| in flight | compared | missing | extra | top-1 mismatches | top-k order | max prob delta |
+| backend | compared | missing | extra | top-1 mismatches | top-k order | max prob delta |
 |---|---|---|---|---|---|---|
-| 1 | 300 | 0 | 0 | 0 | 0 | 0.00e+00 |
-| 4 | 300 | 0 | 0 | 0 | 0 | 0.00e+00 |
-| 16 | 300 | 0 | 0 | 0 | 0 | 0.00e+00 |
+| ORT CPU | 300 | 0 | 0 | 0 | 0 | 0.00e+00 |
+| OpenVINO / Arc iGPU | 300 | 0 | 0 | 0 | 0 | 0.00e+00 |
+| OpenVINO / NPU | 300 | 0 | 0 | 0 | 0 | 0.00e+00 |
 
-Bit-identical, not merely within tolerance. That is the expected result today:
+Every depth on every backend: bit-identical, not merely within tolerance.
+Running it on the accelerators mattered -- a device with its own memory and an
+asynchronous submission path has more ways to pair a result with the wrong
+frame than a CPU does. That is the expected result today:
 `preprocess` allocates a fresh array per frame, so there is no shared buffer for
 a later frame to mutate. The check exists for what comes next.
 
@@ -115,12 +118,53 @@ that and prints it: on this clip, **176 distinct top-k sets across 300 frames,
 would pass while covering much less, and it now says so instead of letting the
 green imply more than it checked.
 
+## The backends do not quite agree with each other
+
+A different question, and one the sensitivity figures raised: the three
+backends produced 176 / 174 / 175 distinct top-k sets over the same 300 frames,
+so they are not all answering identically. `bench/compare_backends.py` runs the
+same sequential pipeline on each and compares against ONNX Runtime's CPU:
+
+| backend | top-1 differs | top-k order | max prob delta |
+|---|---|---|---|
+| OpenVINO / CPU | **0** | **0** | 2.58e-06 |
+| OpenVINO / Arc iGPU | 2 / 300 | 12 / 300 | 5.99e-03 |
+| OpenVINO / NPU | 2 / 300 | 12 / 300 | 3.95e-03 |
+
+Two things follow.
+
+**A change of engine on the same device changes nothing.** OpenVINO's CPU
+kernels agree with ONNX Runtime's exactly, to 2.6e-06. The 1.46x speed
+difference between them, measured in W1, buys no accuracy either way.
+
+**The accelerators flip two frames, and both flip the same two.** Frames 134
+and 253, on both the GPU and the NPU:
+
+```
+frame 134: CPU chose 672 (p=0.0706) over 958 (p=0.0704), margin 0.00027
+frame 253: CPU chose 672 (p=0.0487) over  84 (p=0.0484), margin 0.00033
+```
+
+The largest margin either decision was won by is **0.00033**, against a
+numerical spread between the implementations of **0.004-0.006** -- more than an
+order of magnitude larger. The accelerators did not disagree about the image;
+they broke a tie differently, and no implementation has a claim to being right
+about a 0.0003 gap.
+
+Reporting "2 of 300 frames differ" without the margin would overstate this
+considerably. The models are FP32 and no quantisation is involved, so this is
+kernel selection and accumulation order: **the floor under any later accuracy
+work, not a result about it.** It is the measurement a quantisation effort would
+have to beat before its own numbers meant anything.
+
 ## Where W3 lives now
 
 - Ordering evidence and the reorder trade-off: `docs/findings-w2.md`
 - `bench/reorder.py` — `ReorderBuffer`, `OrderChecker`
 - `bench/verify_equivalence.py` — value equivalence, its self-test, its
   sensitivity figure
+- `bench/compare_backends.py` — cross-backend agreement, reported against the
+  margin each disagreement happened at
 - `run_ab` refuses to report a speedup when order was violated; `run_sweep`
   excludes such depths from the curve
 
@@ -128,9 +172,6 @@ green imply more than it checked.
 
 - **A shutdown stress test** that asserts `emitted == submitted` rather than
   relying on someone noticing 196 instead of 200.
-- **Run the equivalence check on an accelerator.** It has only been run on CPU;
-  a device with its own memory and an asynchronous submission path has more
-  ways to pair a result with the wrong frame.
 - **Carry it into the C++ port.** Buffer reuse and a fused preprocessing pass
   are precisely the optimisations that would introduce the bug this is the only
   thing here that detects, so it should run against the C++ pipeline from the

@@ -1,0 +1,125 @@
+{
+  "meta": {
+    "tag": "w3",
+    "mode": "verify",
+    "args": {
+      "model": "models/resnet50_224.onnx",
+      "backend": "openvino",
+      "ov_device": "GPU",
+      "source": "clips/bbb_360_2MB.mp4",
+      "frames": 300,
+      "top_k": 5,
+      "intra_threads": null,
+      "depths": [
+        1,
+        4,
+        16
+      ],
+      "queue_size": 4,
+      "prob_tol": 0.0001,
+      "self_test": true,
+      "allow_fallback": false,
+      "tag": "w3",
+      "out_dir": "results"
+    },
+    "backend": {
+      "requested_backend": "openvino",
+      "openvino_device": "GPU",
+      "actual_providers": [
+        "OpenVINOExecutionProvider",
+        "CPUExecutionProvider"
+      ],
+      "fell_back_to_cpu": false,
+      "input_shape": [
+        "1",
+        "3",
+        "224",
+        "224"
+      ]
+    },
+    "env": {
+      "timestamp_utc": "2026-09-15T01:58:55+00:00",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "python": "3.13.14",
+      "cpu_name": "Intel(R) Core(TM) Ultra 7 255H",
+      "cpu_count_logical": 16,
+      "gpus_nvidia_smi": [],
+      "ram_total_gb": 31.5,
+      "cpu_freq_mhz_at_start": 2000.0,
+      "onnxruntime_version": "1.24.1",
+      "onnxruntime_available_providers": [
+        "OpenVINOExecutionProvider",
+        "CPUExecutionProvider"
+      ],
+      "opencv_version": "5.0.0"
+    }
+  },
+  "results": {
+    "control_sync_vs_sync": {
+      "frames_compared": 300,
+      "missing_from_candidate": [],
+      "missing_count": 0,
+      "unexpected_in_candidate": [],
+      "unexpected_count": 0,
+      "top1_mismatches": [],
+      "top1_mismatch_count": 0,
+      "topk_order_mismatches": [],
+      "topk_mismatch_count": 0,
+      "max_prob_delta": 0.0,
+      "prob_within_tolerance": true,
+      "identical": true
+    },
+    "sensitivity": {
+      "frames": 300,
+      "distinct_top1_classes": 5,
+      "distinct_topk_sets": 175,
+      "adjacent_pairs_differing": 228,
+      "adjacent_pairs": 299
+    },
+    "depths": {
+      "1": {
+        "frames_compared": 300,
+        "missing_from_candidate": [],
+        "missing_count": 0,
+        "unexpected_in_candidate": [],
+        "unexpected_count": 0,
+        "top1_mismatches": [],
+        "top1_mismatch_count": 0,
+        "topk_order_mismatches": [],
+        "topk_mismatch_count": 0,
+        "max_prob_delta": 0.0,
+        "prob_within_tolerance": true,
+        "identical": true
+      },
+      "4": {
+        "frames_compared": 300,
+        "missing_from_candidate": [],
+        "missing_count": 0,
+        "unexpected_in_candidate": [],
+        "unexpected_count": 0,
+        "top1_mismatches": [],
+        "top1_mismatch_count": 0,
+        "topk_order_mismatches": [],
+        "topk_mismatch_count": 0,
+        "max_prob_delta": 0.0,
+        "prob_within_tolerance": true,
+        "identical": true
+      },
+      "16": {
+        "frames_compared": 300,
+        "missing_from_candidate": [],
+        "missing_count": 0,
+        "unexpected_in_candidate": [],
+        "unexpected_count": 0,
+        "top1_mismatches": [],
+        "top1_mismatch_count": 0,
+        "topk_order_mismatches": [],
+        "topk_mismatch_count": 0,
+        "max_prob_delta": 0.0,
+        "prob_within_tolerance": true,
+        "identical": true
+      }
+    }
+  },
+  "failed_depths": []
+}

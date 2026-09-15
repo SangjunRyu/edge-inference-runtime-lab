@@ -1,0 +1,161 @@
+{
+  "meta": {
+    "tag": "backends",
+    "mode": "cross-backend",
+    "args": {
+      "model": "models/resnet50_224.onnx",
+      "source": "clips/bbb_360_2MB.mp4",
+      "frames": 300,
+      "top_k": 5,
+      "reference": "cpu",
+      "against": [
+        "openvino:CPU",
+        "openvino:GPU",
+        "openvino:NPU"
+      ],
+      "prob_tol": 0.0001,
+      "tag": "backends",
+      "out_dir": "results"
+    },
+    "env": {
+      "timestamp_utc": "2026-09-15T02:01:17+00:00",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "python": "3.13.14",
+      "cpu_name": "Intel(R) Core(TM) Ultra 7 255H",
+      "cpu_count_logical": 16,
+      "gpus_nvidia_smi": [],
+      "ram_total_gb": 31.5,
+      "cpu_freq_mhz_at_start": 1500.0,
+      "onnxruntime_version": "1.24.1",
+      "onnxruntime_available_providers": [
+        "OpenVINOExecutionProvider",
+        "CPUExecutionProvider"
+      ],
+      "opencv_version": "5.0.0"
+    }
+  },
+  "reference": "cpu",
+  "results": {
+    "openvino:CPU": {
+      "compare": {
+        "frames_compared": 300,
+        "missing_from_candidate": [],
+        "missing_count": 0,
+        "unexpected_in_candidate": [],
+        "unexpected_count": 0,
+        "top1_mismatches": [],
+        "top1_mismatch_count": 0,
+        "topk_order_mismatches": [],
+        "topk_mismatch_count": 0,
+        "max_prob_delta": 2.5779008865356445e-06,
+        "prob_within_tolerance": true,
+        "identical": true
+      },
+      "top1_flips": []
+    },
+    "openvino:GPU": {
+      "compare": {
+        "frames_compared": 300,
+        "missing_from_candidate": [],
+        "missing_count": 0,
+        "unexpected_in_candidate": [],
+        "unexpected_count": 0,
+        "top1_mismatches": [
+          134,
+          253
+        ],
+        "top1_mismatch_count": 2,
+        "topk_order_mismatches": [
+          5,
+          26,
+          72,
+          130,
+          134,
+          160,
+          227,
+          236,
+          252,
+          253,
+          274,
+          279
+        ],
+        "topk_mismatch_count": 12,
+        "max_prob_delta": 0.005986034870147705,
+        "prob_within_tolerance": false,
+        "identical": false
+      },
+      "top1_flips": [
+        {
+          "frame": 134,
+          "reference_class": 672,
+          "reference_p": 0.07064411789178848,
+          "runner_up_class": 958,
+          "runner_up_p": 0.07037309557199478,
+          "margin": 0.00027102231979370117,
+          "candidate_class": 958
+        },
+        {
+          "frame": 253,
+          "reference_class": 672,
+          "reference_p": 0.048730287700891495,
+          "runner_up_class": 84,
+          "runner_up_p": 0.048396117985248566,
+          "margin": 0.0003341697156429291,
+          "candidate_class": 84
+        }
+      ]
+    },
+    "openvino:NPU": {
+      "compare": {
+        "frames_compared": 300,
+        "missing_from_candidate": [],
+        "missing_count": 0,
+        "unexpected_in_candidate": [],
+        "unexpected_count": 0,
+        "top1_mismatches": [
+          134,
+          253
+        ],
+        "top1_mismatch_count": 2,
+        "topk_order_mismatches": [
+          5,
+          26,
+          70,
+          72,
+          75,
+          134,
+          227,
+          229,
+          233,
+          252,
+          253,
+          283
+        ],
+        "topk_mismatch_count": 12,
+        "max_prob_delta": 0.0039500892162323,
+        "prob_within_tolerance": false,
+        "identical": false
+      },
+      "top1_flips": [
+        {
+          "frame": 134,
+          "reference_class": 672,
+          "reference_p": 0.07064411789178848,
+          "runner_up_class": 958,
+          "runner_up_p": 0.07037309557199478,
+          "margin": 0.00027102231979370117,
+          "candidate_class": 958
+        },
+        {
+          "frame": 253,
+          "reference_class": 672,
+          "reference_p": 0.048730287700891495,
+          "runner_up_class": 84,
+          "runner_up_p": 0.048396117985248566,
+          "margin": 0.0003341697156429291,
+          "candidate_class": 84
+        }
+      ]
+    }
+  }
+}
