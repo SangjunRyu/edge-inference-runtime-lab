@@ -115,6 +115,43 @@ whose GCC is already doing another job.
 | ONNX Runtime `onnxruntime-win-x64-1.24.4.zip` (71 MB) | C++ headers and libs for the CPU provider |
 | `Microsoft.ML.OnnxRuntime.DirectML` NuGet 1.24.4 | the only prebuilt path to the MX150 |
 
+## Building
+
+```bash
+# MSYS2 UCRT64 shell
+cd cpp
+cmake -S . -B build -G Ninja
+cmake --build build
+
+./build/probe.exe --model ../models/resnet50_224.onnx --device NPU
+```
+
+`OV_ROOT` defaults to the project's own venv. Point it elsewhere with
+`-DOV_ROOT=...` if the OpenVINO runtime lives somewhere else.
+
+CMake degrades on purpose: without OpenCV it builds `probe` alone and says so,
+so phase 0 can be finished while the rest of the dependencies are still
+installing. The OpenVINO DLLs are copied next to each executable after linking
+-- `openvino_c.dll` pulls in `openvino.dll` and the device plugins beside it, so
+the whole `libs` directory goes rather than the one import target.
+
+### Phase 0 result
+
+```
+OpenVINO 2025.4.1-20426-82bbf0292c5-releases/2025/4
+devices: CPU GPU NPU
+model    models/resnet50_224.onnx
+device   NPU
+input    [1, 3, 224, 224]  ->  1000 logits
+top-5    754:0.1191 905:0.0660 753:0.0574 904:0.0365 921:0.0264
+```
+
+Cross-checked rather than merely run: the same synthetic input through the
+Python OpenVINO API and `bench.pipeline.postprocess` gives
+`754:0.1191 905:0.0660 753:0.0574 904:0.0365 921:0.0264`, identical to four
+decimals. The C API path and the C++ softmax agree with the Python ones before
+a single stage has been timed.
+
 ## Order of work
 
 Phases 0-3 are described in [`w4-plan.md`](w4-plan.md). What matters here is

@@ -4,3 +4,4 @@ __pycache__/
 models/*.onnx
 *.mp4
 clips/*.mp4
+cpp/build/
