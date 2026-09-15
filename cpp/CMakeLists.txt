@@ -97,3 +97,11 @@ foreach(tgt probe run_sync_cpp run_async_cpp)
       COMMENT "copying the OpenVINO runtime next to ${tgt}")
   endif()
 endforeach()
+
+# --- reproductions --------------------------------------------------------
+# Runnable versions of the defects found while building this, each with a
+# broken and a fixed mode. See repro/README.md. Built here so they share the
+# OpenVINO target and cannot drift away from the code they document.
+if(EXISTS "${CMAKE_SOURCE_DIR}/../repro/cpp/CMakeLists.txt")
+  add_subdirectory("${CMAKE_SOURCE_DIR}/../repro/cpp" repro)
+endif()

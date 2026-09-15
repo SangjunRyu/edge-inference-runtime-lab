@@ -116,6 +116,14 @@ What the comparison tools add:
   yesterday's pairs at no cost in machine time, which matters because the
   criteria below were all corrected *after* the runs they apply to.
 
+Every defect found while building this is a **runnable program** under
+[`repro/`](repro/), not only a paragraph: each takes `--mode broken` and
+`--mode fixed` and exits 0 when it behaved as that mode predicts, so a rewrite
+that reintroduces one is caught rather than described. `python repro/run_all.py`
+runs them all. Two of the eight currently report `NOT REPRO` — the condition
+stopped firing on this build — and the table says so instead of rounding it to
+a pass.
+
 Things this repository retracted rather than kept: a cross-validation on stage
 *shares* (which would flag any real improvement as a fault), a knee test that
 compared gain to raw CV, a summary that judged cross-axis effects against the
