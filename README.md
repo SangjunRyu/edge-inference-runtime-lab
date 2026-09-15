@@ -36,6 +36,94 @@ margin of 0.0003 against a numerical spread of 0.004-0.006. They broke a tie
 differently rather than disagreeing about the image, and these FP32 numbers are
 the floor any later quantisation work would have to beat. W4 is planned in [`docs/w4-plan.md`](docs/w4-plan.md).
 
+## What this found
+
+Six results, in the order they were reached. Each links to the measurement that
+supports it; each was measured on one thermally unsteady laptop, which is why
+the discipline below matters as much as the numbers.
+
+1. **Overlap pays only when inference runs somewhere other than the host.**
+   On the NPU at 1080p a pipelined runner reaches **3.09x** the sequential
+   throughput. On the CPU with a pinned thread pool it reaches **0.85x** — it
+   loses. `run_async` executes on the same intra-op pool that does the
+   computation, so concurrent requests do not add parallelism, they subdivide
+   it. [W2](#w2--overlapped-pipeline)
+
+2. **The size of the gain is set by stage balance, and sequential timings
+   predict it.** `sum(stages) / max(stage)` gave 1.39x for the NPU at 360p
+   before any pipeline existed; the measurement came back 1.44x. The same
+   ceiling says CPU at 360p is not worth pipelining, and it was not.
+   [W1](#w1--where-one-frame-spends-its-time)
+
+3. **What the stage table calls "inference" is not device time.** It rises 74%
+   with *source* resolution though the model always sees 224x224, because
+   `session.run()` on an offloaded device includes copy, submit and **wait**.
+   The `openvino/CPU` row is the control that proves it: no submit-and-wait
+   path, and the flattest row in the grid at CV 1%. [W1](#w1--where-one-frame-spends-its-time)
+
+4. **The reorder buffer is the price of postprocessing concurrently, not an
+   accident of DX-APP's design.** One collector cannot reorder and needs no
+   buffer; four collectors produce 96 out-of-order completions, and with the
+   buffer off, **72 of 479 frames are emitted in the wrong order while the
+   frame count stays exactly right.** A silently wrong pipeline, right down to
+   the total. [W4](#w4--the-c-port)
+
+5. **Python's orchestration costs ~25% sequentially and 4% overlapped.** The
+   host stages are 2-10x faster in C++ either way; overlap moves them off the
+   critical path, and a cost that is not on the critical path is not a cost.
+   This is result 1 arriving from the other direction — *the reason to overlap
+   is not that the host is slow, it is that the host stops mattering.*
+   [W4](#w4--the-c-port)
+
+6. **One tuning candidate lived and one died.** Fusing five preprocessing
+   passes into one is real (B/A 0.61 at 1080p, direction confirmed twice);
+   binding the input tensor once instead of wrapping per frame moves inference
+   2% against a 25% spread, which is **smaller than the noise around it** and
+   is recorded as unsupported. [W4](#w4--the-c-port)
+
+## How the measurements are defended
+
+The machine moves 10-30% by itself, so the instrument is most of the work.
+Fixed before the runs, in [`docs/protocol.md`](docs/protocol.md): Read timed as
+its own stage, service time never mixed with wait time, warm-up discarded,
+p50/p95/max beside every mean, and `E2E - sum(stages)` published as
+`unaccounted` rather than absorbed.
+
+What the comparison tools add:
+
+- **Everything is paired.** Configurations alternate inside one session and the
+  ratio is formed **within a pair**, never as a median of one side over a
+  median of the other — the two halves of such a ratio come from different
+  moments. **Order inside a pair alternates too**, because a paired design
+  cannot cancel a bias it applies uniformly.
+- **A control stage neither side changes**, judged by its **spread** rather
+  than its level: a control detects the machine *changing* between the halves
+  of a pair, so a constant offset in it is a finding and a moving one is a
+  defect. Where no honest control exists — comparing two overlapped pipelines,
+  where the interpreter lock touches every host stage — **the tool says so**
+  instead of choosing one it would have to explain away.
+- **A pair counts only if both halves reached steady state**, and the figures
+  over every pair are printed underneath, so the cost of that rule is on the
+  page rather than in a decision nobody can see.
+- **One pair claims nothing.** A single pair has no spread, so every steadiness
+  test passes trivially; the tools report an observation and refuse the
+  measurement.
+- **Correctness gates speed.** No speedup is reported for a run that emitted
+  frames out of order, and `verify_equivalence` checks that the answers match a
+  sequential reference — with a self-test proving it can detect a fault, and
+  tie handling so two classes 6e-08 apart are not called a mismatch.
+- **Saved runs can be re-read.** `--reanalyse` applies today's criteria to
+  yesterday's pairs at no cost in machine time, which matters because the
+  criteria below were all corrected *after* the runs they apply to.
+
+Things this repository retracted rather than kept: a cross-validation on stage
+*shares* (which would flag any real improvement as a fault), a knee test that
+compared gain to raw CV, a summary that judged cross-axis effects against the
+worst cell in the grid, "the timers agree to 2%" (one pair, coincidence), and
+"preprocess is identical in both" (also one pair). The Arc iGPU produced
+398-second driver stalls under concurrent load and is reported as unmeasurable
+rather than plotted.
+
 ## The hypothesis under test
 
 Pipeline overlap does not make inference faster. It removes idle time between
@@ -86,7 +174,9 @@ On Linux/macOS substitute `.venv/bin/python`.
 
 ## Results
 
-W1 is measured: a 3 backend x 3 resolution grid, 5 runs per cell.
+### W1 — where one frame spends its time
+
+A 3 backend x 3 resolution grid, 5 runs per cell.
 Full write-up in [`docs/findings-w1.md`](docs/findings-w1.md).
 
 ```
@@ -192,6 +282,76 @@ whether depth is worth tuning is a property of the workload, not the pipeline.
 With reordering disabled, 138 of 200 frames are emitted out of submission order
 while the frame count is exactly right — the defect DEEPX's `FrameReorderBuffer`
 prevents. Restoring order costs ~7 ms of mean latency and no throughput.
+
+### W4 — the C++ port
+
+Why port at all: a second implementation cross-validates the measurements,
+tuning that Python cannot express becomes possible, and the same overlapped
+pipeline in C++ separates Python's own overhead from ONNX Runtime's thread-pool
+behaviour. Full write-up in [`docs/findings-w4.md`](docs/findings-w4.md).
+
+Built with MSYS2 UCRT64 GCC against OpenVINO's **C** API — no Microsoft
+software involved, and the C ABI is the bridge because MinGW and MSVC share no
+C++ ABI.
+
+**Sequential, C++ against Python** (NPU, 360p, 6 counterbalanced pairs):
+
+| stage | cpp/python | per-pair CV |
+|---|---|---|
+| read | 0.70 | 12% |
+| preprocess | 0.66 | 2% |
+| inference *(control)* | 0.86 | 3% |
+| postprocess | 0.09 | 5% |
+| **throughput** | **1.28** (1.21 - 1.36) | 4.6% |
+
+The control's level is not 1.00 and need not be: **Python reaches the NPU
+through ONNX Runtime's OpenVINO provider and C++ through OpenVINO directly**,
+and that costs 10-16% per inference: **0.86** here at CV 3%, and **0.92** at
+CV 6% in the overlapped run below. What a control has to hold is its spread,
+and 3% is what it held.
+
+**Overlapped, C++ against Python** — the GIL measurement (NPU, 360p, in-flight
+4, one collector each so the structures match):
+
+```
+throughput  cpp/python  x1.04   (1.00 - 1.09, CV 5.8%)
+```
+
+Host stages 2-10x faster, four percent of throughput, because inference is 77%
+of the frame and the device does not care which language asked. **W2's
+attribution survives**: the CPU async loss was ONNX Runtime splitting its
+thread pool, not the interpreter lock. Worth checking — "Python is slow" is the
+explanation everyone reaches for, and here it would have been wrong.
+
+**C++ sequential against C++ overlapped**, paired: `x1.32` (1.14 - 1.65),
+consistent with Python's 1.44x in the same cell and W1's 1.39x ceiling.
+
+**Tuning.** Measured at 1080p, where host work is comparable to inference:
+
+| candidate | stage | B/A | per-pair CV | verdict |
+|---|---|---|---|---|
+| fused preprocess | preprocess | **0.61** | 45% | real, size not pinned |
+| input tensor reuse | inference | 0.98 | 25% | **unsupported** |
+
+**Ordering, made real.** Phase 2 saw zero out-of-order completions and could
+not force one, because a single collector draining FIFO makes overtaking
+impossible by construction. With the collector count as a flag:
+
+| post-workers | reorder | order violations | out-of-order arrivals |
+|---|---|---|---|
+| 1 | on | 0 | 0 |
+| 4 | on | 0 | 96 |
+| 4 | off | **72 / 479** | — |
+
+**Ownership bugs the port surfaced**, all three from the same submit/collect
+split DX-APP has: `ov_callback_t` allocated as a stack local while the API
+keeps the pointer (worked with one slot, hung with two); the completion
+callback blocking on a bounded queue and deadlocking the runtime against its
+own `wait`; and `get_output_tensor` returning `REQUEST_BUSY` from the callback
+path until `wait` is called first.
+
+All four C++ builds — sync, reuse-tensor, fused, and async at 8 in flight with
+4 collectors — match the Python sequential reference across 300 frames.
 
 ## Findings from reading DX-APP
 
