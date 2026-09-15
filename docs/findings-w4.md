@@ -448,11 +448,27 @@ The effect on the two conclusions is not symmetrical:
   over the resized image instead of five, which cannot be slower -- but the run
   that produced the number no longer clears the bar.
 
-A counterbalanced re-measurement was run to replace it. **It failed harder**:
-six pairs at 1080p, control at CV 49%, per-run throughput swinging from 107 to
-370 FPS inside one session. After a day of measuring, the laptop could no
-longer support a 1080p paired comparison. That is the honest description, and
-it is preferable to a number quoted from it.
+Counterbalanced re-measurements were run to replace it. **They failed harder.**
+Three of them, in the same session:
+
+| run | pairs admissible | control CV | throughput CV |
+|---|---|---|---|
+| `--fused`, sequential, 1080p | 2 of 6 | 49% | 41% |
+| `--fused`, overlapped, 360p | 1 of 6 | -- (one pair) | 38% |
+| `--fused`, overlapped, 1080p | **0 of 6** | **74%** | 57% |
+
+The last one has a per-run drift ratio reaching 2.05 and throughput swinging
+from 110 to 334 FPS between pairs of the same configuration. **That cell is not
+measurable on this machine today**, and the run is kept in `results/` labelled
+as unusable rather than quietly dropped -- the numbers in it describe a laptop,
+not a flag.
+
+Five consecutive paired runs failed their own control in one afternoon. That is
+worth stating as a property of the measurement window rather than of any
+particular experiment, and it is the strongest argument for what
+[W5](w5-plan.md) does next: a phase whose headline results are **counts** --
+allocations, copies, leases returned, frames dropped -- does not depend on this
+machine at all.
 
 ### The async question answers itself, exactly
 

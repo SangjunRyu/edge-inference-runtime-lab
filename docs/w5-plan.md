@@ -29,9 +29,9 @@ defects were all ownership and lifetime defects, and
 
 **Its headline results are exact.** This is the decisive argument and it is
 worth being blunt about. W4 spent most of its effort fighting a machine that
-would not hold still, and lost: three consecutive paired runs in the closing
-session failed their own control stage, one at a coefficient of variation of
-49%. A phase whose main deliverables are *counts* rather than *rates* does not
+would not hold still, and lost: **five consecutive paired runs** in the closing
+session failed their own control stage, the last at a coefficient of variation
+of 74% with not one admissible pair in six. A phase whose main deliverables are *counts* rather than *rates* does not
 depend on that machine at all.
 
 | deliverable | kind | needs a steady machine? |
