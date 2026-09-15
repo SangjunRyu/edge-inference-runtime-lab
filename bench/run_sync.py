@@ -61,7 +61,8 @@ def parse_args():
     return p.parse_args()
 
 
-def measure_once(backend, args, height: int, width: int):
+def measure_once(backend, args, height: int, width: int,
+                 collector: list | None = None):
     """One complete pass. The source is rebuilt per run so repeats are independent.
 
     Order is checked here too. A sequential pipeline cannot emit out of order,
@@ -95,7 +96,9 @@ def measure_once(backend, args, height: int, width: int):
             with Timer() as t_inf:
                 logits = backend.run(tensor)
             with Timer() as t_post:
-                _ = postprocess(logits, args.top_k)
+                topk = postprocess(logits, args.top_k)
+            if collector is not None:
+                collector.append((idx, topk))
             checker.observe(idx)
             idx += 1
         rec.add_frame(

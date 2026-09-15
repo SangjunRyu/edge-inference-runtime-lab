@@ -101,9 +101,15 @@ def parse_args():
 class AsyncPipeline:
     """One overlapped pass over the source."""
 
-    def __init__(self, backend: OnnxBackend, args, height: int, width: int):
+    def __init__(self, backend: OnnxBackend, args, height: int, width: int,
+                 collector: list | None = None):
         self.backend, self.args = backend, args
         self.height, self.width = height, width
+        # When set,each emitted frame's (index, top-k) is appended here. Used by
+        # the equivalence check, which has to read the results the real
+        # pipeline produced: a separate implementation written for the test
+        # could not contain the bug the test is looking for.
+        self.collector = collector
 
         self.read_q: queue.Queue = queue.Queue(maxsize=args.queue_size)
         self.output_q: queue.Queue = queue.Queue(maxsize=args.queue_size)
@@ -225,7 +231,9 @@ class AsyncPipeline:
 
                 t = time.perf_counter()
                 if rec["logits"] is not None:
-                    postprocess(rec.pop("logits"), self.args.top_k)
+                    topk = postprocess(rec.pop("logits"), self.args.top_k)
+                    if self.collector is not None:
+                        rec["topk"] = topk
                 if (self.args.stall_every
                         and rec["idx"] % self.args.stall_every == 0):
                     # Deliberately make one frame heavier so a lighter
@@ -302,6 +310,8 @@ class AsyncPipeline:
 
     def _emit(self, rec: dict, checker: OrderChecker, rec_out: Recorder) -> None:
         checker.observe(rec["idx"])
+        if self.collector is not None:
+            self.collector.append((rec["idx"], rec.get("topk")))
         now = time.perf_counter()
         rec["q_reorder"] = now - rec["t_done_post"]
         rec_out.add_frame(
@@ -310,12 +320,13 @@ class AsyncPipeline:
         )
 
 
-def measure_once(backend: OnnxBackend, args, height: int, width: int):
+def measure_once(backend: OnnxBackend, args, height: int, width: int,
+                 collector: list | None = None):
     source = make_source(args.source, args.frames)
     rec = Recorder(warmup=args.warmup,
                    warmup_s=getattr(args, 'warmup_s', 0.0),
                    stages=SERVICE, wait_stages=WAITS, pipelined=True)
-    pipe = AsyncPipeline(backend, args, height, width)
+    pipe = AsyncPipeline(backend, args, height, width, collector)
     info = pipe.run(source, rec)
     return rec, source.describe(), info
 

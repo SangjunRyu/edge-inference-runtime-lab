@@ -22,9 +22,12 @@ naming is not incidental. This repository works out why.
 W3 did not stay a separate phase — ordering had to be checked in the same run
 that reported the speedup, so the checks were built into W2.
 [`docs/findings-w3.md`](docs/findings-w3.md) records what it set out to ask,
-what was answered, and the part that was not: **nothing yet verifies that the
-async pipeline produces the same predictions, only that it emits them in the
-right order.** W4 is planned in [`docs/w4-plan.md`](docs/w4-plan.md).
+what was answered. The gap it identified -- nothing verified that the async
+pipeline produced the same *predictions*, only that it emitted them in the
+right order -- is now closed by `bench/verify_equivalence.py`: bit-identical
+top-5 across 300 frames at every depth tested, with a self-test proving the
+check can detect a fault and a sensitivity figure stating how much of the
+pairing it actually covers. W4 is planned in [`docs/w4-plan.md`](docs/w4-plan.md).
 
 ## The hypothesis under test
 

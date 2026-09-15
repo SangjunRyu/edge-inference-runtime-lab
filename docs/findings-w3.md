@@ -67,48 +67,71 @@ fact — that is how it was caught. But there is no test that deliberately
 stresses shutdown, and no check that `emitted == frames submitted` is asserted
 rather than eyeballed.
 
-## 3. Value — **not answered**
+## 3. Value — now answered, and passing
 
-This is the gap, and it is the one W3 was really for.
+`bench/verify_equivalence.py` runs the same clip through both pipelines and
+compares top-k per frame index. It reads results out of the **real** runners --
+`run_sync.measure_once` and `run_async.measure_once`, through a collector they
+now accept -- because a second implementation written for the test could not
+contain the bug the test is looking for.
 
-Nothing in the repository checks that the async pipeline produces the *same
-answers* as the sequential one. `OrderChecker` verifies indices. It does not
-look at the classification result at all, so every failure mode that keeps the
-indices tidy is invisible:
+CPU, 360p, 300 frames, top-5, tolerance 1e-4:
 
-- a record paired with another frame's logits in the reorder buffer
-- the preprocessed tensor being mutated by the next frame before the runtime
-  has finished reading it — the input buffer is handed to `run_async` and the
-  worker moves straight on
-- an output tensor reused across concurrent requests
+| in flight | compared | missing | extra | top-1 mismatches | top-k order | max prob delta |
+|---|---|---|---|---|---|---|
+| 1 | 300 | 0 | 0 | 0 | 0 | 0.00e+00 |
+| 4 | 300 | 0 | 0 | 0 | 0 | 0.00e+00 |
+| 16 | 300 | 0 | 0 | 0 | 0 | 0.00e+00 |
 
-Any of these would show perfect order, a perfect count, and wrong predictions.
+Bit-identical, not merely within tolerance. That is the expected result today:
+`preprocess` allocates a fresh array per frame, so there is no shared buffer for
+a later frame to mutate. The check exists for what comes next.
 
-**The test is cheap and needs no accelerator.** Run the same clip through both
-modes, record top-k per frame index, and compare:
+Three things make the pass mean something rather than just being green.
 
-- indices must match exactly
-- for a fixed backend, class indices should match exactly; probabilities may
-  differ in the last bits if the runtime schedules reductions differently, so
-  compare with a tolerance and report how many frames differ at all
-- run it at several in-flight depths, since a race needs concurrency to appear
+**A control.** The sequential pipeline is compared against itself first. If it
+disagreed with itself nothing below would mean anything, and the run stops
+there.
 
-Until that exists, every correctness claim here is about *ordering* only, and
-the W2 tables should be read that way.
+**Several depths.** A race needs concurrency to appear, so depth 1 passing says
+nothing about depth 16.
+
+**A self-test, because a check that has never failed is not known to work.**
+`--self-test` corrupts the known-good result three ways -- the three shapes this
+class of bug takes -- and confirms each is caught before the real comparison
+runs:
+
+```
+  a frame dropped                            caught
+  results of frames 0 and 4 swapped          caught
+  one probability moved past tolerance       caught
+```
+
+**And the check reports its own power.** A swap between two frames that predict
+the same classes produces no difference at all, so on a clip where every frame
+looks alike this could verify values while being blind to pairing. It measures
+that and prints it: on this clip, **176 distinct top-k sets across 300 frames,
+228 of 299 adjacent pairs differing (76%)**. On a static scene the same run
+would pass while covering much less, and it now says so instead of letting the
+green imply more than it checked.
 
 ## Where W3 lives now
 
 - Ordering evidence and the reorder trade-off: `docs/findings-w2.md`
 - `bench/reorder.py` — `ReorderBuffer`, `OrderChecker`
+- `bench/verify_equivalence.py` — value equivalence, its self-test, its
+  sensitivity figure
 - `run_ab` refuses to report a speedup when order was violated; `run_sweep`
   excludes such depths from the curve
 
 ## Still to do
 
-- **The value-equivalence check above.** Portable: CPU only, any machine.
 - **A shutdown stress test** that asserts `emitted == submitted` rather than
   relying on someone noticing 196 instead of 200.
-- Both should carry into the C++ port as-is. A C++ pipeline that reorders or
-  drops frames is no more acceptable than a Python one, and the port is exactly
-  where a buffer-reuse optimisation could introduce the value bug that nothing
-  currently detects.
+- **Run the equivalence check on an accelerator.** It has only been run on CPU;
+  a device with its own memory and an asynchronous submission path has more
+  ways to pair a result with the wrong frame.
+- **Carry it into the C++ port.** Buffer reuse and a fused preprocessing pass
+  are precisely the optimisations that would introduce the bug this is the only
+  thing here that detects, so it should run against the C++ pipeline from the
+  first build that produces predictions.
