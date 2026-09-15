@@ -36,7 +36,8 @@ struct Args {
     long long frames = 300;
     double duration_s = 0.0, warmup_s = 0.0, cooldown = 0.0;
     int warmup = 20, top_k = 5, repeat = 1;
-    bool fused = false;
+    std::string dump_topk;
+    bool fused = false, reuse_tensor = false;
 };
 
 [[noreturn]] void usage(const char* argv0) {
@@ -66,6 +67,8 @@ Args parse(int argc, char** argv) {
         else if (k == "--top-k") a.top_k = std::stoi(val());
         else if (k == "--repeat") a.repeat = std::stoi(val());
         else if (k == "--cooldown") a.cooldown = std::stod(val());
+        else if (k == "--dump-topk") a.dump_topk = val();
+        else if (k == "--reuse-tensor") a.reuse_tensor = true;
         else if (k == "--fused") a.fused = true;
         else if (k == "--tag") a.tag = val();
         else if (k == "--out-dir") a.out_dir = val();
@@ -95,7 +98,8 @@ struct RunOut {
     int emitted = 0;
 };
 
-RunOut measure_once(const OvBackend& backend, const Args& a) {
+RunOut measure_once(const OvBackend& backend, const Args& a,
+                    std::ofstream* dump) {
     auto source = make_source(a.source, a.frames);
     auto rec = std::make_unique<Recorder>(
         std::vector<std::string>{"read", "preprocess", "inference", "postprocess"},
@@ -104,6 +108,16 @@ RunOut measure_once(const OvBackend& backend, const Args& a) {
     RequestHandle req = backend.make_request();
     const int h = backend.height(), w = backend.width();
     std::vector<float> input(static_cast<size_t>(h) * w * 3);
+    // Phase 3 candidate: bind the input tensor once over a buffer the caller
+    // owns and reuse it, instead of wrapping the same buffer again every
+    // frame. Both paths read the identical `input`, so a difference is the
+    // wrapping and binding, not the data.
+    TensorHandle bound;
+    if (a.reuse_tensor) {
+        bound = backend.wrap_input(input.data());
+        check(ov_infer_request_set_input_tensor(req.get(), bound.get()),
+              "ov_infer_request_set_input_tensor");
+    }
     std::vector<float> logits(backend.output_elements());
     cv::Mat frame;
 
@@ -128,13 +142,20 @@ RunOut measure_once(const OvBackend& backend, const Args& a) {
         const double pre = t_pre.elapsed();
 
         Timer t_inf;
-        backend.infer(req.get(), input.data(), logits.data());
+        if (a.reuse_tensor) backend.infer_bound(req.get(), logits.data());
+        else backend.infer(req.get(), input.data(), logits.data());
         const double inf = t_inf.elapsed();
 
         Timer t_post;
         const auto topk = postprocess(logits.data(), logits.size(), a.top_k);
         const double post = t_post.elapsed();
-        (void)topk;
+        if (dump) {
+            json line = {{"idx", emitted}, {"topk", json::array()}};
+            for (const auto& kv : topk) {
+                line["topk"].push_back(json::array({kv.first, kv.second}));
+            }
+            (*dump) << line.dump() << "\n";
+        }
 
         ++emitted;
         rec->add_frame({{"read", read}, {"preprocess", pre},
@@ -168,7 +189,15 @@ int main(int argc, char** argv) {
         const int repeats = std::max(1, a.repeat);
 
         for (int i = 0; i < repeats; ++i) {
-            RunOut r = measure_once(backend, a);
+            std::unique_ptr<std::ofstream> dump;
+            if (!a.dump_topk.empty()) {
+                dump = std::make_unique<std::ofstream>(a.dump_topk);
+                if (!*dump) {
+                    std::fprintf(stderr, "cannot write %s\n", a.dump_topk.c_str());
+                    return 1;
+                }
+            }
+            RunOut r = measure_once(backend, a, dump.get());
 
             char title[256];
             std::snprintf(title, sizeof(title),
@@ -203,6 +232,7 @@ int main(int argc, char** argv) {
                       {"warmup", a.warmup}, {"warmup_s", a.warmup_s},
                       {"top_k", a.top_k}, {"repeat", a.repeat},
                       {"cooldown", a.cooldown}, {"fused", a.fused},
+                      {"reuse_tensor", a.reuse_tensor},
                       {"tag", a.tag}, {"out_dir", a.out_dir},
                       {"intra_threads", nullptr}}},
             {"backend", backend.describe()},

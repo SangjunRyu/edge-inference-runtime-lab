@@ -57,7 +57,9 @@ struct Args {
     long long frames = 40000;
     double duration_s = 10.0, warmup_s = 2.0, cooldown = 0.0;
     int warmup = 0, top_k = 5, inflight = 4, queue_size = 4, repeat = 1;
-    int reorder_cap = 0;
+    int reorder_cap = 0, stall_every = 0, post_workers = 1;
+    double stall_ms = 40.0;
+    std::string dump_topk;
     bool reorder = true, fused = false;
 };
 
@@ -67,7 +69,8 @@ struct Args {
         "          [--inflight N] [--queue-size N] [--reorder on|off]\n"
         "          [--reorder-cap N] [--frames N] [--duration-s S]\n"
         "          [--warmup-s S] [--top-k K] [--repeat N] [--cooldown S]\n"
-        "          [--fused] [--tag T] [--out-dir D]\n", argv0);
+        "          [--post-workers N] [--stall-every N] [--stall-ms M]\n"
+        "          [--dump-topk FILE] [--fused] [--tag T] [--out-dir D]\n", argv0);
     std::exit(2);
 }
 
@@ -93,6 +96,10 @@ Args parse(int argc, char** argv) {
         else if (k == "--top-k") a.top_k = std::stoi(val());
         else if (k == "--repeat") a.repeat = std::stoi(val());
         else if (k == "--cooldown") a.cooldown = std::stod(val());
+        else if (k == "--post-workers") a.post_workers = std::stoi(val());
+        else if (k == "--stall-every") a.stall_every = std::stoi(val());
+        else if (k == "--stall-ms") a.stall_ms = std::stod(val());
+        else if (k == "--dump-topk") a.dump_topk = val();
         else if (k == "--fused") a.fused = true;
         else if (k == "--tag") a.tag = val();
         else if (k == "--out-dir") a.out_dir = val();
@@ -127,6 +134,7 @@ struct Slot {
     double t_submit = 0.0, inference = 0.0;
     double t_enq_output = 0.0, q_output = 0.0;
     double postprocess = 0.0, t_done_post = 0.0;
+    std::vector<std::pair<int, float>> topk;
 
     class AsyncPipeline* owner = nullptr;
     // The callback descriptor must outlive the request that holds it.
@@ -172,7 +180,8 @@ public:
         }
     }
 
-    json run(Source& source, Recorder& rec, json& order_out, json& reorder_out);
+    json run(Source& source, Recorder& rec, json& order_out, json& reorder_out,
+             std::ofstream* dump);
 
 private:
     /// Runs on an OpenVINO thread. Does the least possible and never blocks.
@@ -196,6 +205,7 @@ private:
     std::vector<Slot> slots_;
     std::vector<cv::Mat> frames_;  // one staging frame per slot
     std::atomic<long long> submitted_{0};
+    std::atomic<int> posts_running_{0};
     std::string error_;
 };
 
@@ -304,9 +314,17 @@ void AsyncPipeline::postprocess_worker() {
             TensorHandle out(raw);
             void* data = nullptr;
             check(ov_tensor_data(out.get(), &data), "ov_tensor_data");
-            const auto topk = postprocess(static_cast<const float*>(data),
-                                          s->output.size(), args_.top_k);
-            (void)topk;
+            s->topk = postprocess(static_cast<const float*>(data),
+                                  s->output.size(), args_.top_k);
+            if (args_.stall_every > 0 &&
+                s->index % static_cast<uint64_t>(args_.stall_every) == 0) {
+                // Make one frame deliberately heavier so a lighter successor
+                // can overtake it. On a uniform workload completions rarely
+                // reorder and the correctness question never gets exercised:
+                // zero violations then says only that nothing was tried.
+                std::this_thread::sleep_for(
+                    std::chrono::duration<double, std::milli>(args_.stall_ms));
+            }
             s->postprocess = now_s() - t;
             s->t_done_post = now_s();
             if (!result_q_.push(s)) break;
@@ -314,11 +332,13 @@ void AsyncPipeline::postprocess_worker() {
     } catch (const std::exception& e) {
         error_ = std::string("postprocess_worker: ") + e.what();
     }
-    result_q_.close();
+    // Several of these may be running; the queue closes when the last leaves,
+    // or the consumer would stop while another worker still has frames.
+    if (posts_running_.fetch_sub(1) == 1) result_q_.close();
 }
 
 json AsyncPipeline::run(Source& source, Recorder& rec, json& order_out,
-                        json& reorder_out) {
+                        json& reorder_out, std::ofstream* dump) {
     frames_.assign(slots_.size(), cv::Mat());
 
     const size_t cap = args_.reorder_cap > 0
@@ -330,10 +350,26 @@ json AsyncPipeline::run(Source& source, Recorder& rec, json& order_out,
 
     std::thread t_read(&AsyncPipeline::read_worker, this, std::ref(source));
     std::thread t_pre(&AsyncPipeline::preprocess_worker, this);
-    std::thread t_post(&AsyncPipeline::postprocess_worker, this);
+    // More than one collector lets a light frame finish ahead of a heavy one,
+    // which is the only way completions here can arrive out of order -- and
+    // therefore the only way the reorder buffer is exercised rather than
+    // merely present.
+    const int n_post = std::max(1, args_.post_workers);
+    posts_running_.store(n_post);
+    std::vector<std::thread> t_posts;
+    for (int i = 0; i < n_post; ++i) {
+        t_posts.emplace_back(&AsyncPipeline::postprocess_worker, this);
+    }
 
     auto emit = [&](Slot* s) {
         checker.observe(s->index);
+        if (dump) {
+            json line = {{"idx", s->index}, {"topk", json::array()}};
+            for (const auto& kv : s->topk) {
+                line["topk"].push_back(json::array({kv.first, kv.second}));
+            }
+            (*dump) << line.dump() << "\n";
+        }
         const double now = now_s();
         rec.add_frame({{"read", s->read}, {"preprocess", s->preprocess},
                        {"inference", s->inference}, {"postprocess", s->postprocess},
@@ -362,7 +398,7 @@ json AsyncPipeline::run(Source& source, Recorder& rec, json& order_out,
     free_q_.close();
     t_read.join();
     t_pre.join();
-    t_post.join();
+    for (auto& t : t_posts) t.join();
 
     order_out = checker.stats();
     reorder_out = args_.reorder ? buf.stats() : json{{"enabled", false}};
@@ -376,9 +412,11 @@ int main(int argc, char** argv) {
     const Args a = parse(argc, argv);
     try {
         OvBackend backend(a.model, a.device);
-        std::printf("model input %dx%d  device=%s  inflight=%d queue=%d reorder=%s\n",
+        std::printf("model input %dx%d  device=%s  inflight=%d queue=%d "
+                    "post-workers=%d reorder=%s\n",
                     backend.height(), backend.width(), a.device.c_str(),
-                    a.inflight, a.queue_size, a.reorder ? "on" : "off");
+                    a.inflight, a.queue_size, a.post_workers,
+                    a.reorder ? "on" : "off");
 
         json runs = json::array(), sources = json::array();
         const int repeats = std::max(1, a.repeat);
@@ -387,7 +425,15 @@ int main(int argc, char** argv) {
             Recorder rec(kService, kWaits, a.warmup, a.warmup_s, /*pipelined=*/true);
             AsyncPipeline pipe(backend, a);
             json order, reorder;
-            const json info = pipe.run(*source, rec, order, reorder);
+            std::unique_ptr<std::ofstream> dump;
+            if (!a.dump_topk.empty()) {
+                dump = std::make_unique<std::ofstream>(a.dump_topk);
+                if (!*dump) {
+                    std::fprintf(stderr, "cannot write %s\n", a.dump_topk.c_str());
+                    return 1;
+                }
+            }
+            const json info = pipe.run(*source, rec, order, reorder, dump.get());
 
             char title[256];
             std::snprintf(title, sizeof(title),
@@ -434,7 +480,10 @@ int main(int argc, char** argv) {
                       {"top_k", a.top_k}, {"inflight", a.inflight},
                       {"queue_size", a.queue_size}, {"reorder", a.reorder ? "on" : "off"},
                       {"repeat", a.repeat}, {"cooldown", a.cooldown},
-                      {"fused", a.fused}, {"tag", a.tag}, {"out_dir", a.out_dir},
+                      {"fused", a.fused}, {"post_workers", a.post_workers},
+                      {"stall_every", a.stall_every},
+                      {"stall_ms", a.stall_ms},
+                      {"tag", a.tag}, {"out_dir", a.out_dir},
                       {"intra_threads", nullptr}}},
             {"backend", backend.describe()},
             {"sources", sources},

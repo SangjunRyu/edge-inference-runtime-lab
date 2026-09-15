@@ -58,6 +58,14 @@ def parse_args():
     p.add_argument("--queue-size", type=int, default=4)
     p.add_argument("--prob-tol", type=float, default=1e-4,
                    help="allowed absolute difference in a class probability")
+    p.add_argument("--candidate-dump", nargs="+", default=None,
+                   metavar="LABEL=FILE",
+                   help="compare these top-k dumps against the Python "
+                        "sequential reference instead of running the Python "
+                        "async pipeline. Written by the C++ runners' "
+                        "--dump-topk, so the C++ build is checked by the same "
+                        "comparison, the same self-test and the same "
+                        "sensitivity figure as the Python one.")
     p.add_argument("--self-test", action="store_true",
                    help="corrupt the collected results on purpose and confirm "
                         "the comparison notices; a check that has never failed "
@@ -85,7 +93,7 @@ def compare(ref: dict[int, list], got: dict[int, list], tol: float) -> dict:
     extra = sorted(set(got) - set(ref))
     shared = sorted(set(ref) & set(got))
 
-    top1_mismatch, topk_mismatch, max_delta = [], [], 0.0
+    top1_mismatch, topk_mismatch, ties, max_delta = [], [], [], 0.0
     for i in shared:
         a, b = ref[i], got[i]
         if a is None or b is None:
@@ -93,10 +101,19 @@ def compare(ref: dict[int, list], got: dict[int, list], tol: float) -> dict:
             continue
         if a[0][0] != b[0][0]:
             top1_mismatch.append(i)
-        if [c for c, _ in a] != [c for c, _ in b]:
-            topk_mismatch.append(i)
         for (_, pa), (_, pb) in zip(a, b):
             max_delta = max(max_delta, abs(pa - pb))
+        if [c for c, _ in a] != [c for c, _ in b]:
+            # A different order is not automatically a different answer. Two
+            # classes whose probabilities are equal to within the tolerance are
+            # a tie, and which one a sort puts first is an implementation
+            # detail -- std::partial_sort and numpy's argsort need not agree,
+            # and neither has a claim to being right about a 6e-08 gap.
+            # Counted separately so the distinction stays visible instead of
+            # being folded into either "identical" or "wrong".
+            tied = all(abs(pa - pb) <= tol
+                       for (_, pa), (_, pb) in zip(a, b))
+            (ties if tied else topk_mismatch).append(i)
 
     return {
         "frames_compared": len(shared),
@@ -108,6 +125,8 @@ def compare(ref: dict[int, list], got: dict[int, list], tol: float) -> dict:
         "top1_mismatch_count": len(top1_mismatch),
         "topk_order_mismatches": topk_mismatch[:20],
         "topk_mismatch_count": len(topk_mismatch),
+        "topk_order_ties": ties[:20],
+        "topk_tie_count": len(ties),
         "max_prob_delta": max_delta,
         "prob_within_tolerance": max_delta <= tol,
         "identical": (not missing and not extra and not top1_mismatch
@@ -117,6 +136,17 @@ def compare(ref: dict[int, list], got: dict[int, list], tol: float) -> dict:
 
 def _as_map(pairs: list) -> dict[int, list]:
     return {i: t for i, t in pairs}
+
+
+def load_dump(path: str) -> dict[int, list]:
+    """One JSON object per frame, as the C++ runners write it."""
+    out: dict[int, list] = {}
+    for line in Path(path).read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        d = json.loads(line)
+        out[int(d["idx"])] = [(int(c), float(p)) for c, p in d["topk"]]
+    return out
 
 
 def self_test(ref: dict[int, list], tol: float) -> bool:
@@ -237,13 +267,39 @@ def main() -> int:
                "depths": {}}
     failures = []
 
+    if args.candidate_dump:
+        # The C++ build is compared frame for frame against the Python
+        # sequential reference. Nothing about the comparison changes: same
+        # control, same self-test, same sensitivity figure.
+        for spec in args.candidate_dump:
+            label, _, path = spec.partition("=")
+            if not path:
+                label, path = Path(spec).stem, spec
+            got = load_dump(path)
+            r = compare(ref, got, args.prob_tol)
+            results["depths"][label] = r
+            verdict = "IDENTICAL" if r["identical"] else "DIFFERS"
+            print(f"\n--- {label} vs python sync ---")
+            print(f"  compared {r['frames_compared']}  missing {r['missing_count']}"
+                  f"  extra {r['unexpected_count']}"
+                  f"  top1 mismatches {r['top1_mismatch_count']}"
+                  f"  top-k order {r['topk_mismatch_count']}"
+                  f"  ties {r['topk_tie_count']}"
+                  f"  max prob delta {r['max_prob_delta']:.2e}  -> {verdict}")
+            if not r["identical"]:
+                failures.append(label)
+                for key in ("missing_from_candidate", "unexpected_in_candidate",
+                            "top1_mismatches", "topk_order_mismatches"):
+                    if r[key]:
+                        print(f"    {key}: {r[key]}")
+
     if args.self_test:
         print("\n--- self-test: can this check detect a fault at all? ---")
         if not self_test(ref, args.prob_tol):
             print("  !! the comparison missed a fault it was given on purpose."
                   "\n     A pass below would prove nothing; stopping.")
             return 1
-    for depth in args.depths:
+    for depth in ([] if args.candidate_dump else args.depths):
         print(f"\n--- async inflight={depth} vs sync ---")
         col: list = []
         run_async.measure_once(backend, _args_for(args, depth), height, width, col)
@@ -254,6 +310,7 @@ def main() -> int:
               f"  extra {r['unexpected_count']}"
               f"  top1 mismatches {r['top1_mismatch_count']}"
               f"  top-k order {r['topk_mismatch_count']}"
+              f"  ties {r['topk_tie_count']}"
               f"  max prob delta {r['max_prob_delta']:.2e}  -> {verdict}")
         if not r["identical"]:
             failures.append(depth)
@@ -270,8 +327,9 @@ def main() -> int:
         print(" number of them, and got different answers. Order checking")
         print(" would not have caught this.")
     else:
-        print(f" Value equivalence holds at every depth tested "
-              f"({', '.join(map(str, args.depths))}).")
+        tested = (", ".join(results["depths"].keys()) if args.candidate_dump
+                  else ", ".join(map(str, args.depths)))
+        print(f" Value equivalence holds for: {tested}.")
         print(f" {len(ref)} frames, top-{args.top_k} classes identical,"
               f" probabilities within {args.prob_tol:g}.")
     print("=" * w)

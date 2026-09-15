@@ -129,16 +129,103 @@ not finding the OpenCV DLLs. The Windows loader names only the first missing
 library, so an OpenCV problem reads as an OpenVINO one. Two rounds of reasoning
 went into a hang that had not happened.
 
+## Phase 3 -- tuning, and what the measurements say
+
+Measured at 1080p, where host work is comparable to inference and a host-side
+win therefore raises the ceiling. Paired: the two configurations alternate in
+one session and the ratio inside each pair is reported
+(`bench/compare_variants.py`).
+
+| candidate | stage it targets | B/A | per-pair CV | verdict |
+|---|---|---|---|---|
+| fused preprocess | `preprocess` | **0.61** | 45% | real, magnitude imprecise |
+| input tensor reuse | `inference` | 0.98 | 25% | **not supported** |
+
+**The fused preprocess is faster.** One pass over the resized image instead of
+five -- colour swap, scale, normalise and transpose folded into the loop that
+writes the NCHW planes. Two independent measurements put it at 0.61x and 0.40x
+of the baseline, so the direction is not in doubt even though the machine was
+too unsteady to pin the size.
+
+**Reusing the input tensor is not.** Binding one `ov_tensor` over the caller's
+buffer at startup, instead of wrapping the same buffer again every frame, moves
+`inference` by 2% against a 25% run-to-run spread. That is not a result, it is
+a number smaller than the noise around it. The wrap is a shape allocation and a
+pointer -- cheap beside a 7 ms inference -- so this is what the hypothesis
+deserved rather than a disappointment. The repository said measuring a
+hypothesis dead is a result; here is one.
+
+### The measurement that had to be thrown away first
+
+The four variants were run back to back before any of this. That version said
+`--reuse-tensor` made *preprocessing* 2.3x faster, which it cannot -- it does
+not touch preprocessing -- and showed `inference` swinging 1.9x between
+variants that none of the flags affect. It was drift, read as a result.
+
+`compare_variants` therefore alternates the configurations and adds a
+**control**: the stage neither side changes. `--fused` must leave `inference`
+alone and `--reuse-tensor` must leave `read` alone; if the control moves more
+than 10% the pairing has not cancelled the drift and the other rows are
+describing the machine. Both runs passed, but `--fused` passed at 1.09 -- close
+enough to the bar to be worth saying out loud rather than reporting as clean.
+
+### Every variant still produces the same answers
+
+`verify_equivalence` now accepts the C++ runners' `--dump-topk` output, so the
+C++ build is checked by the same comparison, the same self-test and the same
+sensitivity figure as the Python. Against the Python sequential reference on
+300 frames:
+
+| build | top-1 | top-k order | ties | max prob delta |
+|---|---|---|---|---|
+| cpp sync | 0 | 0 | 3 | 5.96e-08 |
+| cpp + reuse-tensor | 0 | 0 | 3 | 5.96e-08 |
+| cpp + fused | 0 | 0 | 3 | 5.96e-08 |
+| cpp async, 8 in flight, 4 collectors | 0 | 0 | 3 | 5.96e-08 |
+
+This is the net that had to exist before phase 3 touched a buffer, and it is
+why the fused path can be trusted: it rewrote the arithmetic and the answers
+did not move.
+
+**A criterion was corrected on the way.** The first run reported all four as
+DIFFERS over three frames' top-5 *ordering*, at a maximum probability
+difference of 5.96e-08 -- float32 epsilon. Two classes with equal probabilities
+are a tie, and which one `std::partial_sort` puts first need not match NumPy's
+argsort; neither has a claim to being right about a 6e-08 gap. Ties are now
+counted separately from mismatches, the same principle `compare_backends`
+already applies to the accelerators.
+
+## Phase 2 addendum: making the reorder path real
+
+W2 recorded that completions arrived in submission order, so the reorder buffer
+was correct but never exercised. Injecting a stall did not help: with one
+collector draining its queue FIFO, delaying frame 20 delays frame 21 as well
+and nothing can overtake **by construction**.
+
+The number of collectors is now a flag, and it is the whole story:
+
+| post-workers | reorder | order violations | out-of-order arrivals |
+|---|---|---|---|
+| 1 | on | 0 | **0** |
+| 4 | on | **0** | 96 |
+| 4 | off | **72 / 479** | -- |
+
+One collector cannot reorder and needs no buffer. Four collectors postprocess
+concurrently, 96 completions overtake a predecessor, and without the buffer 72
+frames of 479 are emitted out of order with the count perfectly correct.
+
+**That is the trade DX-APP makes.** It postprocesses off the completion path,
+which is why `FrameReorderBuffer` exists: the buffer is the price of
+postprocessing concurrently, not an accident of their design.
+
 ## Still to do
 
-- **Throughput on a machine that holds still.** Every pair drifted; the numbers
-  above are stage ratios, which survive drift far better than a rate does.
-- **Port `--stall-every`** so the C++ reorder path is exercised rather than
-  merely present.
+- **Everything above, on a machine that holds still.** Every pair in every
+  phase-3 run drifted out of the 0.95-1.05 band after hours of measurement.
+  Stage ratios survive that far better than rates do, which is why they are
+  what gets quoted, but the fused preprocess deserves a tight number and does
+  not have one.
 - **The paired C++/Python async comparison**, which is the GIL measurement W2
   could not separate from ONNX Runtime's thread-pool subdivision.
-- **Phase 3**: the fused preprocess against the 1.00x baseline above, the input
-  tensor over a reused buffer (`ov_tensor_create_from_host_ptr` is already in
-  the backend for it), and `verify_equivalence` run against the C++ build from
-  the first version that produces predictions -- buffer reuse is exactly the
-  optimisation that would introduce the bug only that check detects.
+- **The fused path in the async runner.** `--fused` is wired through both, but
+  only the sequential one has been measured with it.

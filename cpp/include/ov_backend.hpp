@@ -81,6 +81,10 @@ public:
     /// order; `output` is filled with `output_elements()` logits.
     void infer(ov_infer_request_t* req, const float* input, float* output) const;
 
+    /// Inference on a request whose input tensor is already bound. Skips the
+    /// per-frame wrap and set, which is the difference phase 3 measures.
+    void infer_bound(ov_infer_request_t* req, float* output) const;
+
     /// The input tensor handle over caller-owned memory, so the buffer can be
     /// reused across frames instead of reallocated -- kept separate from
     /// `infer` because W4 phase 3 measures exactly that difference.

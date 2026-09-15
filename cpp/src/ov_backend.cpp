@@ -127,6 +127,17 @@ void OvBackend::infer(ov_infer_request_t* req, const float* input, float* output
     std::memcpy(output, data, output_elements_ * sizeof(float));
 }
 
+void OvBackend::infer_bound(ov_infer_request_t* req, float* output) const {
+    check(ov_infer_request_infer(req), "ov_infer_request_infer");
+    ov_tensor_t* out_raw = nullptr;
+    check(ov_infer_request_get_output_tensor(req, &out_raw),
+          "ov_infer_request_get_output_tensor");
+    TensorHandle out(out_raw);
+    void* data = nullptr;
+    check(ov_tensor_data(out.get(), &data), "ov_tensor_data");
+    std::memcpy(output, data, output_elements_ * sizeof(float));
+}
+
 nlohmann::json OvBackend::describe() const {
     // Same field names as bench/backends.py so summarize.py and the rest read
     // C++ results unchanged. `engine` is the one addition: these runs go

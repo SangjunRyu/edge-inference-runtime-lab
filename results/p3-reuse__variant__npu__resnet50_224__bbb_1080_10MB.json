@@ -1,0 +1,618 @@
+{
+  "meta": {
+    "tag": "p3-reuse",
+    "mode": "variant",
+    "args": {
+      "cpp": "cpp/build/run_sync_cpp.exe",
+      "model": "models/resnet50_224.onnx",
+      "device": "NPU",
+      "source": "clips/bbb_1080_10MB.mp4",
+      "frames": 40000,
+      "duration_s": 8.0,
+      "warmup_s": 2.0,
+      "baseline": [],
+      "variant": [
+        "--reuse-tensor"
+      ],
+      "control_stage": null,
+      "pairs": 4,
+      "cooldown": 25.0,
+      "tag": "p3-reuse",
+      "out_dir": "results"
+    },
+    "control_stage": "read",
+    "pairs_excluded_for_drift": 4,
+    "env": {
+      "timestamp_utc": "2026-09-15T04:00:35+00:00",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "python": "3.13.14",
+      "cpu_name": "Intel(R) Core(TM) Ultra 7 255H",
+      "cpu_count_logical": 16,
+      "gpus_nvidia_smi": [],
+      "ram_total_gb": 31.5,
+      "cpu_freq_mhz_at_start": 2000.0,
+      "onnxruntime_version": "1.24.1",
+      "onnxruntime_available_providers": [
+        "OpenVINOExecutionProvider",
+        "CPUExecutionProvider"
+      ],
+      "opencv_version": "5.0.0"
+    }
+  },
+  "pairs": [
+    {
+      "pair": 1,
+      "a": {
+        "bottleneck_p95_over_p50": 1.0212436507821658,
+        "bottleneck_stage": "inference",
+        "concurrency_littles_law": 0.9993887321716113,
+        "drift": {
+          "first_decile_ms": 9.663345901639346,
+          "last_decile_ms": 9.069139344262293,
+          "ratio": 0.9385092323688581
+        },
+        "e2e_ms": {
+          "max": 111.5498,
+          "mean": 9.48576022727272,
+          "mean_trim10": 9.302243501805053,
+          "p50": 9.3188,
+          "p95": 10.182900000000002
+        },
+        "frames_counted": 616,
+        "frames_warmup_discarded": 222,
+        "order": {
+          "emitted": 838,
+          "first_violation_at_frame": null,
+          "in_submission_order": true,
+          "order_violations": 0
+        },
+        "overlap_ceiling_x": 1.3700612192005572,
+        "pipelined": false,
+        "service_sum_mean_ms": 9.48528100649351,
+        "stage_sum_mean_ms": 9.48528100649351,
+        "stages_ms": {
+          "inference": {
+            "max": 7.964600000000001,
+            "mean": 6.923253409090913,
+            "mean_trim10": 6.915369909909917,
+            "p50": 6.910299999999999,
+            "p95": 7.0571
+          },
+          "postprocess": {
+            "max": 0.0829,
+            "mean": 0.018470292207792196,
+            "mean_trim10": 0.01772216216216216,
+            "p50": 0.017499999999999998,
+            "p95": 0.023125
+          },
+          "preprocess": {
+            "max": 2.5401,
+            "mean": 0.9927647727272721,
+            "mean_trim10": 0.9837864620938632,
+            "p50": 1.03365,
+            "p95": 1.37755
+          },
+          "read": {
+            "max": 102.6977,
+            "mean": 1.5507925324675313,
+            "mean_trim10": 1.3718718411552338,
+            "p50": 1.3715000000000002,
+            "p95": 1.87855
+          }
+        },
+        "throughput_fps": 105.35673559386906,
+        "throughput_implied_by_e2e_fps": 105.42117616729102,
+        "unaccounted_mean_ms": 0.0004792207792103653,
+        "wait_stages": [],
+        "wait_sum_mean_ms": 0.0,
+        "warmup_seconds": 2.0
+      },
+      "b": {
+        "bottleneck_p95_over_p50": 1.063262516540883,
+        "bottleneck_stage": "inference",
+        "concurrency_littles_law": 0.9984573927788497,
+        "drift": {
+          "first_decile_ms": 8.750408196721311,
+          "last_decile_ms": 9.794621311475414,
+          "ratio": 1.1193330746724888
+        },
+        "e2e_ms": {
+          "max": 123.237,
+          "mean": 9.67583191489363,
+          "mean_trim10": 9.341552641165762,
+          "p50": 9.341999999999999,
+          "p95": 10.575849999999999
+        },
+        "frames_counted": 611,
+        "frames_warmup_discarded": 252,
+        "order": {
+          "emitted": 863,
+          "first_violation_at_frame": null,
+          "in_submission_order": true,
+          "order_violations": 0
+        },
+        "overlap_ceiling_x": 1.398318424002553,
+        "pipelined": false,
+        "service_sum_mean_ms": 9.67534942716857,
+        "stage_sum_mean_ms": 9.67534942716857,
+        "stages_ms": {
+          "inference": {
+            "max": 17.263199999999998,
+            "mean": 6.919274795417345,
+            "mean_trim10": 6.8722826958105605,
+            "p50": 6.8769,
+            "p95": 7.3119499999999995
+          },
+          "postprocess": {
+            "max": 0.0608,
+            "mean": 0.0149126022913257,
+            "mean_trim10": 0.01430709090909091,
+            "p50": 0.0143,
+            "p95": 0.019
+          },
+          "preprocess": {
+            "max": 3.4425,
+            "mean": 1.0700531914893614,
+            "mean_trim10": 1.053519125683061,
+            "p50": 1.0485,
+            "p95": 1.534
+          },
+          "read": {
+            "max": 113.9824,
+            "mean": 1.6711088379705392,
+            "mean_trim10": 1.3871693989071026,
+            "p50": 1.369,
+            "p95": 1.9655
+          }
+        },
+        "throughput_fps": 103.19085754703565,
+        "throughput_implied_by_e2e_fps": 103.35028644521398,
+        "unaccounted_mean_ms": 0.00048248772506021,
+        "wait_stages": [],
+        "wait_sum_mean_ms": 0.0,
+        "warmup_seconds": 2.0
+      }
+    },
+    {
+      "pair": 2,
+      "a": {
+        "bottleneck_p95_over_p50": 1.1383061912198098,
+        "bottleneck_stage": "inference",
+        "concurrency_littles_law": 0.9990247546304825,
+        "drift": {
+          "first_decile_ms": 9.56537659574468,
+          "last_decile_ms": 17.52645744680851,
+          "ratio": 1.8322809636795117
+        },
+        "e2e_ms": {
+          "max": 153.37439999999998,
+          "mean": 12.235816352201265,
+          "mean_trim10": 11.499807226107233,
+          "p50": 11.5304,
+          "p95": 13.27424
+        },
+        "frames_counted": 477,
+        "frames_warmup_discarded": 258,
+        "order": {
+          "emitted": 735,
+          "first_violation_at_frame": null,
+          "in_submission_order": true,
+          "order_violations": 0
+        },
+        "overlap_ceiling_x": 1.4021693818977485,
+        "pipelined": false,
+        "service_sum_mean_ms": 12.23519098532495,
+        "stage_sum_mean_ms": 12.23519098532495,
+        "stages_ms": {
+          "inference": {
+            "max": 24.304,
+            "mean": 8.725900838574427,
+            "mean_trim10": 8.662101398601399,
+            "p50": 8.516900000000001,
+            "p95": 9.69484
+          },
+          "postprocess": {
+            "max": 0.5733999999999999,
+            "mean": 0.023173584905660388,
+            "mean_trim10": 0.02132186046511628,
+            "p50": 0.0213,
+            "p95": 0.027459999999999995
+          },
+          "preprocess": {
+            "max": 9.158700000000001,
+            "mean": 1.2785897274633118,
+            "mean_trim10": 1.2443944055944045,
+            "p50": 1.3312,
+            "p95": 1.68566
+          },
+          "read": {
+            "max": 141.5026,
+            "mean": 2.2075268343815515,
+            "mean_trim10": 1.5459216783216785,
+            "p50": 1.5439,
+            "p95": 2.0154400000000003
+          }
+        },
+        "throughput_fps": 81.64757674307154,
+        "throughput_implied_by_e2e_fps": 81.72728089532797,
+        "unaccounted_mean_ms": 0.0006253668763154252,
+        "wait_stages": [],
+        "wait_sum_mean_ms": 0.0,
+        "warmup_seconds": 2.0
+      },
+      "b": {
+        "bottleneck_p95_over_p50": 1.087557414638077,
+        "bottleneck_stage": "inference",
+        "concurrency_littles_law": 0.9992560062211444,
+        "drift": {
+          "first_decile_ms": 8.84570634920635,
+          "last_decile_ms": 9.115133333333333,
+          "ratio": 1.0304585042155685
+        },
+        "e2e_ms": {
+          "max": 116.3533,
+          "mean": 9.272752037617542,
+          "mean_trim10": 8.99857142857142,
+          "p50": 8.936900000000001,
+          "p95": 9.966095
+        },
+        "frames_counted": 638,
+        "frames_warmup_discarded": 253,
+        "order": {
+          "emitted": 891,
+          "first_violation_at_frame": null,
+          "in_submission_order": true,
+          "order_violations": 0
+        },
+        "overlap_ceiling_x": 1.3489940989592606,
+        "pipelined": false,
+        "service_sum_mean_ms": 9.272277742946708,
+        "stage_sum_mean_ms": 9.272277742946708,
+        "stages_ms": {
+          "inference": {
+            "max": 9.657499999999999,
+            "mean": 6.873475391849531,
+            "mean_trim10": 6.848966376306624,
+            "p50": 6.82535,
+            "p95": 7.42296
+          },
+          "postprocess": {
+            "max": 0.0684,
+            "mean": 0.014331974921630079,
+            "mean_trim10": 0.01387724137931033,
+            "p50": 0.013699999999999999,
+            "p95": 0.018000000000000002
+          },
+          "preprocess": {
+            "max": 1.7015,
+            "mean": 0.8668010971786819,
+            "mean_trim10": 0.8496114982578394,
+            "p50": 0.7923,
+            "p95": 1.264915
+          },
+          "read": {
+            "max": 107.2604,
+            "mean": 1.5176692789968662,
+            "mean_trim10": 1.2579376306620225,
+            "p50": 1.2409,
+            "p95": 1.7952249999999998
+          }
+        },
+        "throughput_fps": 107.76261482754848,
+        "throughput_implied_by_e2e_fps": 107.84284923647448,
+        "unaccounted_mean_ms": 0.0004742946708340412,
+        "wait_stages": [],
+        "wait_sum_mean_ms": 0.0,
+        "warmup_seconds": 2.0
+      }
+    },
+    {
+      "pair": 3,
+      "a": {
+        "bottleneck_p95_over_p50": 1.1137467232912466,
+        "bottleneck_stage": "inference",
+        "concurrency_littles_law": 0.9991768567012702,
+        "drift": {
+          "first_decile_ms": 4.785760638297873,
+          "last_decile_ms": 6.001436170212763,
+          "ratio": 1.2540192926045008
+        },
+        "e2e_ms": {
+          "max": 70.5214,
+          "mean": 6.174370700636942,
+          "mean_trim10": 6.071713947990545,
+          "p50": 6.148200000000001,
+          "p95": 6.908885
+        },
+        "frames_counted": 942,
+        "frames_warmup_discarded": 412,
+        "order": {
+          "emitted": 1354,
+          "first_violation_at_frame": null,
+          "in_submission_order": true,
+          "order_violations": 0
+        },
+        "overlap_ceiling_x": 1.4475085330110222,
+        "pipelined": false,
+        "service_sum_mean_ms": 6.174032484076433,
+        "stage_sum_mean_ms": 6.174032484076433,
+        "stages_ms": {
+          "inference": {
+            "max": 5.6604,
+            "mean": 4.265282271762207,
+            "mean_trim10": 4.290276595744681,
+            "p50": 4.3679499999999996,
+            "p95": 4.86479
+          },
+          "postprocess": {
+            "max": 0.0711,
+            "mean": 0.010730679405520183,
+            "mean_trim10": 0.010378512396694226,
+            "p50": 0.0094,
+            "p95": 0.016494999999999992
+          },
+          "preprocess": {
+            "max": 1.3294,
+            "mean": 0.5530904458598728,
+            "mean_trim10": 0.5443813238770687,
+            "p50": 0.5378,
+            "p95": 0.7272999999999998
+          },
+          "read": {
+            "max": 64.0806,
+            "mean": 1.3449290870488324,
+            "mean_trim10": 1.2174317966903063,
+            "p50": 1.21125,
+            "p95": 1.7371899999999998
+          }
+        },
+        "throughput_fps": 161.82650915310222,
+        "throughput_implied_by_e2e_fps": 161.95982529795967,
+        "unaccounted_mean_ms": 0.0003382165605092524,
+        "wait_stages": [],
+        "wait_sum_mean_ms": 0.0,
+        "warmup_seconds": 2.0
+      },
+      "b": {
+        "bottleneck_p95_over_p50": 1.2003878953823335,
+        "bottleneck_stage": "inference",
+        "concurrency_littles_law": 0.9990673398393822,
+        "drift": {
+          "first_decile_ms": 4.701406306306306,
+          "last_decile_ms": 5.782674774774772,
+          "ratio": 1.2299883052052085
+        },
+        "e2e_ms": {
+          "max": 64.9357,
+          "mean": 5.233604932735432,
+          "mean_trim10": 5.1360235294117675,
+          "p50": 5.1578,
+          "p95": 6.14571
+        },
+        "frames_counted": 1115,
+        "frames_warmup_discarded": 418,
+        "order": {
+          "emitted": 1533,
+          "first_violation_at_frame": null,
+          "in_submission_order": true,
+          "order_violations": 0
+        },
+        "overlap_ceiling_x": 1.5000034189526474,
+        "pipelined": false,
+        "service_sum_mean_ms": 5.233303677130044,
+        "stage_sum_mean_ms": 5.233303677130044,
+        "stages_ms": {
+          "inference": {
+            "max": 6.919899999999999,
+            "mean": 3.4888611659192827,
+            "mean_trim10": 3.470621414342628,
+            "p50": 3.5061,
+            "p95": 4.208679999999999
+          },
+          "postprocess": {
+            "max": 0.037,
+            "mean": 0.011573183856502238,
+            "mean_trim10": 0.011194175715695961,
+            "p50": 0.0097,
+            "p95": 0.0193
+          },
+          "preprocess": {
+            "max": 1.3708,
+            "mean": 0.498358744394619,
+            "mean_trim10": 0.4872972111553784,
+            "p50": 0.4806,
+            "p95": 0.6685099999999995
+          },
+          "read": {
+            "max": 59.642399999999995,
+            "mean": 1.2345105829596403,
+            "mean_trim10": 1.1443701894317035,
+            "p50": 1.1529,
+            "p95": 1.7191800000000002
+          }
+        },
+        "throughput_fps": 190.89468018313008,
+        "throughput_implied_by_e2e_fps": 191.07288625191148,
+        "unaccounted_mean_ms": 0.00030125560538785123,
+        "wait_stages": [],
+        "wait_sum_mean_ms": 0.0,
+        "warmup_seconds": 2.0
+      }
+    },
+    {
+      "pair": 4,
+      "a": {
+        "bottleneck_p95_over_p50": 1.1085505179294348,
+        "bottleneck_stage": "inference",
+        "concurrency_littles_law": 0.9992127794515167,
+        "drift": {
+          "first_decile_ms": 8.992501639344258,
+          "last_decile_ms": 8.994373770491803,
+          "ratio": 1.000208188024048
+        },
+        "e2e_ms": {
+          "max": 128.035,
+          "mean": 9.514881239804241,
+          "mean_trim10": 9.305505989110701,
+          "p50": 9.2816,
+          "p95": 10.19354
+        },
+        "frames_counted": 613,
+        "frames_warmup_discarded": 291,
+        "order": {
+          "emitted": 904,
+          "first_violation_at_frame": null,
+          "in_submission_order": true,
+          "order_violations": 0
+        },
+        "overlap_ceiling_x": 1.334627708189455,
+        "pipelined": false,
+        "service_sum_mean_ms": 9.514362805872741,
+        "stage_sum_mean_ms": 9.514362805872741,
+        "stages_ms": {
+          "inference": {
+            "max": 8.1418,
+            "mean": 7.128851549755285,
+            "mean_trim10": 7.110062976406525,
+            "p50": 6.9411000000000005,
+            "p95": 7.69456
+          },
+          "postprocess": {
+            "max": 0.0543,
+            "mean": 0.018731158238172934,
+            "mean_trim10": 0.018249551166965895,
+            "p50": 0.018099999999999998,
+            "p95": 0.0233
+          },
+          "preprocess": {
+            "max": 1.8663,
+            "mean": 0.8470035889070151,
+            "mean_trim10": 0.8280856624319421,
+            "p50": 0.809,
+            "p95": 1.1067999999999998
+          },
+          "read": {
+            "max": 119.6335,
+            "mean": 1.519776508972268,
+            "mean_trim10": 1.3213673321234125,
+            "p50": 1.3065,
+            "p95": 1.7435
+          }
+        },
+        "throughput_fps": 105.01579097713199,
+        "throughput_implied_by_e2e_fps": 105.09852669696316,
+        "unaccounted_mean_ms": 0.0005184339315000841,
+        "wait_stages": [],
+        "wait_sum_mean_ms": 0.0,
+        "warmup_seconds": 2.0
+      },
+      "b": {
+        "bottleneck_p95_over_p50": 1.25365975409925,
+        "bottleneck_stage": "inference",
+        "concurrency_littles_law": 0.9987966065821993,
+        "drift": {
+          "first_decile_ms": 10.939726829268288,
+          "last_decile_ms": 13.511390243902436,
+          "ratio": 1.2350756517753154
+        },
+        "e2e_ms": {
+          "max": 157.64770000000001,
+          "mean": 14.303352173913039,
+          "mean_trim10": 13.189997849462365,
+          "p50": 12.55355,
+          "p95": 23.344849999999983
+        },
+        "frames_counted": 414,
+        "frames_warmup_discarded": 284,
+        "order": {
+          "emitted": 698,
+          "first_violation_at_frame": null,
+          "in_submission_order": true,
+          "order_violations": 0
+        },
+        "overlap_ceiling_x": 1.486222088668332,
+        "pipelined": false,
+        "service_sum_mean_ms": 14.302469082125603,
+        "stage_sum_mean_ms": 14.302469082125603,
+        "stages_ms": {
+          "inference": {
+            "max": 20.9773,
+            "mean": 9.62337270531401,
+            "mean_trim10": 9.556377419354835,
+            "p50": 9.2151,
+            "p95": 11.552599999999998
+          },
+          "postprocess": {
+            "max": 1.5061,
+            "mean": 0.02907270531400968,
+            "mean_trim10": 0.023838172043010773,
+            "p50": 0.0233,
+            "p95": 0.040769999999999994
+          },
+          "preprocess": {
+            "max": 4.5495,
+            "mean": 1.3019016908212555,
+            "mean_trim10": 1.2708553763440857,
+            "p50": 1.30295,
+            "p95": 1.896035
+          },
+          "read": {
+            "max": 147.39440000000002,
+            "mean": 3.3481219806763285,
+            "mean_trim10": 2.1771048387096767,
+            "p50": 1.5249000000000001,
+            "p95": 11.28451499999996
+          }
+        },
+        "throughput_fps": 69.829547258428,
+        "throughput_implied_by_e2e_fps": 69.91368092186359,
+        "unaccounted_mean_ms": 0.0008830917874362854,
+        "wait_stages": [],
+        "wait_sum_mean_ms": 0.0,
+        "warmup_seconds": 2.0
+      }
+    }
+  ],
+  "stage_ratio_b_over_a": {
+    "read": {
+      "n": 4,
+      "mean": 0.9802279371378448,
+      "min": 0.8037437657879395,
+      "max": 1.1671641791044778,
+      "stdev": 0.14968926822379966,
+      "cv": 0.15270863291335632
+    },
+    "preprocess": {
+      "n": 4,
+      "mean": 1.0284383026497301,
+      "min": 0.5951772836538461,
+      "max": 1.6105686032138442,
+      "stdev": 0.42620776978826413,
+      "cv": 0.41442230291321985
+    },
+    "inference": {
+      "n": 4,
+      "mean": 0.9817142942133985,
+      "min": 0.8013890030410125,
+      "max": 1.327613778795868,
+      "stdev": 0.24792144563029134,
+      "cv": 0.2525393050622117
+    },
+    "postprocess": {
+      "n": 4,
+      "mean": 0.9448857641755869,
+      "min": 0.6431924882629108,
+      "max": 1.2872928176795582,
+      "stdev": 0.27818084207262256,
+      "cv": 0.2944068506687001
+    }
+  },
+  "throughput_ratio": {
+    "n": 4,
+    "mean": 1.035965501069067,
+    "min": 0.664943306227479,
+    "max": 1.3198507429884379,
+    "stdev": 0.2840665169195925,
+    "cv": 0.2742046107003075
+  }
+}
