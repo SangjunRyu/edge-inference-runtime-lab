@@ -14,6 +14,14 @@ What this is for, in order:
    model on the same silicon, which neither implementation performs, so the two
    must agree there or one of them is mistiming and nothing else means
    anything.
+
+   Every ratio is formed **inside a pair and only then aggregated**, which is
+   the point of pairing and was for a while not what this did: it divided a
+   median of C++ runs by a median of Python runs, taking the two halves of the
+   ratio from different moments on a machine that moves. The difference is not
+   academic. A five-pair run reported `inference` at 0.92 and called the
+   control held, while the per-pair ratios ran 0.72 to 1.01 -- a 40% swing on
+   the one stage neither implementation performs.
 2. **Phase 3.** Every C++ optimisation is measured against Python and against
    the previous C++ build with this, not against a number from yesterday.
 3. **The GIL.** `--mode async` runs both overlapped pipelines. W2 attributed
@@ -62,7 +70,7 @@ def parse_args():
                    help="async mode only; 1 matches Python's single "
                         "postprocess worker, which is what makes the "
                         "comparison about the language rather than the design")
-    p.add_argument("--model", required=True)
+    p.add_argument("--model", default=None)
     p.add_argument("--device", default="CPU", help="OpenVINO device: CPU|GPU|NPU")
     p.add_argument("--source", default=None)
     p.add_argument("--frames", type=int, default=40000)
@@ -73,6 +81,17 @@ def parse_args():
                    help="ask the C++ side for the fused preprocessing path")
     p.add_argument("--pairs", type=int, default=3)
     p.add_argument("--cooldown", type=float, default=15.0)
+    p.add_argument("--no-alternate-order", dest="alternate_order",
+                   action="store_false",
+                   help="run C++ first in every pair. The default alternates, "
+                        "because whatever warms up inside a pair otherwise "
+                        "lands entirely on the second half and it is always "
+                        "the same half")
+    p.add_argument("--reanalyse", default=None, metavar="RESULT.json",
+                   help="re-report a saved run under the current criteria "
+                        "instead of measuring. Every pair is kept in full, so "
+                        "correcting a criterion costs no machine time -- and "
+                        "the criteria here have been corrected four times")
     p.add_argument("--tag", default="impl")
     p.add_argument("--out-dir", default="results")
     return p.parse_args()
@@ -138,6 +157,18 @@ def run_python(args, backend, height: int, width: int) -> dict:
 
 def main() -> int:
     args = parse_args()
+    if args.reanalyse:
+        saved = json.loads(Path(args.reanalyse).read_text(encoding="utf-8"))
+        sa = dict(saved["meta"]["args"])
+        sa["reanalyse"] = args.reanalyse
+        sa.setdefault("mode", "async" if "async" in saved["meta"]["mode"]
+                      else "sync")
+        print(f"re-reading {args.reanalyse}: {len(saved['pairs'])} pairs,"
+              f" {sa['mode']} mode, no machine time spent")
+        return report(Namespace(**sa), saved["pairs"], reanalysed=True)
+    if args.model is None:
+        print("--model is required unless --reanalyse is given")
+        return 1
     if args.cpp is None:
         args.cpp = ("cpp/build/run_async_cpp.exe" if args.mode == "async"
                     else "cpp/build/run_sync_cpp.exe")
@@ -161,22 +192,37 @@ def main() -> int:
 
     tmpdir = tempfile.mkdtemp(prefix="impl_")
     pairs = []
+    def show(label, r):
+        print(f"  {label:<7} {r['throughput_fps']:7.2f} FPS   "
+              f"E2E p50 {r['e2e_ms']['p50']:6.2f} ms   "
+              f"drift {r['drift']['ratio']:.2f}x")
+        return r
+
     for i in range(max(1, args.pairs)):
-        print(f"\n--- pair {i + 1}/{args.pairs} ---")
-        c = run_cpp(args, tmpdir)
-        print(f"  cpp     {c['throughput_fps']:7.2f} FPS   "
-              f"E2E p50 {c['e2e_ms']['p50']:6.2f} ms   "
-              f"drift {c['drift']['ratio']:.2f}x")
-        noise.cooldown(args.cooldown, verbose=False)
+        # The order inside a pair alternates. With C++ always first, anything
+        # that warms up between the two halves is charged to Python every
+        # time, and a paired design cannot cancel a bias it applies uniformly.
+        cpp_first = (i % 2 == 0) or not args.alternate_order
+        print(f"\n--- pair {i + 1}/{args.pairs} "
+              f"({'cpp first' if cpp_first else 'python first'}) ---")
+        halves = [("cpp", lambda: show("cpp", run_cpp(args, tmpdir))),
+                  ("python", lambda: show("python", run_python(
+                      args, backend, height, width)))]
+        if not cpp_first:
+            halves.reverse()
 
-        p = run_python(args, backend, height, width)
-        print(f"  python  {p['throughput_fps']:7.2f} FPS   "
-              f"E2E p50 {p['e2e_ms']['p50']:6.2f} ms   "
-              f"drift {p['drift']['ratio']:.2f}x")
-        noise.cooldown(args.cooldown, verbose=False)
+        got = {}
+        for name, fn in halves:
+            got[name] = fn()
+            noise.cooldown(args.cooldown, verbose=False)
 
-        pairs.append({"pair": i + 1, "cpp": c, "python": p})
+        pairs.append({"pair": i + 1, "cpp_first": cpp_first,
+                      "cpp": got["cpp"], "python": got["python"]})
 
+    return report(args, pairs)
+
+
+def report(args, pairs: list, reanalysed: bool = False) -> int:
     # A run that never reached steady state describes a machine that was still
     # warming up, so it is reported and excluded rather than averaged in.
     def drifted(r):
@@ -185,39 +231,86 @@ def main() -> int:
 
     usable = [q for q in pairs if not drifted(q["cpp"]) and not drifted(q["python"])]
     skipped = len(pairs) - len(usable)
+    # A pair counts when both halves reached steady state. The rule stays put:
+    # re-reading the GIL run under a version that ignored it found two pairs
+    # with throughput ratios of 0.37 and 0.65 sitting beside a 1.04 from the
+    # pairs that held, which are broken runs and not merely warm ones. What is
+    # new is that the same figures over every pair are printed underneath, so
+    # the cost of admissibility is visible and neither set is chosen after the
+    # answer is known.
     src = usable or pairs
 
     w = 78
     print("\n" + "=" * w)
-    print(f" {len(pairs)} PAIRS, alternating in one session"
+    # How the session ran, not how the surviving subset happened to run: with
+    # one admissible pair left, `src` would call a counterbalanced session
+    # "python first in every pair".
+    orders = {q.get("cpp_first", True) for q in pairs}
+    order_note = ("order counterbalanced" if len(orders) > 1
+                  else "cpp first in every pair" if orders == {True}
+                  else "python first in every pair")
+    print(f" {len(pairs)} PAIRS, alternating in one session, {order_note}"
           + (f"  ({skipped} excluded for drift)" if skipped else ""))
     print("-" * w)
-    print(f" {'stage':<14}{'cpp ms':>10}{'python ms':>12}{'cpp/python':>12}"
-          f"{'cpp share':>12}{'py share':>11}")
+    print(f" {'stage':<13}{'cpp ms':>9}{'python ms':>11}{'cpp/python':>12}"
+          f"{'per-pair range':>17}{'CV':>8}")
 
-    ratios = {}
-    for s in STAGES:
-        c = statistics.median(q["cpp"]["stages_ms"][s]["p50"] for q in src)
-        p = statistics.median(q["python"]["stages_ms"][s]["p50"] for q in src)
-        ce = statistics.median(q["cpp"]["e2e_ms"]["p50"] for q in src)
-        pe = statistics.median(q["python"]["e2e_ms"]["p50"] for q in src)
-        ratios[s] = c / p if p else 0.0
-        print(f" {s:<14}{c:>10.3f}{p:>12.3f}{ratios[s]:>12.2f}"
-              f"{100 * c / ce:>11.1f}%{100 * p / pe:>10.1f}%")
+    # Each ratio is formed inside a pair and only then aggregated. Dividing a
+    # median of C++ runs by a median of Python runs takes the two halves from
+    # different moments, which on this machine is not a ratio of anything.
+    spreads = {st: noise.spread(
+        [q["cpp"]["stages_ms"][st]["p50"] / q["python"]["stages_ms"][st]["p50"]
+         for q in src if q["python"]["stages_ms"][st]["p50"]])
+        for st in STAGES}
+    ratios = {st: spreads[st]["mean"] for st in STAGES}
 
-    tp = noise.spread([q["cpp"]["throughput_fps"] / q["python"]["throughput_fps"]
-                       for q in src if q["python"]["throughput_fps"]])
+    ce = statistics.median(q["cpp"]["e2e_ms"]["p50"] for q in src)
+    pe = statistics.median(q["python"]["e2e_ms"]["p50"] for q in src)
+    for st in STAGES:
+        c = statistics.median(q["cpp"]["stages_ms"][st]["p50"] for q in src)
+        pm = statistics.median(q["python"]["stages_ms"][st]["p50"] for q in src)
+        d = spreads[st]
+        rng = f"{d['min']:.2f} - {d['max']:.2f}" if len(src) > 1 else "one pair"
+        cv = f"{100 * d['cv']:.0f}%" if len(src) > 1 else "--"
+        print(f" {st:<13}{c:>9.3f}{pm:>11.3f}{d['mean']:>12.2f}{rng:>17}{cv:>8}")
+
+    for who, key, e in (("cpp", "cpp", ce), ("py", "python", pe)):
+        cells = "".join(
+            f"{st[:4]} {100 * statistics.median(q[key]['stages_ms'][st]['p50'] for q in src) / e:4.1f}%  "
+            for st in STAGES)
+        print(f" {'share ' + who:<13}{cells}")
+
+    def tp_of(group):
+        return noise.spread([q["cpp"]["throughput_fps"] / q["python"]["throughput_fps"]
+                             for q in group if q["python"]["throughput_fps"]])
+
+    tp = tp_of(src)
     print("-" * w)
+    label = f"   {len(src)} steady pair(s)" if skipped else ""
     if len(src) < 2:
         # One pair has no spread, so its CV is 0.0 and every steadiness test
         # passes trivially -- the same trap run_ab had. Report the observation
         # and claim nothing.
         print(f" throughput    cpp/python x{tp['mean']:.2f}"
-              f"  from ONE usable pair of {len(pairs)}: an observation,"
-              f" not a measurement")
+              f"  from ONE pair: an observation, not a measurement")
     else:
         print(f" throughput    cpp/python x{tp['mean']:.2f}  "
-              f"(min {tp['min']:.2f}, max {tp['max']:.2f}, CV {100 * tp['cv']:.1f}%)")
+              f"(min {tp['min']:.2f}, max {tp['max']:.2f},"
+              f" CV {100 * tp['cv']:.1f}%){label}")
+    if skipped:
+        # What admissibility removed, so its cost is on the page rather than in
+        # a decision no one can see.
+        t2 = tp_of(pairs)
+        c2 = noise.spread(
+            [q["cpp"]["stages_ms"]["inference"]["p50"]
+             / q["python"]["stages_ms"]["inference"]["p50"] for q in pairs])
+        extra = (f"control x{c2['mean']:.2f} CV {100 * c2['cv']:.0f}%"
+                 if args.mode == "sync" else "no control in async mode")
+        print(f" {'all ' + str(len(pairs)) + ' pairs':<13} cpp/python"
+              f" x{t2['mean']:.2f}  (min {t2['min']:.2f}, max {t2['max']:.2f},"
+              f" CV {100 * t2['cv']:.1f}%)")
+        print(f" {'':<13} including the {skipped} excluded for drift;"
+              f" {extra}")
 
     # The cross-validation, corrected.
     #
@@ -236,16 +329,43 @@ def main() -> int:
         # The control is `inference`: the same model on the same silicon,
         # performed by neither implementation, so the two must agree there or
         # one of them is mistiming and nothing else means anything.
-        c_ratio = ratios["inference"]
-        print(f" inference    cpp/python x{c_ratio:.2f}"
-              f"  <- the control: neither implementation performs this")
-        if c_ratio < 0.85 or c_ratio > 1.18:
-            print(" <-- CHECK: the two disagree about the one stage neither of")
-            print("     them performs. That is an instrumentation finding and it")
-            print("     outranks the speed numbers above.")
+        d = spreads["inference"]
+        print(f" control       inference x{d['mean']:.2f}  "
+              f"(min {d['min']:.2f}, max {d['max']:.2f},"
+              f" CV {100 * d['cv']:.1f}%)")
+        # A control detects the machine *changing* between the two halves of a
+        # pair, so what it has to hold is its spread. Its level was assumed to
+        # be 1.00 on the grounds that neither implementation performs the
+        # inference -- true, but they do not dispatch it the same way either:
+        # Python goes through ONNX Runtime's OpenVINO provider and C++ through
+        # OpenVINO directly. A level that reproduces to a few percent across
+        # pairs is those two runtimes, and it is a result rather than a fault.
+        if len(src) < 2:
+            print(" One pair, so the control has no spread to judge and this"
+                  " line proves")
+            print(" nothing. Run more pairs.")
+        elif d["cv"] > 0.10:
+            print(f" <-- CHECK: the control moved {100 * d['cv']:.0f}% between"
+                  f" pairs. The machine")
+            print("     changed between the two halves, so every ratio above"
+                  " carries that")
+            print("     movement as well as the implementations. Quote the"
+                  " ranges, not the")
+            print("     means, and prefer a cooler machine.")
         else:
-            print(" The control held, so the differences elsewhere are the")
-            print(" implementations rather than the timers.")
+            print(f" The control holds to {100 * d['cv']:.0f}% across pairs,"
+                  f" so the pairing cancelled the")
+            print(" machine's movement and the ratios above are the"
+                  " implementations.")
+            if d["mean"] < 0.90 or d["mean"] > 1.11:
+                print(f" Its level is {d['mean']:.2f}, not 1.00, and that is"
+                      f" the two runtimes: Python")
+                print(" reaches the device through ONNX Runtime's OpenVINO"
+                      " provider, C++ through")
+                print(" OpenVINO directly. A constant offset there is a"
+                      " finding, not a fault --")
+                print(" what would invalidate the ratios is the control"
+                      " moving.")
     else:
         # There is no control in async mode, and saying so is better than
         # choosing a bad one. `read` was tried and came out at 0.44x: the
@@ -274,6 +394,10 @@ def main() -> int:
               f" quote the range, not the mean.")
     print("=" * w)
 
+    if reanalysed:
+        print("\nre-read only; the saved file is left as it was measured")
+        return 0
+
     meta = {"tag": args.tag, "mode": f"impl-{args.mode}", "args": vars(args),
             "cpp_binary": str(Path(args.cpp).resolve()),
             "pairs_excluded_for_drift": skipped,
@@ -285,6 +409,7 @@ def main() -> int:
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps({"meta": meta, "pairs": pairs,
                                "stage_ratio_cpp_over_python": ratios,
+                               "stage_ratio_paired": spreads,
                                "throughput_ratio": tp,
                                "inference_ratio_cpp_over_python": ratios["inference"]},
                               indent=2),

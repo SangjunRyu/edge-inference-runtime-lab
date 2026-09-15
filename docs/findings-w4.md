@@ -38,6 +38,13 @@ same silicon and neither implementation performs it, so the two must agree
 there or one of them is mistiming and nothing else means anything. They agree
 to 2%.
 
+> **Corrected later.** That 2% was one admissible pair, and it was a
+> coincidence. Six counterbalanced pairs put the ratio at **0.86 with a CV of
+> 3.2%**: the two do not dispatch the inference the same way, Python going
+> through ONNX Runtime's OpenVINO provider and C++ through OpenVINO directly.
+> The row is still the control, but what a control has to hold is its spread.
+> See [the re-measurement](#the-sequential-comparison-re-measured----and-three-faults-in-the-instrument).
+
 The rest is what the port was expected to show and roughly the size expected:
 
 * **`postprocess` 0.11x** -- a softmax and a top-5 over 1000 floats. NumPy
@@ -49,6 +56,13 @@ The rest is what the port was expected to show and roughly the size expected:
 * **`preprocess` 1.00x** -- identical, because both call the same OpenCV
   primitives in the same order. That is the baseline phase 3's fused path has
   to beat, and it is a fair one.
+
+> **Corrected later.** Also one pair. Six counterbalanced pairs put it at
+> **0.66 (CV 2%)**, and a five-pair run at 0.35. The C++ preprocessing has not
+> changed a line since phase 0 -- `git diff` confirms it -- yet the same code
+> measures 0.24 ms on a cool machine and 1.02 ms on a warm one. The 1.00x was
+> both implementations caught at the warm end of that range on the same
+> afternoon.
 
 Throughput is **not** reported. Three of four pairs drifted outside 0.95-1.05x
 and were excluded, leaving one usable pair, and one pair has no spread: its CV
@@ -287,6 +301,115 @@ continuously where an inline one decodes between inferences. A control that the
 comparison itself moves reports drift that is not there, which is what the
 first run of this did at `read` 0.83x.
 
+## The sequential comparison, re-measured -- and three faults in the instrument
+
+Phase 1 reported the C++/Python stage ratios from **one admissible pair**, and
+declined to report throughput at all. Closing that was meant to be a tighter
+number. It produced three defects in the measuring instead, and they are worth
+more than the number was.
+
+### The ratios were not formed inside the pairs
+
+`compare_impl` divided a **median of C++ runs by a median of Python runs**. The
+two halves of every ratio came from different moments on a machine that moves,
+which is the one thing pairing exists to prevent. Throughput had been paired
+correctly since W2; the stage table never was.
+
+Re-reading a five-pair run under the corrected arithmetic:
+
+| stage | cpp/python | per-pair range | CV |
+|---|---|---|---|
+| read | 0.55 | 0.39 - 0.79 | 39% |
+| preprocess | 0.35 | 0.20 - 0.50 | 44% |
+| **inference (control)** | 0.88 | **0.72 - 1.01** | 17% |
+| postprocess | 0.09 | 0.04 - 0.11 | 43% |
+
+**The control swings 40%** on the one stage neither implementation performs.
+Aggregated first it reads 0.92 and passes; the fault is invisible to any check
+applied after averaging, which is where the check was.
+
+### C++ ran first in every pair
+
+The per-pair control slid **1.01, 0.90, 0.86, 0.72, 0.83** down one session --
+a shape no implementation can produce. Whatever warms up between the halves of
+a pair was charged to Python every time, and *a paired design cannot cancel a
+bias it applies uniformly*. The order now alternates.
+
+**The hypothesis was wrong.** Six counterbalanced pairs:
+
+```
+cpp first    1.254  1.362  1.207   mean 1.274
+python first 1.333  1.293  1.242   mean 1.289
+```
+
+1.2% apart against a 4.6% spread. The slide was session-long drift, not order.
+The fix stays because the design was indefensible either way, but it bought
+nothing, and that is the result.
+
+### `inference` is not the control it was described as
+
+Six counterbalanced pairs put it at **0.86 with a CV of 3.2%** -- and the
+five-pair run agrees on the level. A ratio that reproduces to 3% is not a timer
+fault and not drift. It is a constant, and its cause was already written at the
+top of the tool: **Python reaches the NPU through ONNX Runtime's OpenVINO
+provider, C++ through OpenVINO directly.** Different runtimes to the same
+silicon.
+
+So Phase 1's "they agree to 2%, so the timers are validated" was **one pair's
+worth of coincidence**. The two paths differ by 10-16% on the inference stage,
+reproducibly.
+
+A control detects the machine *changing* between the halves of a pair, so what
+it has to hold is its **spread**, not its level. The check is now on the CV, and
+the level is reported as a finding: the OpenVINO EP costs 10-16% over the C API
+on this path, which is a second implementation's worth of evidence about
+something W2 could only assume.
+
+### What the throughput ratio actually is
+
+| run | pairs | throughput | control |
+|---|---|---|---|
+| counterbalanced | 6 | **1.28** (1.21 - 1.36, CV 4.6%) | 0.86, CV 3.2% |
+| cpp-first | 5 | 1.47 (1.23 - 1.83, CV 21.5%) | 0.86, CV 16.8% |
+
+The second's control moved 17%, so its spread is the machine. The first's holds
+to 3%, but only **one of its six pairs** met the steady-state rule, because by
+then the laptop had been measuring for hours -- so the 1.28 is quoted from all
+six pairs with that said plainly rather than promoted to a headline.
+
+**C++ sequential runs somewhere near 1.3x Python's throughput**, and the stage
+table says why: the C++ frame is 4.60 ms against 6.14 ms, which predicts 1.34.
+
+### The number that matters is the contrast with the overlapped case
+
+```
+sequential   cpp/python  x1.28      host work is on the critical path
+overlapped   cpp/python  x1.04      host work is hidden behind the device
+```
+
+**Python's overhead costs ~25% sequentially and 4% overlapped.** It does not
+shrink -- the host stages are just as much faster in C++ either way. Overlap
+moves them off the critical path, and a cost that is not on the critical path
+is not a cost. That is the same result W2 reached about the pipeline, arriving
+from the other direction: *the reason to overlap is not that the host is slow,
+it is that the host stops mattering.*
+
+### Saved runs can be re-read
+
+Every criterion above was corrected **after** the runs it applies to. All four
+paired comparisons in this repository were re-read under the corrected ones
+without spending another minute on the machine, because the pairs are saved in
+full: `compare_impl --reanalyse results/....json`. The criteria here have been
+corrected four times; this is the first time that cost nothing.
+
+Re-reading also confirmed what **not** to change. A version that dropped the
+steady-state rule entirely was tried, on the grounds that it rejected five of
+six pairs while the control held; re-reading the GIL run under it surfaced two
+pairs with throughput ratios of 0.37 and 0.65 beside the 1.04 from the pairs
+that held. Those are broken runs, not warm ones. The rule stayed, and the
+figures over every pair are now printed beneath the admissible ones so the cost
+of admissibility is on the page instead of in a decision nobody can see.
+
 ## Still to do
 
 - **Everything above, on a machine that holds still.** Every pair in every
@@ -296,3 +419,13 @@ first run of this did at `read` 0.83x.
   not have one.
 - **The fused path in the async runner.** `--fused` is wired through both, but
   only the sequential one has been measured with it.
+- **`compare_variants` has the same two faults.** It forms its ratios inside
+  pairs already, but it runs A before B in every pair and judges its control by
+  level rather than spread. Phase 3's numbers were read under both, so they
+  deserve a re-read once the fixes are carried across -- and re-reading is free
+  now, which is the point of `--reanalyse`.
+- **The OpenVINO EP's 10-16%.** The control's level says ONNX Runtime's
+  provider costs that much over the C API per inference on this path. It is
+  reproducible across three runs and entirely unattributed: it could be the
+  provider's binding, an extra copy, or the way either timer brackets the call.
+  Portable to the MX150, and it needs no accelerator to chase.
