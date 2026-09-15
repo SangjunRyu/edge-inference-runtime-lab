@@ -21,6 +21,13 @@ in this order:
    separated out. The same async pipeline in C++ on the same device separates
    them.
 
+> **Do the port on the gram.** Code does not need the target machine to be
+> written, and the gram is the only machine that will ever have the NPU, so
+> porting now means cross-validating the C++ pipeline against the Python
+> numbers on the device the whole W2 result rests on. After handover that check
+> is impossible. Dependencies and order of work:
+> [`w4-setup.md`](w4-setup.md).
+
 ## Phase 0 — toolchain, and nothing else
 
 This is where the time actually goes, so it gets its own phase and its own
@@ -34,13 +41,15 @@ building either from source on an 8 GB laptop is a day lost:
 
 | | what to get | why not the alternative |
 |---|---|---|
-| ONNX Runtime | the official release **zip** (headers + `onnxruntime.lib` + `.dll`) | building from source needs hours and a large toolchain |
-| OpenCV | the prebuilt Windows package (`opencv_world4xx.lib`) | same |
+| OpenVINO | **already installed** — the pip wheel ships headers, `.lib` and `OpenVINOConfig.cmake` | a separate archive would risk a version mismatch with the Python results |
+| ONNX Runtime | the official release **zip**, on the 550XBE | building from source with the OpenVINO EP costs a day and buys nothing here |
+| OpenCV | the prebuilt Windows package (`opencv_world500.lib`) | `opencv-python` has no C++ headers; building it is the same day lost |
 | Build | CMake + **MSVC Build Tools** | full Visual Studio is not needed |
-| Packages | none | vcpkg compiles from source; slow here, and not needed for two prebuilt libraries |
+| Packages | none | vcpkg compiles from source; slow here, and unnecessary for prebuilt libraries |
 
-The ORT zip must match the provider: the plain CPU zip for the CPU rows, the
-DirectML zip if the MX150 is to be reached over DML.
+Engine choice, and its cost, is in [`w4-setup.md`](w4-setup.md): OpenVINO C++
+reaches the gram's CPU, iGPU and NPU today; ONNX Runtime C++ with DirectML is
+added later for the MX150.
 
 ## Phase 1 — sequential pipeline, identical output schema
 
