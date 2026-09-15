@@ -68,11 +68,74 @@ The criterion is now the absolute time of the stage neither implementation
 performs. Shares are still printed, because they are informative, but a
 difference in them is not evidence of anything.
 
+## Phase 2 -- the overlapped pipeline
+
+NPU, 360p, 10 s, in-flight 4:
+
+```
+ preprocess     1.22 ms        q_read      0.14 ms
+ inference     21.28 ms        q_inflight  5.29 ms   (18.5%)
+ postprocess    0.04 ms        q_output    0.05 ms
+                               q_reorder   0.04 ms
+ E2E           28.64 ms        throughput  169.72 FPS
+ resident       4.86 frames (Little's Law, in-flight 4 plus queues)
+ order         emitted 1789  violations 0  IN SUBMISSION ORDER
+```
+
+Against the C++ sequential run on the same device and clip (~142 FPS), overlap
+buys throughput and costs latency, the same shape W2 measured in Python.
+`inference` rises from ~7 ms to 21 ms because four requests share one NPU --
+the per-request cost of concurrency, visible here as it was there.
+
+### Completions arrive in order, so the reorder buffer never fires
+
+`out_of_order_arrivals 0, max_displacement 0`. The Python pipeline saw 152 of
+200 arrive out of order on the same clip.
+
+The structures differ. In C++ the completion callback does nothing but stamp
+the time and hand the slot to one postprocess worker, which drains its queue in
+FIFO order; OpenVINO completes the requests in submission order, so nothing
+ever overtakes. In Python the postprocessing ran off ONNX Runtime's completion
+path and genuinely raced.
+
+**So the reorder machinery here is correct but untested by this workload.** The
+Python side has `--stall-every` to inject an asymmetry and force the case; the
+C++ side does not yet, and until it does, "0 violations" says less than the same
+words said in W2.
+
+### Three bugs, and the one that matters
+
+- **The callback descriptor was a stack local.**
+  `ov_infer_request_set_callback` takes a `const ov_callback_t*` and keeps the
+  pointer, so passing the address of a loop-local left it dangling the moment
+  the constructor advanced. With one slot it worked by accident; with two or
+  more the pipeline hung. Fixed by giving each slot its own descriptor. This is
+  exactly the ownership hazard the RAII wrapper exists to surface, and it was
+  found by a hang rather than by the wrapper -- worth remembering when phase 3
+  starts reusing buffers.
+- **The completion callback blocked on a bounded queue.** It runs on an
+  OpenVINO thread; blocking there deadlocks the runtime against its own
+  `wait`. The output queue is unbounded now and the callback does the least
+  possible. Backpressure is not lost -- it lives in the slot pool.
+- **`ov_infer_request_get_output_tensor` returns `REQUEST_BUSY` from the
+  callback path.** The callback runs before the request leaves its running
+  state, so the collector calls `ov_infer_request_wait` first -- which returns
+  immediately, the work being done. The API makes the submit/collect split
+  explicit whether or not the structure does.
+
+A fourth, of my own diagnosis rather than the code: the first attempts to
+narrow the hang reported failures that were actually exit 127, the executable
+not finding the OpenCV DLLs. The Windows loader names only the first missing
+library, so an OpenCV problem reads as an OpenVINO one. Two rounds of reasoning
+went into a hang that had not happened.
+
 ## Still to do
 
 - **Throughput on a machine that holds still.** Every pair drifted; the numbers
   above are stage ratios, which survive drift far better than a rate does.
-- **Phase 2**: the async pipeline in C++, and with it the GIL measurement W2
+- **Port `--stall-every`** so the C++ reorder path is exercised rather than
+  merely present.
+- **The paired C++/Python async comparison**, which is the GIL measurement W2
   could not separate from ONNX Runtime's thread-pool subdivision.
 - **Phase 3**: the fused preprocess against the 1.00x baseline above, the input
   tensor over a reused buffer (`ov_tensor_create_from_host_ptr` is already in

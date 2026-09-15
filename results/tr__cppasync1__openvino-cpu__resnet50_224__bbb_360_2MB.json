@@ -1,0 +1,175 @@
+{
+  "meta": {
+    "args": {
+      "backend": "openvino",
+      "cooldown": 0.0,
+      "duration_s": 1.0,
+      "frames": 40000,
+      "fused": false,
+      "inflight": 1,
+      "intra_threads": null,
+      "model": "models/resnet50_224.onnx",
+      "out_dir": "results",
+      "ov_device": "CPU",
+      "queue_size": 4,
+      "reorder": "on",
+      "repeat": 1,
+      "source": "clips/bbb_360_2MB.mp4",
+      "tag": "tr",
+      "top_k": 5,
+      "warmup": 0,
+      "warmup_s": 0.0
+    },
+    "backend": {
+      "actual_providers": [
+        "OpenVINOExecutionProvider"
+      ],
+      "engine": "openvino-c-api",
+      "fell_back_to_cpu": false,
+      "input_shape": [
+        "1",
+        "3",
+        "224",
+        "224"
+      ],
+      "model_path": "models/resnet50_224.onnx",
+      "openvino_device": "CPU",
+      "requested_backend": "openvino"
+    },
+    "env": {
+      "impl": "cpp"
+    },
+    "idle_gate": {
+      "checked": false,
+      "reason": "not implemented in cpp"
+    },
+    "impl": "cpp",
+    "mode": "async",
+    "model_input_hw": [
+      224,
+      224
+    ],
+    "sources": [
+      {
+        "fps": 30.0,
+        "frame_count": 300,
+        "height": 360,
+        "kind": "video",
+        "path": "clips/bbb_360_2MB.mp4",
+        "restarts": 0,
+        "width": 640
+      }
+    ],
+    "tag": "tr"
+  },
+  "runs": [
+    {
+      "bottleneck_p95_over_p50": 1.4776131162923944,
+      "bottleneck_stage": "inference",
+      "concurrency_littles_law": 1.920246976866834,
+      "drift": {
+        "first_decile_ms": 34.566599992103875,
+        "last_decile_ms": 81.79179999084833,
+        "ratio": 2.3662089997145284
+      },
+      "e2e_ms": {
+        "max": 97.15859999414533,
+        "mean": 55.68192432228652,
+        "mean_trim10": 55.085769695737824,
+        "p50": 53.11819998314604,
+        "p95": 79.0604799927678
+      },
+      "errors": [],
+      "frames_counted": 37,
+      "frames_warmup_discarded": 0,
+      "order": {
+        "emitted": 37,
+        "first_violation_at_frame": null,
+        "in_submission_order": true,
+        "order_violations": 0
+      },
+      "overlap_ceiling_x": 1.0437405174729395,
+      "pipelined": true,
+      "reorder": {
+        "arrivals": 37,
+        "cap": 20,
+        "forced_flushes": 0,
+        "max_depth": 1,
+        "max_displacement": 0,
+        "out_of_order_arrivals": 0
+      },
+      "service_sum_mean_ms": 28.886810807995747,
+      "stage_sum_mean_ms": 55.68115675202066,
+      "stages_ms": {
+        "inference": {
+          "max": 60.87889999616891,
+          "mean": 27.676237843037153,
+          "mean_trim10": 26.935230308233507,
+          "p50": 26.161299989325926,
+          "p95": 38.656280003488064
+        },
+        "postprocess": {
+          "max": 0.045599997974932194,
+          "mean": 0.03348918383110415,
+          "mean_trim10": 0.03334847860969603,
+          "p50": 0.03320001997053623,
+          "p95": 0.041439995402470224
+        },
+        "preprocess": {
+          "max": 0.9250000002793968,
+          "mean": 0.59567837475648,
+          "mean_trim10": 0.5911727238333586,
+          "p50": 0.6010000070091337,
+          "p95": 0.8435400144662705
+        },
+        "q_inflight": {
+          "max": 40.112399990903214,
+          "mean": 26.726291890136544,
+          "mean_trim10": 27.008703027880102,
+          "p50": 25.841399998171255,
+          "p95": 38.51154000731185
+        },
+        "q_output": {
+          "max": 0.03640001523308456,
+          "mean": 0.022989188830645102,
+          "mean_trim10": 0.022769696608355098,
+          "p50": 0.02269999822601676,
+          "p95": 0.03270001034252345
+        },
+        "q_read": {
+          "max": 0.02649999805726111,
+          "mean": 0.01889459530797762,
+          "mean_trim10": 0.018875758431738977,
+          "p50": 0.01930000144056976,
+          "p95": 0.0253999896813184
+        },
+        "q_reorder": {
+          "max": 0.04110002191737294,
+          "mean": 0.0261702697497566,
+          "mean_trim10": 0.02595757409422235,
+          "p50": 0.026299996534362435,
+          "p95": 0.0389199994970113
+        },
+        "read": {
+          "max": 10.221400007139891,
+          "mean": 0.5814054063710107,
+          "mean_trim10": 0.31476666723998886,
+          "p50": 0.3037000133190304,
+          "p95": 0.46486001228913665
+        }
+      },
+      "submitted": 37,
+      "throughput_fps": 34.4860024188902,
+      "throughput_implied_by_e2e_fps": 17.95914943980758,
+      "unaccounted_mean_ms": 0.0007675702658573869,
+      "wait_stages": [
+        "q_read",
+        "q_inflight",
+        "q_output",
+        "q_reorder"
+      ],
+      "wait_sum_mean_ms": 26.794345944024922,
+      "warmup_seconds": 0.0
+    }
+  ]
+}

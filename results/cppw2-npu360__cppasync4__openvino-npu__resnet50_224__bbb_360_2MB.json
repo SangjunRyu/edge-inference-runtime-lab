@@ -1,0 +1,175 @@
+{
+  "meta": {
+    "args": {
+      "backend": "openvino",
+      "cooldown": 0.0,
+      "duration_s": 10.0,
+      "frames": 40000,
+      "fused": false,
+      "inflight": 4,
+      "intra_threads": null,
+      "model": "models/resnet50_224.onnx",
+      "out_dir": "results",
+      "ov_device": "NPU",
+      "queue_size": 4,
+      "reorder": "on",
+      "repeat": 1,
+      "source": "clips/bbb_360_2MB.mp4",
+      "tag": "cppw2-npu360",
+      "top_k": 5,
+      "warmup": 0,
+      "warmup_s": 2.0
+    },
+    "backend": {
+      "actual_providers": [
+        "OpenVINOExecutionProvider"
+      ],
+      "engine": "openvino-c-api",
+      "fell_back_to_cpu": false,
+      "input_shape": [
+        "1",
+        "3",
+        "224",
+        "224"
+      ],
+      "model_path": "models/resnet50_224.onnx",
+      "openvino_device": "NPU",
+      "requested_backend": "openvino"
+    },
+    "env": {
+      "impl": "cpp"
+    },
+    "idle_gate": {
+      "checked": false,
+      "reason": "not implemented in cpp"
+    },
+    "impl": "cpp",
+    "mode": "async",
+    "model_input_hw": [
+      224,
+      224
+    ],
+    "sources": [
+      {
+        "fps": 30.0,
+        "frame_count": 300,
+        "height": 360,
+        "kind": "video",
+        "path": "clips/bbb_360_2MB.mp4",
+        "restarts": 5,
+        "width": 640
+      }
+    ],
+    "tag": "cppw2-npu360"
+  },
+  "runs": [
+    {
+      "bottleneck_p95_over_p50": 1.2533110361376885,
+      "bottleneck_stage": "inference",
+      "concurrency_littles_law": 4.860971890856179,
+      "drift": {
+        "first_decile_ms": 21.734176154579753,
+        "last_decile_ms": 27.93796846056536,
+        "ratio": 1.2854394968487621
+      },
+      "e2e_ms": {
+        "max": 124.02899999869987,
+        "mean": 28.640367739215687,
+        "mean_trim10": 28.34757647035645,
+        "p50": 28.209000010974705,
+        "p95": 35.27395999990404
+      },
+      "errors": [],
+      "frames_counted": 1305,
+      "frames_warmup_discarded": 484,
+      "order": {
+        "emitted": 1789,
+        "first_violation_at_frame": null,
+        "in_submission_order": true,
+        "order_violations": 0
+      },
+      "overlap_ceiling_x": 1.0865570724982951,
+      "pipelined": true,
+      "reorder": {
+        "arrivals": 1789,
+        "cap": 32,
+        "forced_flushes": 0,
+        "max_depth": 1,
+        "max_displacement": 0,
+        "out_of_order_arrivals": 0
+      },
+      "service_sum_mean_ms": 23.125325976219745,
+      "stage_sum_mean_ms": 28.63932344781492,
+      "stages_ms": {
+        "inference": {
+          "max": 108.56360002071597,
+          "mean": 21.283121302637355,
+          "mean_trim10": 21.100627621535555,
+          "p50": 21.170100022573024,
+          "p95": 26.5327199944295
+        },
+        "postprocess": {
+          "max": 0.6409000197891146,
+          "mean": 0.036932030176187215,
+          "mean_trim10": 0.03414578683813043,
+          "p50": 0.03440000000409782,
+          "p95": 0.05500001134350896
+        },
+        "preprocess": {
+          "max": 14.220099983504042,
+          "mean": 1.2200050575835308,
+          "mean_trim10": 1.1599477407707495,
+          "p50": 1.1617999989539385,
+          "p95": 1.9125000108033412
+        },
+        "q_inflight": {
+          "max": 94.36599997570738,
+          "mean": 5.289125746857353,
+          "mean_trim10": 5.252661466178106,
+          "p50": 5.321299977367744,
+          "p95": 7.002019975334406
+        },
+        "q_output": {
+          "max": 4.107500019017607,
+          "mean": 0.04879256712194261,
+          "mean_trim10": 0.0336939524559723,
+          "p50": 0.03279998782090843,
+          "p95": 0.08367999689653513
+        },
+        "q_read": {
+          "max": 14.358500018715858,
+          "mean": 0.1378937932828591,
+          "mean_trim10": 0.0447231887356209,
+          "p50": 0.02880001557059586,
+          "p95": 0.481960008619352
+        },
+        "q_reorder": {
+          "max": 1.04160001501441,
+          "mean": 0.03818536433302066,
+          "mean_trim10": 0.03190554161071746,
+          "p50": 0.03099997411482036,
+          "p95": 0.07650000043213365
+        },
+        "read": {
+          "max": 27.678299986291677,
+          "mean": 0.5852675858226701,
+          "mean_trim10": 0.4555837166192326,
+          "p50": 0.40779999108053744,
+          "p95": 1.1200599896255878
+        }
+      },
+      "submitted": 1789,
+      "throughput_fps": 169.72449289470248,
+      "throughput_implied_by_e2e_fps": 34.915752797082796,
+      "unaccounted_mean_ms": 0.0010442914007668946,
+      "wait_stages": [
+        "q_read",
+        "q_inflight",
+        "q_output",
+        "q_reorder"
+      ],
+      "wait_sum_mean_ms": 5.513997471595176,
+      "warmup_seconds": 2.0
+    }
+  ]
+}

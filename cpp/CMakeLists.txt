@@ -74,6 +74,11 @@ if(OpenCV_FOUND)
 
   add_executable(run_sync_cpp src/run_sync.cpp)
   target_link_libraries(run_sync_cpp PRIVATE eirl_core)
+
+  add_executable(run_async_cpp src/run_async.cpp)
+  target_link_libraries(run_async_cpp PRIVATE eirl_core)
+  find_package(Threads REQUIRED)
+  target_link_libraries(run_async_cpp PRIVATE Threads::Threads)
 else()
   message(WARNING
     "OpenCV not found -- building 'probe' only.\n"
@@ -84,7 +89,7 @@ endif()
 # is runnable without the caller arranging an environment. Copying only the
 # import target's DLL is not enough -- openvino_c.dll loads openvino.dll and
 # the device plugins next to it -- so the whole libs directory goes.
-foreach(tgt probe run_sync_cpp)
+foreach(tgt probe run_sync_cpp run_async_cpp)
   if(TARGET ${tgt})
     add_custom_command(TARGET ${tgt} POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E copy_directory
