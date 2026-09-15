@@ -17,7 +17,14 @@ naming is not incidental. This repository works out why.
 | W1 | Where does one frame spend its time? |
 | W2 | What changes when stages overlap? |
 | W3 | Does higher throughput still produce correct output? |
-| W4+ | Can the same pipeline be expressed with explicit C++ concurrency and memory ownership? |
+| W4 | Can the same pipeline be expressed with explicit C++ concurrency and memory ownership, and does that control reveal improvements Python cannot reach? |
+
+W3 did not stay a separate phase — ordering had to be checked in the same run
+that reported the speedup, so the checks were built into W2.
+[`docs/findings-w3.md`](docs/findings-w3.md) records what it set out to ask,
+what was answered, and the part that was not: **nothing yet verifies that the
+async pipeline produces the same predictions, only that it emits them in the
+right order.** W4 is planned in [`docs/w4-plan.md`](docs/w4-plan.md).
 
 ## The hypothesis under test
 
@@ -123,6 +130,12 @@ session, and the ratio within each pair is reported. Full write-up in
 
 Every run in every configuration emitted all frames in submission order;
 `run_ab` refuses to report a speedup for any configuration that did not.
+
+The CPU rows use ONNX Runtime's kernels and the accelerator rows use OpenVINO,
+so the same engine was run on the CPU to close that confound. It came out too
+noisy to quote (5 pairs, mean 1.01x at 29.1% CV), but the qualitative form
+holds: both CPU engines land at or below parity while both accelerators are
+above it, so **the CPU loss is not an artefact of the engine.**
 
 Two variables move the answer and they separate cleanly: **where inference
 runs** (on CPU with a pinned pool async *loses*) and **how much host work there

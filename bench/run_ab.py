@@ -43,6 +43,7 @@ def parse_args():
     p.add_argument("--frames", type=int, default=300)
     p.add_argument("--duration-s", type=float, default=0.0)
     p.add_argument("--warmup", type=int, default=100)
+    p.add_argument("--warmup-s", type=float, default=0.0)
     p.add_argument("--top-k", type=int, default=5)
     p.add_argument("--intra-threads", type=int, default=None)
     p.add_argument("--inflight", type=int, default=4)
@@ -73,6 +74,7 @@ def _child_args(args) -> Namespace:
     """The subset of the arguments the two measure_once functions read."""
     return Namespace(
         source=args.source, frames=args.frames, warmup=args.warmup,
+        warmup_s=args.warmup_s,
         duration_s=args.duration_s,
         top_k=args.top_k, queue_size=args.queue_size, inflight=args.inflight,
         reorder=args.reorder, reorder_cap=args.reorder_cap,
@@ -174,6 +176,15 @@ def main() -> int:
               f"counted no frames.")
     if not usable:
         print(" No usable pair. Nothing is reported for this configuration.")
+    elif len(usable) < 2:
+        # One pair has no spread, so its CV is 0.0 and every "is it steady
+        # enough" test passes trivially. Reporting a confident ratio from it
+        # would be the most confident-looking number in the repository and the
+        # least supported.
+        print(f" ONLY {len(usable)} USABLE PAIR of {len(pairs)}. A single pair"
+              f" has no spread, so nothing is claimed:")
+        print(f"   observed {tp[0]:.2f}x throughput, {lat[0]:.2f}x latency,"
+              f" from one measurement.")
     elif bad:
         print(f" REFUSED: {len(bad)} of {len(pairs)} pairs emitted frames out "
               f"of submission order.")

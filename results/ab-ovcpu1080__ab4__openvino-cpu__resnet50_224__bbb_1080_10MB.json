@@ -1,0 +1,911 @@
+{
+  "meta": {
+    "tag": "ab-ovcpu1080",
+    "mode": "ab",
+    "args": {
+      "model": "models/resnet50_224.onnx",
+      "backend": "openvino",
+      "ov_device": "CPU",
+      "source": "clips/bbb_1080_10MB.mp4",
+      "frames": 40000,
+      "duration_s": 10.0,
+      "warmup": 200,
+      "top_k": 5,
+      "intra_threads": null,
+      "inflight": 4,
+      "queue_size": 4,
+      "reorder": "on",
+      "reorder_cap": null,
+      "stall_timeout_s": 20.0,
+      "stall_every": 0,
+      "stall_ms": 40.0,
+      "pairs": 5,
+      "cooldown": 15.0,
+      "max_busy_pct": 25.0,
+      "no_idle_gate": true,
+      "allow_fallback": false,
+      "tag": "ab-ovcpu1080",
+      "out_dir": "results"
+    },
+    "backend": {
+      "requested_backend": "openvino",
+      "openvino_device": "CPU",
+      "actual_providers": [
+        "OpenVINOExecutionProvider",
+        "CPUExecutionProvider"
+      ],
+      "fell_back_to_cpu": false,
+      "input_shape": [
+        "1",
+        "3",
+        "224",
+        "224"
+      ]
+    },
+    "idle_gate": {
+      "checked": false,
+      "reason": "disabled"
+    },
+    "env": {
+      "timestamp_utc": "2026-09-15T01:21:31+00:00",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "python": "3.13.14",
+      "cpu_name": "Intel(R) Core(TM) Ultra 7 255H",
+      "cpu_count_logical": 16,
+      "gpus_nvidia_smi": [],
+      "ram_total_gb": 31.5,
+      "cpu_freq_mhz_at_start": 2000.0,
+      "onnxruntime_version": "1.24.1",
+      "onnxruntime_available_providers": [
+        "OpenVINOExecutionProvider",
+        "CPUExecutionProvider"
+      ],
+      "opencv_version": "5.0.0"
+    }
+  },
+  "pairs": [
+    {
+      "pair": 1,
+      "sync": {
+        "frames_counted": 0,
+        "frames_warmup_discarded": 162,
+        "stages_ms": {
+          "read": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "preprocess": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "inference": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "postprocess": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          }
+        },
+        "e2e_ms": {
+          "mean": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "stage_sum_mean_ms": 0.0,
+        "service_sum_mean_ms": 0.0,
+        "wait_sum_mean_ms": 0,
+        "wait_stages": [],
+        "unaccounted_mean_ms": 0.0,
+        "throughput_fps": 0.0,
+        "throughput_implied_by_e2e_fps": 0.0,
+        "concurrency_littles_law": 0.0,
+        "pipelined": false,
+        "bottleneck_stage": null,
+        "overlap_ceiling_x": 0.0,
+        "bottleneck_p95_over_p50": 0.0,
+        "drift": {
+          "first_decile_ms": null,
+          "last_decile_ms": null,
+          "ratio": null
+        },
+        "order": {
+          "emitted": 162,
+          "order_violations": 0,
+          "first_violation_at_frame": null,
+          "in_submission_order": true
+        }
+      },
+      "async": {
+        "frames_counted": 0,
+        "frames_warmup_discarded": 154,
+        "stages_ms": {
+          "read": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "preprocess": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "inference": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "postprocess": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "q_read": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "q_inflight": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "q_output": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "q_reorder": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          }
+        },
+        "e2e_ms": {
+          "mean": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "stage_sum_mean_ms": 0.0,
+        "service_sum_mean_ms": 0.0,
+        "wait_sum_mean_ms": 0.0,
+        "wait_stages": [
+          "q_read",
+          "q_inflight",
+          "q_output",
+          "q_reorder"
+        ],
+        "unaccounted_mean_ms": 0.0,
+        "throughput_fps": 0.0,
+        "throughput_implied_by_e2e_fps": 0.0,
+        "concurrency_littles_law": 0.0,
+        "pipelined": true,
+        "bottleneck_stage": null,
+        "overlap_ceiling_x": 0.0,
+        "bottleneck_p95_over_p50": 0.0,
+        "drift": {
+          "first_decile_ms": null,
+          "last_decile_ms": null,
+          "ratio": null
+        },
+        "order": {
+          "emitted": 154,
+          "order_violations": 0,
+          "first_violation_at_frame": null,
+          "in_submission_order": true
+        },
+        "reorder": {
+          "cap": 32,
+          "max_depth": 1,
+          "forced_flushes": 0,
+          "out_of_order_arrivals": 0,
+          "max_displacement": 0,
+          "arrivals": 154
+        },
+        "errors": []
+      },
+      "throughput_ratio": 0.0,
+      "e2e_p50_ratio": 0.0,
+      "clock_mhz": 2000.0
+    },
+    {
+      "pair": 2,
+      "sync": {
+        "frames_counted": 0,
+        "frames_warmup_discarded": 161,
+        "stages_ms": {
+          "read": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "preprocess": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "inference": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "postprocess": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          }
+        },
+        "e2e_ms": {
+          "mean": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "stage_sum_mean_ms": 0.0,
+        "service_sum_mean_ms": 0.0,
+        "wait_sum_mean_ms": 0,
+        "wait_stages": [],
+        "unaccounted_mean_ms": 0.0,
+        "throughput_fps": 0.0,
+        "throughput_implied_by_e2e_fps": 0.0,
+        "concurrency_littles_law": 0.0,
+        "pipelined": false,
+        "bottleneck_stage": null,
+        "overlap_ceiling_x": 0.0,
+        "bottleneck_p95_over_p50": 0.0,
+        "drift": {
+          "first_decile_ms": null,
+          "last_decile_ms": null,
+          "ratio": null
+        },
+        "order": {
+          "emitted": 161,
+          "order_violations": 0,
+          "first_violation_at_frame": null,
+          "in_submission_order": true
+        }
+      },
+      "async": {
+        "frames_counted": 0,
+        "frames_warmup_discarded": 186,
+        "stages_ms": {
+          "read": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "preprocess": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "inference": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "postprocess": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "q_read": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "q_inflight": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "q_output": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "q_reorder": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          }
+        },
+        "e2e_ms": {
+          "mean": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "stage_sum_mean_ms": 0.0,
+        "service_sum_mean_ms": 0.0,
+        "wait_sum_mean_ms": 0.0,
+        "wait_stages": [
+          "q_read",
+          "q_inflight",
+          "q_output",
+          "q_reorder"
+        ],
+        "unaccounted_mean_ms": 0.0,
+        "throughput_fps": 0.0,
+        "throughput_implied_by_e2e_fps": 0.0,
+        "concurrency_littles_law": 0.0,
+        "pipelined": true,
+        "bottleneck_stage": null,
+        "overlap_ceiling_x": 0.0,
+        "bottleneck_p95_over_p50": 0.0,
+        "drift": {
+          "first_decile_ms": null,
+          "last_decile_ms": null,
+          "ratio": null
+        },
+        "order": {
+          "emitted": 186,
+          "order_violations": 0,
+          "first_violation_at_frame": null,
+          "in_submission_order": true
+        },
+        "reorder": {
+          "cap": 32,
+          "max_depth": 2,
+          "forced_flushes": 0,
+          "out_of_order_arrivals": 2,
+          "max_displacement": 1,
+          "arrivals": 186
+        },
+        "errors": []
+      },
+      "throughput_ratio": 0.0,
+      "e2e_p50_ratio": 0.0,
+      "clock_mhz": 2000.0
+    },
+    {
+      "pair": 3,
+      "sync": {
+        "frames_counted": 44,
+        "frames_warmup_discarded": 200,
+        "stages_ms": {
+          "read": {
+            "mean": 7.13850000068884,
+            "mean_trim10": 7.072818422641017,
+            "p50": 7.109949990990572,
+            "p95": 9.335329983150586,
+            "max": 10.093199991388246
+          },
+          "preprocess": {
+            "mean": 1.6205068174961277,
+            "mean_trim10": 1.605336841557322,
+            "p50": 1.477750003687106,
+            "p95": 1.9989200154668652,
+            "max": 2.34979999368079
+          },
+          "inference": {
+            "mean": 33.15620681479975,
+            "mean_trim10": 32.66070525875732,
+            "p50": 32.36764999746811,
+            "p95": 38.3043500041822,
+            "max": 46.77470002206974
+          },
+          "postprocess": {
+            "mean": 0.22127272611462764,
+            "mean_trim10": 0.21617105200053438,
+            "p50": 0.19674999930430204,
+            "p95": 0.3136150015052408,
+            "max": 0.35170000046491623
+          }
+        },
+        "e2e_ms": {
+          "mean": 42.15885454720013,
+          "mean_trim10": 41.79946579173893,
+          "p50": 41.710100005730055,
+          "p95": 46.46974999195663,
+          "max": 54.589200008194894
+        },
+        "stage_sum_mean_ms": 42.136486359099344,
+        "service_sum_mean_ms": 42.136486359099344,
+        "wait_sum_mean_ms": 0,
+        "wait_stages": [],
+        "unaccounted_mean_ms": 0.02236818810078489,
+        "throughput_fps": 23.762592032530915,
+        "throughput_implied_by_e2e_fps": 23.719809533260015,
+        "concurrency_littles_law": 1.0018036611639274,
+        "pipelined": false,
+        "bottleneck_stage": "inference",
+        "overlap_ceiling_x": 1.2708476151829018,
+        "bottleneck_p95_over_p50": 1.1834146132690657,
+        "drift": {
+          "first_decile_ms": 43.71079999691574,
+          "last_decile_ms": 43.43567499745404,
+          "ratio": 0.9937057889702062
+        },
+        "order": {
+          "emitted": 244,
+          "order_violations": 0,
+          "first_violation_at_frame": null,
+          "in_submission_order": true
+        }
+      },
+      "async": {
+        "frames_counted": 2,
+        "frames_warmup_discarded": 200,
+        "stages_ms": {
+          "read": {
+            "mean": 6.944749999092892,
+            "mean_trim10": 6.944749999092892,
+            "p50": 6.944749999092892,
+            "p95": 7.287604990415275,
+            "max": 7.3256999894510955
+          },
+          "preprocess": {
+            "mean": 1.8265999970026314,
+            "mean_trim10": 1.8265999970026314,
+            "p50": 1.8265999970026314,
+            "p95": 1.91389998071827,
+            "max": 1.9235999789088964
+          },
+          "inference": {
+            "mean": 226.48045000096317,
+            "mean_trim10": 226.48045000096317,
+            "p50": 226.48045000096317,
+            "p95": 230.9956150027574,
+            "max": 231.49730000295676
+          },
+          "postprocess": {
+            "mean": 0.29585001175291836,
+            "mean_trim10": 0.29585001175291836,
+            "p50": 0.29585001175291836,
+            "p95": 0.3172250173520297,
+            "max": 0.31960001797415316
+          },
+          "q_read": {
+            "mean": 260.36985000246204,
+            "mean_trim10": 260.36985000246204,
+            "p50": 260.36985000246204,
+            "p95": 263.1775350077078,
+            "max": 263.48950000829063
+          },
+          "q_inflight": {
+            "mean": 52.67224999261089,
+            "mean_trim10": 52.67224999261089,
+            "p50": 52.67224999261089,
+            "p95": 53.45295499137137,
+            "max": 53.53969999123365
+          },
+          "q_output": {
+            "mean": 0.17995000234805048,
+            "mean_trim10": 0.17995000234805048,
+            "p50": 0.17995000234805048,
+            "p95": 0.2048350084805861,
+            "max": 0.20760000916197896
+          },
+          "q_reorder": {
+            "mean": 0.09965000208467245,
+            "mean_trim10": 0.09965000208467245,
+            "p50": 0.09965000208467245,
+            "p95": 0.1339850015938282,
+            "max": 0.13780000153928995
+          }
+        },
+        "e2e_ms": {
+          "mean": 548.8759500003653,
+          "mean_trim10": 548.8759500003653,
+          "p50": 548.8759500003653,
+          "p95": 549.6278550024726,
+          "max": 549.7114000027068
+        },
+        "stage_sum_mean_ms": 548.8693500083173,
+        "service_sum_mean_ms": 235.54765000881162,
+        "wait_sum_mean_ms": 313.32169999950565,
+        "wait_stages": [
+          "q_read",
+          "q_inflight",
+          "q_output",
+          "q_reorder"
+        ],
+        "unaccounted_mean_ms": 0.006599992047995329,
+        "throughput_fps": 15.548278967535373,
+        "throughput_implied_by_e2e_fps": 1.8219052957218012,
+        "concurrency_littles_law": 8.534076389176677,
+        "pipelined": true,
+        "bottleneck_stage": "inference",
+        "overlap_ceiling_x": 1.0400352436945877,
+        "bottleneck_p95_over_p50": 1.0199362240836904,
+        "drift": {
+          "first_decile_ms": null,
+          "last_decile_ms": null,
+          "ratio": null
+        },
+        "order": {
+          "emitted": 202,
+          "order_violations": 0,
+          "first_violation_at_frame": null,
+          "in_submission_order": true
+        },
+        "reorder": {
+          "cap": 32,
+          "max_depth": 1,
+          "forced_flushes": 0,
+          "out_of_order_arrivals": 0,
+          "max_displacement": 0,
+          "arrivals": 202
+        },
+        "errors": []
+      },
+      "throughput_ratio": 0.654317464452103,
+      "e2e_p50_ratio": 13.159305538106159,
+      "clock_mhz": 1500.0
+    },
+    {
+      "pair": 4,
+      "sync": {
+        "frames_counted": 0,
+        "frames_warmup_discarded": 192,
+        "stages_ms": {
+          "read": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "preprocess": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "inference": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "postprocess": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          }
+        },
+        "e2e_ms": {
+          "mean": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "stage_sum_mean_ms": 0.0,
+        "service_sum_mean_ms": 0.0,
+        "wait_sum_mean_ms": 0,
+        "wait_stages": [],
+        "unaccounted_mean_ms": 0.0,
+        "throughput_fps": 0.0,
+        "throughput_implied_by_e2e_fps": 0.0,
+        "concurrency_littles_law": 0.0,
+        "pipelined": false,
+        "bottleneck_stage": null,
+        "overlap_ceiling_x": 0.0,
+        "bottleneck_p95_over_p50": 0.0,
+        "drift": {
+          "first_decile_ms": null,
+          "last_decile_ms": null,
+          "ratio": null
+        },
+        "order": {
+          "emitted": 192,
+          "order_violations": 0,
+          "first_violation_at_frame": null,
+          "in_submission_order": true
+        }
+      },
+      "async": {
+        "frames_counted": 0,
+        "frames_warmup_discarded": 183,
+        "stages_ms": {
+          "read": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "preprocess": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "inference": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "postprocess": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "q_read": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "q_inflight": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "q_output": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "q_reorder": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          }
+        },
+        "e2e_ms": {
+          "mean": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "stage_sum_mean_ms": 0.0,
+        "service_sum_mean_ms": 0.0,
+        "wait_sum_mean_ms": 0.0,
+        "wait_stages": [
+          "q_read",
+          "q_inflight",
+          "q_output",
+          "q_reorder"
+        ],
+        "unaccounted_mean_ms": 0.0,
+        "throughput_fps": 0.0,
+        "throughput_implied_by_e2e_fps": 0.0,
+        "concurrency_littles_law": 0.0,
+        "pipelined": true,
+        "bottleneck_stage": null,
+        "overlap_ceiling_x": 0.0,
+        "bottleneck_p95_over_p50": 0.0,
+        "drift": {
+          "first_decile_ms": null,
+          "last_decile_ms": null,
+          "ratio": null
+        },
+        "order": {
+          "emitted": 183,
+          "order_violations": 0,
+          "first_violation_at_frame": null,
+          "in_submission_order": true
+        },
+        "reorder": {
+          "cap": 32,
+          "max_depth": 2,
+          "forced_flushes": 0,
+          "out_of_order_arrivals": 2,
+          "max_displacement": 1,
+          "arrivals": 183
+        },
+        "errors": []
+      },
+      "throughput_ratio": 0.0,
+      "e2e_p50_ratio": 0.0,
+      "clock_mhz": 2000.0
+    },
+    {
+      "pair": 5,
+      "sync": {
+        "frames_counted": 0,
+        "frames_warmup_discarded": 178,
+        "stages_ms": {
+          "read": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "preprocess": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "inference": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "postprocess": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          }
+        },
+        "e2e_ms": {
+          "mean": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "stage_sum_mean_ms": 0.0,
+        "service_sum_mean_ms": 0.0,
+        "wait_sum_mean_ms": 0,
+        "wait_stages": [],
+        "unaccounted_mean_ms": 0.0,
+        "throughput_fps": 0.0,
+        "throughput_implied_by_e2e_fps": 0.0,
+        "concurrency_littles_law": 0.0,
+        "pipelined": false,
+        "bottleneck_stage": null,
+        "overlap_ceiling_x": 0.0,
+        "bottleneck_p95_over_p50": 0.0,
+        "drift": {
+          "first_decile_ms": null,
+          "last_decile_ms": null,
+          "ratio": null
+        },
+        "order": {
+          "emitted": 178,
+          "order_violations": 0,
+          "first_violation_at_frame": null,
+          "in_submission_order": true
+        }
+      },
+      "async": {
+        "frames_counted": 0,
+        "frames_warmup_discarded": 174,
+        "stages_ms": {
+          "read": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "preprocess": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "inference": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "postprocess": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "q_read": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "q_inflight": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "q_output": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "q_reorder": {
+            "mean": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          }
+        },
+        "e2e_ms": {
+          "mean": 0.0,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "stage_sum_mean_ms": 0.0,
+        "service_sum_mean_ms": 0.0,
+        "wait_sum_mean_ms": 0.0,
+        "wait_stages": [
+          "q_read",
+          "q_inflight",
+          "q_output",
+          "q_reorder"
+        ],
+        "unaccounted_mean_ms": 0.0,
+        "throughput_fps": 0.0,
+        "throughput_implied_by_e2e_fps": 0.0,
+        "concurrency_littles_law": 0.0,
+        "pipelined": true,
+        "bottleneck_stage": null,
+        "overlap_ceiling_x": 0.0,
+        "bottleneck_p95_over_p50": 0.0,
+        "drift": {
+          "first_decile_ms": null,
+          "last_decile_ms": null,
+          "ratio": null
+        },
+        "order": {
+          "emitted": 174,
+          "order_violations": 0,
+          "first_violation_at_frame": null,
+          "in_submission_order": true
+        },
+        "reorder": {
+          "cap": 32,
+          "max_depth": 2,
+          "forced_flushes": 0,
+          "out_of_order_arrivals": 2,
+          "max_displacement": 1,
+          "arrivals": 174
+        },
+        "errors": []
+      },
+      "throughput_ratio": 0.0,
+      "e2e_p50_ratio": 0.0,
+      "clock_mhz": 1500.0
+    }
+  ],
+  "throughput_ratio": {
+    "n": 1,
+    "mean": 0.654317464452103,
+    "min": 0.654317464452103,
+    "max": 0.654317464452103,
+    "stdev": 0.0,
+    "cv": 0.0
+  },
+  "e2e_p50_ratio": {
+    "n": 1,
+    "mean": 13.159305538106159,
+    "min": 13.159305538106159,
+    "max": 13.159305538106159,
+    "stdev": 0.0,
+    "cv": 0.0
+  },
+  "pairs_dropped": 4,
+  "pairs_used": 1,
+  "order_clean": true
+}

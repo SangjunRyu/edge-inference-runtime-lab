@@ -68,6 +68,8 @@ def parse_args():
     p.add_argument("--duration-s", type=float, default=0.0,
                    help="measure for this long instead of for a frame count; "
                         "set --frames high enough not to run out first")
+    p.add_argument("--warmup-s", type=float, default=0.0,
+                   help="discard this many seconds instead of --warmup frames")
     p.add_argument("--warmup", type=int, default=100)
     p.add_argument("--top-k", type=int, default=5)
     p.add_argument("--intra-threads", type=int, default=None)
@@ -310,8 +312,9 @@ class AsyncPipeline:
 
 def measure_once(backend: OnnxBackend, args, height: int, width: int):
     source = make_source(args.source, args.frames)
-    rec = Recorder(warmup=args.warmup, stages=SERVICE, wait_stages=WAITS,
-                   pipelined=True)
+    rec = Recorder(warmup=args.warmup,
+                   warmup_s=getattr(args, 'warmup_s', 0.0),
+                   stages=SERVICE, wait_stages=WAITS, pipelined=True)
     pipe = AsyncPipeline(backend, args, height, width)
     info = pipe.run(source, rec)
     return rec, source.describe(), info

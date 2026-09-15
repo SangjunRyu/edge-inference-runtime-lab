@@ -25,6 +25,23 @@ Every row is 4-5 pairs, all frames in submission order, no pair dropped.
 | NPU (OpenVINO) | 360p | 1.44x | 7.25x worse | 12.7% |
 | **NPU (OpenVINO)** | **1080p** | **3.09x** | **0.83x better** | 6.5% |
 
+### Is the CPU loss a device property or an engine one?
+
+The table above mixes engines: the CPU rows are ONNX Runtime's own kernels
+while the accelerator rows are OpenVINO -- the same confound W1 closed with its
+`openvino/CPU` control row. Running the *same engine* on the CPU through
+`run_ab` was meant to close it in W2 too.
+
+It could not be measured cleanly on this machine. Five pairs, no pair dropped,
+time-based warm-up: **1.09 / 1.19 / 0.56 / 1.29 / 0.89**, mean 1.01x at
+**29.1% ratio CV**, which `run_ab` reports as too unsteady to quote. Latency is
+11.45x worse, which is at least unambiguous.
+
+What survives is the qualitative form, and it is enough for the question asked:
+both CPU engines land at or below parity (ORT 0.85x, OpenVINO ~1.0x) while both
+accelerators are above it (1.06-3.09x). **The CPU loss is not an artefact of
+which engine ran it.**
+
 Two variables move the answer, and they are separable:
 
 **Where inference runs.** On the CPU with a pinned pool async *loses*, measured
@@ -265,6 +282,29 @@ disqualifying, and it is an argument for the separate NPU block that DEEPX
 builds: the NPU sweep produced no stall at any depth.
 
 None of it would have been visible from p50 alone.
+
+### At 1080p the Arc cannot be swept at all
+
+The depth sweep was repeated on the Arc at 1080p, where decode contention is
+highest and where the 398 s stall originally appeared:
+
+| depth | FPS | CV | E2E p50 | inference p50 |
+|---|---|---|---|---|
+| 1 | 55.4 | 4.5% | 106.8 | 11.97 |
+| 2 | 53.9 | 12.0% | 128.4 | 31.00 |
+| 4 | 151.0 | **49.8%** | 26.9 | 14.45 |
+| 8 | 61.3 | 27.1% | 79.6 | 58.61 |
+| 16 | 70.0 | 25.8% | 73.5 | 70.15 |
+
+Throughput goes 55 -> 54 -> 151 -> 61 -> 70 and the knee test, reading adjacent
+pairs, announces saturation at 4 and then that going on to 16 *loses* 53.6%.
+That is not a curve. With a 49.8% CV at the only high point, **no shape can be
+read out of this at all**, and it is reported as unmeasurable rather than
+plotted.
+
+The paired comparison at the same resolution was clean (1.57x at 10.2% CV), so
+the Arc can be measured -- just not under a sweep, where each depth adds
+concurrent requests to a device already contending with 1080p decode.
 
 ## Measurement duration changed the answer's quality
 

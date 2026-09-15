@@ -41,6 +41,8 @@ def parse_args():
     p.add_argument("--frames", type=int, default=300)
     p.add_argument("--duration-s", type=float, default=0.0,
                    help="measure for this long instead of for a frame count")
+    p.add_argument("--warmup-s", type=float, default=0.0,
+                   help="discard this many seconds instead of --warmup frames")
     p.add_argument("--warmup", type=int, default=20)
     p.add_argument("--top-k", type=int, default=5)
     p.add_argument("--intra-threads", type=int, default=None,
@@ -67,7 +69,7 @@ def measure_once(backend, args, height: int, width: int):
     when the async pipeline reports zero.
     """
     source = make_source(args.source, args.frames)
-    rec = Recorder(warmup=args.warmup)
+    rec = Recorder(warmup=args.warmup, warmup_s=getattr(args, 'warmup_s', 0.0))
     checker = OrderChecker()
     idx = 0
     frames = source.frames()

@@ -46,6 +46,11 @@ class Recorder:
     """Collects per-frame stage timings and produces the summary."""
 
     warmup: int = 20
+    # Seconds of warm-up instead of a frame count. A frame count cannot adapt:
+    # openvino/CPU async reached an E2E of 788 ms, so 200 warm-up frames needed
+    # 157 s and a 10 s budget produced zero counted frames -- the run was then
+    # dropped as "stalled" when it was only slow.
+    warmup_s: float = 0.0
     stages: tuple[str, ...] = STAGES
     # Stages that are time spent waiting, not time spent working. Kept apart
     # from `stages` because only service time can be overlapped: a queue wait
@@ -64,6 +69,8 @@ class Recorder:
     def __post_init__(self) -> None:
         self._service = {s: [] for s in self.all_stages}
         self._t_first = None
+        self._t_warm = None
+        self._n_discarded = 0
 
     @property
     def all_stages(self) -> tuple[str, ...]:
@@ -72,9 +79,16 @@ class Recorder:
     def add_frame(self, service: dict[str, float], e2e: float) -> None:
         """Record one frame. ``service`` and ``e2e`` are in seconds."""
         self._n_seen += 1
-        if self._n_seen <= self.warmup:
-            return
         now = time.perf_counter()
+        if self.warmup_s > 0:
+            if self._t_warm is None:
+                self._t_warm = now
+            if now - self._t_warm < self.warmup_s:
+                self._n_discarded += 1
+                return
+        elif self._n_seen <= self.warmup:
+            self._n_discarded += 1
+            return
         if self._t_first is None:
             self._t_first = now
         for s in self.all_stages:
@@ -140,7 +154,8 @@ class Recorder:
         noise = (bn["p95"] / bn["p50"]) if bn["p50"] > 0 else 0.0
         return {
             "frames_counted": self.counted,
-            "frames_warmup_discarded": min(self._n_seen, self.warmup),
+            "frames_warmup_discarded": self._n_discarded,
+            "warmup_seconds": self.warmup_s,
             "stages_ms": per_stage,
             "e2e_ms": e2e,
             "stage_sum_mean_ms": stage_sum_mean,

@@ -50,6 +50,7 @@ def parse_args():
                    help="measure each point for this long; equalises wall-clock "
                         "and thermal exposure across depths")
     p.add_argument("--warmup", type=int, default=100)
+    p.add_argument("--warmup-s", type=float, default=0.0)
     p.add_argument("--top-k", type=int, default=5)
     p.add_argument("--intra-threads", type=int, default=None)
     p.add_argument("--depths", nargs="+", type=int, default=[1, 2, 4, 8, 16])
@@ -79,6 +80,7 @@ def parse_args():
 def _child_args(args, depth: int) -> Namespace:
     return Namespace(
         source=args.source, frames=args.frames, warmup=args.warmup,
+        warmup_s=args.warmup_s,
         duration_s=args.duration_s,
         top_k=args.top_k, queue_size=args.queue_size, inflight=depth,
         reorder=args.reorder, reorder_cap=args.reorder_cap,
@@ -124,6 +126,8 @@ def _run_depth_isolated(args, depth: int, height: int, width: int,
         cmd += ["--intra-threads", str(args.intra_threads)]
     if args.duration_s:
         cmd += ["--duration-s", str(args.duration_s)]
+    if args.warmup_s:
+        cmd += ["--warmup-s", str(args.warmup_s)]
     if args.allow_fallback:
         cmd += ["--allow-fallback"]
 
