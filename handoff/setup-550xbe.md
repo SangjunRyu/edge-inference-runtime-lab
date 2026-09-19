@@ -58,7 +58,7 @@ which version that is. Install nothing unpinned until that is settled.
 ## 1. Clone
 
 ```powershell
-git clone https://github.com/SangjunRyu/DEEPX-poc.git edge-inference-runtime-lab
+git clone https://github.com/SangjunRyu/edge-inference-runtime-lab.git
 cd edge-inference-runtime-lab
 ```
 
