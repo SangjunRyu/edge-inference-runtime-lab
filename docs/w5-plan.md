@@ -124,6 +124,24 @@ depends on, and they are spelled out under *Claim discipline* below.
 The inspector is infrastructure for W5-1, W5-3 and W5-4, which is why it comes
 first and why it lives in `tools/` rather than being a phase of its own.
 
+**Done.** `python -m tools.dxnn_inspect` is in the repository with 10 checks and
+a self-test; see [`tools/README.md`](../tools/README.md). Two things came out of
+building it that were not in this plan when it was written.
+
+*The success criterion got a better test than the one proposed here.* Comparing
+against `task_data.cpp:454` only proves the formula was copied correctly.
+`rmap_info` also carries a `size` field the cost model never reads, and for
+densenet121 it is 73,554,624 — exactly `fixed + per-buffer x 1`. An independent
+number in the file agreeing to the byte is much stronger than agreeing with the
+source the formula came from, so that is now the check that matters.
+
+*The self-test rejected an assumption this document had already stated as fact.*
+The claim that the 4,096-byte output region is the 4,000-byte tensor aligned to
+64 is false — that arithmetic gives 4,032. The unit counts elements, and the
+correction is recorded under *Claim discipline*. The lesson is the one W4 kept
+finding: the assertion was cheap, and it was the only thing between a plausible
+sentence and a wrong one.
+
 ## The correction that matters most: a file source cannot show backpressure
 
 The backpressure experiment is the best idea in this plan and it **does not
@@ -336,12 +354,17 @@ exactly the error the analysis exists to avoid.
 | level | densenet121 output |
 |---|---|
 | logical tensor, 1000 x float32 | 4,000 B |
-| allocated region, aligned to 64 | 4,096 B |
+| allocated region | 4,096 B |
 | NPU output region charged per buffer | 56,143,872 B |
 
-The same split applies on the input: 150,528 B logical, 157,696 B encoded, the
-difference being 224 rows padded from 672 to 704 bytes at `align_unit` 64. That
-arithmetic closes exactly, which is what makes it citable.
+**The alignment unit counts elements, not bytes**, and W5-0's self-test is what
+established that by rejecting the opposite assumption. Aligning the byte count
+gives `align(4000, 64) = 4032`; the file says 4096, which is
+`align(1000, 64) x 4`. The input follows the same rule once the layout names the
+row: `PRE_IM2COL` folds the last two axes, so
+`224 x align(224x3, 64) = 224 x 704 = 157,696` against 150,528 logical. Both
+close exactly, which is what makes them citable — and the byte reading would
+have been cited just as confidently while being wrong.
 
 **Say which part of the driver is DEEPX's.** The Linux driver tree contains
 `dw-edma-*.c`, which follows the upstream DesignWare eDMA driver; the
