@@ -187,3 +187,202 @@ under the repository's paired discipline.
 The double-return check refuses a second release rather than detecting one after
 the fact. A pool that accepted it would corrupt its own free stack silently, and
 the counters that make every other check possible would stop meaning anything.
+
+
+# W5-2 -- the scheduler, and which knob bounds concurrency
+
+W4's runners each hard-coded one shape. `cpp/include/scheduler.hpp` is the same
+shape with the numbers pulled out: worker counts per stage, queue depths, buffer
+count, and stages supplied by the caller.
+
+```
+cpp/build/w5_scheduler.exe --frames 2000 --buffers 8 --queue-capacity 2
+cpp/build/w5_scheduler.exe --sweep
+```
+
+## The anchor question, answered with arithmetic
+
+DX-RT separates choosing a device from submitting to it (`lib/device_pool/`),
+which leaves three plausible answers to what actually limits concurrency: the
+queue depth, the worker count, or the buffer count. The plan asked for the
+answer as a number.
+
+It is not a measurement. A frame holds its input lease from the moment the
+reader takes one until postprocessing gives it back, so it cannot outnumber the
+pool; and it has to be standing somewhere, so it cannot outnumber the places
+there are to stand.
+
+```
+ceiling = min(buffers, 1 + 3*queue_capacity + pre + infer + post)
+```
+
+`--sweep` checks that against what the pipeline does, at 4000 frames per cell:
+
+```
+  buf  queue  pre/inf/post   places  ceiling   peak   binds
+    1      2   1/ 2/1          11        1      1   buffers
+    2      2   1/ 2/1          11        2      2   buffers
+    4      2   1/ 2/1          11        4      4   buffers
+    8      2   1/ 2/1          11        8      8   buffers
+   16      2   1/ 2/1          11       11     11   structure
+   32      2   1/ 2/1          11       11     11   structure
+   32      1   1/ 2/1           8        8      8   structure
+   32      4   1/ 2/1          17       17     17   structure
+   32      8   1/ 2/1          29       29     29   structure
+   32      1   1/ 1/1           7        7      7   structure
+   32      1   2/ 4/2          12       12     12   structure
+   32      1   4/ 8/4          20       20     19   structure
+    3      8   2/ 4/2          33        3      3   buffers
+   64      1   1/ 1/1           7        7      7   structure
+```
+
+Thirteen of fourteen reached the ceiling; none exceeded it. Reaching it is a
+property of the run, not exceeding it is a property of the design, and only the
+second is asserted.
+
+**Neither knob is the answer on its own, and each half kills an intuition.**
+Rows 5 and 6 raise the pool from 8 to 32 and buy nothing: the structure has
+eleven places and that is that. Row 13 has 33 places and three buffers and gets
+three. Rows 7 to 9 show queue depth buying concurrency *only* while the pool has
+spare buffers to fund it.
+
+Which is why W5-4 matters. On a real device the buffer side is the one that is
+externally constrained: DX-RT derives the count from device memory
+(`lib/task_data.cpp:453-454`), and `tools/dxnn_inspect.py` computes it for a
+compiled model. The knob that binds in production is the one nobody chose.
+
+## The reorder buffer stopped needing dynamic memory
+
+`ReorderBuffer` uses `std::map` and allocates per completion, which is invisible
+next to an inference and fatal to a steady-state claim. `RingReorder` replaces
+it with a fixed ring, and the capacity is not a guess: an unemitted frame still
+holds a lease, so the number of indices outstanding at once cannot exceed the
+ceiling. A ring of that size can hold every gap that can physically exist.
+Overflow would mean an ownership rule had stopped holding, so it is counted and
+reported rather than resized away. Across the sweep it never overflowed, and
+held at most 4 of 9 in the default configuration.
+
+## The first run failed, and the design was not the problem
+
+```
+ceiling        8 = min(buffers 8, places 11)   observed peak 9
+  FAIL  peak in-flight within the computed ceiling
+```
+
+Nine frames in flight with eight buffers to hold them. Every other check passed.
+
+The counter was bracketed around the *frame* rather than around the *lease*: it
+came down after postprocessing had already returned the buffer, and in that
+window another thread could take the buffer and count itself. Both frames
+counted, one buffer held.
+
+The bound was real. The instrument was not, and it pointed at the design.
+Recording the high-water mark inside the pool, under the pool's own lock, at the
+instant the buffer leaves the free stack, makes the count and the thing it
+counts move together.
+
+**Kept as `repro/cpp/06_inflight_overcount`**, where four buffers and twelve
+threads make the outside counter peak at 10 or 11 while the pool's own peak
+stays at exactly 4.
+
+That reproduction needed a correction of its own. Its first version used four
+threads against eight buffers and reported NOT REPRODUCED -- with more buffers
+than threads nobody ever waits, so there is no instant at which a returned
+buffer is taken again. The defect needs contention to exist, which is now in the
+program's header rather than in someone's memory.
+
+# W5-3 -- what the host pays to hand a tensor to an NPU
+
+`cpp/include/nfh.hpp` re-implements the padding and transpose rules from the
+container, not from DEEPX's source. `tools/dxnn_inspect.py --nfh-args` prints
+the geometry of a model that was actually compiled, so there is one parser and
+the C++ is driven by it:
+
+```
+$ python -m tools.dxnn_inspect densenet121_224x224.dxnn --nfh-args
+--rows 224 --row-elems 672 --align 64 --elem-bytes 1
+```
+
+## Correctness needs no hardware, because the round trip is its own oracle
+
+`--verify` passes 29 checks: decode of encode is the identity over six
+geometries including awkward ones, padding is zeroed so an encoding is a
+function of its input alone, the blocked transpose is bitwise identical to the
+naive one over five shapes, transposing twice returns the original, and the
+fused encode-and-transpose equals the two passes it replaces. It also reproduces
+the container's declared 157,696 bytes from 224 rows of 672 elements at unit 64.
+
+## Counts, which do not depend on the machine
+
+200 frames per path, densenet121 input geometry:
+
+```
+  path                          allocs/frame   passes   bytes touched/frame
+  separate, per-frame buffers             2        2                637952
+  separate, preallocated                  0        2                637952
+  fused encode+transpose                  0        1                322560
+```
+
+Fusing removes 315,392 bytes of host traffic per frame. Counted and derived, not
+measured -- and W4 already found one case where a real reduction in host work
+bought exactly nothing once the pipeline overlapped, so whether this shows up in
+a stage time is a separate question with its own answer.
+
+## The measured half, and the result that came out the wrong way round
+
+`dx_rt/lib/npu_format_handler.cpp:433` transposes one element at a time with
+`memcpy` into a strided destination. No blocking, no vectorisation, and the
+accelerated paths at `:456-460` compile only under Intel IPP or ARM NEON, with
+`USE_NPU_FORMAT_CONVERSION_ACCELERATION` off by default. The obvious conclusion
+is that the fallback leaves performance on the table.
+
+`--bench` pairs blocked against naive with the order alternated inside each
+pair, and a `memcpy` of the same bytes as the control. Ratios are blocked over
+naive, so below 1.0 means blocking won.
+
+| geometry | bytes | blocked/naive | control CV |
+|---|---|---|---|
+| 224 x 672 x 1 B | 157,696 | **1.52** | 2.6% |
+| 224 x 672 x 4 B | 630,784 | 0.53 | 3.3% |
+| 512 x 512 x 4 B | 1,048,576 | 0.61 | 6.9% |
+| 1024 x 1024 x 1 B | 1,048,576 | 0.25 | 5.1% |
+| 1024 x 1024 x 4 B | 4,194,304 | 0.37 | 3.7% |
+
+**At the geometry the model actually uses, blocking is 1.5x slower.** The whole
+tensor is 157 KB; it sits in cache, there is no pressure to relieve, and the
+tiling loops are pure overhead. From roughly 600 KB upward blocking wins by 1.6x
+to 4x, and the crossover follows total size rather than element width: at one
+megabyte the 1-byte and 4-byte cases both favour blocking.
+
+So the conclusion is the opposite of the one reading the source suggests.
+**DX-RT's scalar fallback is a reasonable choice at the size its own model
+inputs are**, and the textbook improvement is a regression there. The defensible
+claim is not "the fallback is slow" but "the fallback is slow above about a
+megabyte, and a classifier's input is not".
+
+Four cells could not be measured and are recorded as such rather than dropped:
+
+| geometry | bytes | control CV |
+|---|---|---|
+| 256 x 256 x 4 B | 262,144 | 23.7% |
+| 2048 x 2048 x 1 B | 4,194,304 | 28.2% |
+| 2048 x 2048 x 4 B | 16,777,216 | 35.3% |
+| 4096 x 4096 x 4 B | 67,108,864 | 15.3% |
+
+The control is unaffected by either variant, so its spread across pairs measures
+the laptop. Above the 15% bar the tool prints UNMEASURABLE and declines to quote
+a ratio. Two of those cells are the large ones where blocking should matter
+most, so the interesting end of the curve is the end this machine cannot
+currently measure, which is the same conclusion W4 reached about its own last
+afternoon.
+
+## What W5-3 does not claim
+
+No SIMD. The plan rules it out as decoration, and the point here is that access
+*order* is what costs, which a portable implementation can demonstrate and
+defend. A vectorised transpose would win more and explain less.
+
+Nothing is copied from DEEPX. Every `dx_rt` file states that the software is
+supplied to customers of a DEEPX NPU and may not be redistributed, so what is
+reproduced is behaviour, cited by file and line, and checked against the
+container's own declared sizes.

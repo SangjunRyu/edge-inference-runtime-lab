@@ -560,6 +560,34 @@ def to_json(container: Container, buffers: int, npu_memory: int | None) -> dict:
     return out
 
 
+def nfh_args(container: Container, which: str = "input") -> str | None:
+    """Print one tensor's geometry as arguments for ``cpp/src/w5_format.cpp``.
+
+    The point is that there is one parser. W5-3 measures the format conversion
+    on the geometry of a model that was actually compiled, and it gets that
+    geometry from here rather than from a second implementation of the
+    container format that could drift.
+    """
+    key = "inputs" if which == "input" else "outputs"
+    for t in container.tasks:
+        for tensor in t.info.get(key, []):
+            shape = tensor.get("shape") or []
+            unit = int(tensor.get("align_unit") or 0)
+            width = DTYPE_BYTES.get(str(tensor.get("dtype", "")).upper())
+            axes = LAYOUT_ROW_AXES.get(str(tensor.get("layout", "")).upper())
+            if not shape or not unit or width is None or axes is None or len(shape) < axes:
+                continue
+            row = 1
+            for d in shape[-axes:]:
+                row *= int(d)
+            rows = 1
+            for d in shape[:-axes]:
+                rows *= int(d)
+            return (f"--rows {rows} --row-elems {row} "
+                    f"--align {unit} --elem-bytes {width}")
+    return None
+
+
 def _tensor_json(t: dict) -> dict:
     return {
         "name": t.get("name"),
@@ -651,6 +679,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--target", help="compiled target, when the container has several")
     ap.add_argument("--json", action="store_true", help="machine-readable output")
     ap.add_argument("--self-test", action="store_true", help="check the arithmetic and exit")
+    ap.add_argument("--nfh-args", choices=["input", "output"], nargs="?", const="input",
+                    help="print this tensor's geometry as flags for cpp w5_format")
     args = ap.parse_args(argv)
 
     if args.self_test:
@@ -665,6 +695,14 @@ def main(argv: list[str] | None = None) -> int:
     except (DxnnError, OSError, json.JSONDecodeError) as e:
         print(f"error: {e}", file=sys.stderr)
         return 2
+
+    if args.nfh_args:
+        line = nfh_args(container, args.nfh_args)
+        if line is None:
+            print("error: no tensor with a known layout and dtype", file=sys.stderr)
+            return 2
+        print(line)
+        return 0
 
     mem = parse_size(args.npu_memory) if args.npu_memory else None
     if args.json:

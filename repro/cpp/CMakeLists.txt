@@ -28,7 +28,7 @@ foreach(name 01_dangling_callback 02_callback_blocks_queue 03_request_busy)
 endforeach()
 
 # --- need nothing ---------------------------------------------------------
-foreach(name 04_sentinel_overtakes 05_reorder_off)
+foreach(name 04_sentinel_overtakes 05_reorder_off 06_inflight_overcount)
   add_executable(repro_${name} ${name}.cpp)
   target_link_libraries(repro_${name} PRIVATE eirl_json eirl_repro Threads::Threads)
   if(MSVC)

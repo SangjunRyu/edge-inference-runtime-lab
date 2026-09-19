@@ -40,6 +40,8 @@ CPP = [
      "end of stream announced while work was in flight"),
     ("05_reorder_off", False,
      "right frame count, wrong frame order"),
+    ("06_inflight_overcount", False,
+     "a concurrency peak above the pool that holds it"),
 ]
 STATS = [
     ("01_unpaired_ratio", "a paired comparison that formed ratios across pairs"),

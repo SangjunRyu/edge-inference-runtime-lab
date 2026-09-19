@@ -149,8 +149,7 @@ public:
         std::unique_lock<std::mutex> lk(m_);
         cv_.wait(lk, [&] { return free_n_ > 0 || closed_; });
         if (free_n_ == 0) return Lease{};
-        std::uint32_t i = free_[--free_n_];
-        acquires_.fetch_add(1, std::memory_order_relaxed);
+        std::uint32_t i = take_locked();
         return Lease{this, i, slot(i), bytes_each_};
     }
 
@@ -158,8 +157,7 @@ public:
     Lease try_acquire() {
         std::lock_guard<std::mutex> lk(m_);
         if (free_n_ == 0) return Lease{};
-        std::uint32_t i = free_[--free_n_];
-        acquires_.fetch_add(1, std::memory_order_relaxed);
+        std::uint32_t i = take_locked();
         return Lease{this, i, slot(i), bytes_each_};
     }
 
@@ -182,6 +180,17 @@ public:
 
     std::uint64_t acquires() const { return acquires_.load(std::memory_order_relaxed); }
     std::uint64_t releases() const { return releases_.load(std::memory_order_relaxed); }
+
+    /// The high-water mark of buffers handed out at once.
+    ///
+    /// Recorded inside the pool, under the pool's own lock, at the instant the
+    /// buffer leaves the free stack. That matters more than it looks: a counter
+    /// kept outside the pool and bracketed around the *frame* instead of around
+    /// the *lease* can report a peak above the pool's capacity, because the
+    /// window between giving a buffer back and decrementing the counter is a
+    /// window in which someone else can take it. See
+    /// `repro/cpp/06_inflight_overcount`.
+    std::uint32_t peak_outstanding() const { return peak_.load(std::memory_order_relaxed); }
 
     /// The shutdown invariant: everything handed out came back, exactly once.
     bool all_returned() const { return outstanding() == 0 && acquires() == releases(); }
@@ -225,6 +234,19 @@ private:
     std::atomic<std::uint64_t> acquires_{0};
     std::atomic<std::uint64_t> releases_{0};
     std::atomic<std::uint64_t> double_releases_{0};
+    std::atomic<std::uint32_t> peak_{0};
+
+    /// Caller holds the lock. Takes one buffer and records the high-water mark
+    /// at the same instant, so the two can never disagree.
+    std::uint32_t take_locked() {
+        std::uint32_t i = free_[--free_n_];
+        acquires_.fetch_add(1, std::memory_order_relaxed);
+        const auto out = static_cast<std::uint32_t>(count_ - free_n_);
+        if (out > peak_.load(std::memory_order_relaxed)) {
+            peak_.store(out, std::memory_order_relaxed);
+        }
+        return i;
+    }
 };
 
 using InputLease = BufferLease<Direction::Input>;

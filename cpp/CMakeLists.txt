@@ -74,11 +74,30 @@ add_executable(w5_ownership
   src/alloc_counter.cpp)
 target_include_directories(w5_ownership PRIVATE include)
 target_link_libraries(w5_ownership PRIVATE Threads::Threads)
-if(MSVC)
-  target_compile_options(w5_ownership PRIVATE /W4)
-else()
-  target_compile_options(w5_ownership PRIVATE -Wall -Wextra)
-endif()
+
+# W5-2: the same rules, generalised into stages, workers and bounded queues.
+add_executable(w5_scheduler
+  src/w5_scheduler.cpp
+  src/scheduler.cpp
+  src/alloc_counter.cpp)
+target_include_directories(w5_scheduler PRIVATE include)
+target_link_libraries(w5_scheduler PRIVATE Threads::Threads)
+
+# W5-3: the host-side format conversion, driven by a real .dxnn's metadata.
+add_executable(w5_format
+  src/w5_format.cpp
+  src/nfh.cpp
+  src/alloc_counter.cpp)
+target_include_directories(w5_format PRIVATE include)
+target_link_libraries(w5_format PRIVATE Threads::Threads)
+
+foreach(tgt w5_ownership w5_scheduler w5_format)
+  if(MSVC)
+    target_compile_options(${tgt} PRIVATE /W4)
+  else()
+    target_compile_options(${tgt} PRIVATE -Wall -Wextra)
+  endif()
+endforeach()
 
 # A target that must not compile. See src/negative_direction.cpp.
 option(EIRL_NEGATIVE_COMPILE "Add the target that proves leases are not interchangeable" OFF)

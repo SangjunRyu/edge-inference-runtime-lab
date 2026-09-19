@@ -266,6 +266,23 @@ than in the dispatch.
 answer with a number is **where the inflight ceiling comes from** — a queue
 capacity, a worker count, or a buffer count — because W5-4 asserts the answer.
 
+**Done, in part.** `cpp/include/scheduler.hpp` and `cpp/src/w5_scheduler.cpp`.
+The anchor question is answered and it is arithmetic, not a measurement:
+`ceiling = min(buffers, 1 + 3*queue + pre + infer + post)`, checked across
+fourteen configurations where thirteen reached it and none exceeded it. Neither
+knob is the answer alone — more buffers buy nothing once the structure runs out
+of places, and deeper queues buy nothing the pool will not fund. `RingReorder`
+replaces the map-based one, sized from the ceiling rather than guessed.
+
+The first run failed its own ceiling check at 9 against 8 buffers, and the
+design was not the problem: the counter was bracketed around the frame instead
+of the lease. Kept as `repro/cpp/06_inflight_overcount`.
+
+**Still open:** the paired comparison against W4's OpenVINO runners. The
+structural half is done and portable; reproducing W4's numbers through the
+generic scheduler needs the accelerator and a machine that holds still, and W4
+established this one does not. Not claimed until measured.
+
 ### W5-3 — memory movement and format
 
 Instrument four preprocessing paths — baseline, fused, preallocated, tensor view
@@ -294,6 +311,22 @@ defended by the same paired discipline as everything else.
 
 Licence: analyse and re-implement. Do not vendor DEEPX sources into this
 repository. See *Claim discipline*.
+
+**Done, and the measured half came out the wrong way round.**
+`cpp/include/nfh.hpp` re-implements the padding and transpose rules;
+`tools/dxnn_inspect.py --nfh-args` supplies the geometry so there is one parser.
+29 correctness checks pass with no hardware, because the round trip is its own
+oracle. The counted table is in [`findings-w5.md`](findings-w5.md): fusing
+removes 315,392 bytes of host traffic per frame.
+
+The expectation this phase was built on — that DX-RT's scalar fallback leaves
+performance on the table — **is false at the size that matters.** At the
+densenet121 input geometry the tensor is 157 KB, fits in cache, and the
+textbook blocked transpose is **1.5x slower**. Blocking wins by 1.6x to 4x from
+roughly 600 KB upward. So the claim worth making is not "the fallback is slow"
+but "the fallback is slow above about a megabyte, and a classifier's input is
+not". Four larger cells failed their control and are recorded as unmeasurable
+rather than dropped.
 
 ### W5-4 — backpressure as a policy
 

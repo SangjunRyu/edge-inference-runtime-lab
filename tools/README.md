@@ -13,6 +13,16 @@ python -m tools.dxnn_inspect model.dxnn
 python -m tools.dxnn_inspect model.dxnn --npu-memory 512M
 python -m tools.dxnn_inspect model.dxnn --buffers 12 --json
 python -m tools.dxnn_inspect --self-test
+python -m tools.dxnn_inspect model.dxnn --nfh-args
+```
+
+`--nfh-args` prints one tensor's geometry as flags for `cpp/src/w5_format.cpp`,
+so W5-3 measures the format conversion on a model that was actually compiled and
+there is only ever one implementation of the container format:
+
+```
+$ python -m tools.dxnn_inspect densenet121_224x224.dxnn --nfh-args
+--rows 224 --row-elems 672 --align 64 --elem-bytes 1
 ```
 
 It exists because of the question W5-4 asks of this project's own runtime — how
