@@ -18,7 +18,7 @@ naming is not incidental. This repository works out why.
 | W2 | What changes when stages overlap? |
 | W3 | Does higher throughput still produce correct output? |
 | W4 | Can the same pipeline be expressed with explicit C++ concurrency and memory ownership, and does that control reveal improvements Python cannot reach? |
-| W5 | What must a pipeline own to be able to refuse work, and what does refusing cost? ([plan](docs/w5-plan.md)) |
+| W5 | What must a pipeline own to be able to refuse work, and what does refusing cost? ([plan](docs/w5-plan.md), [findings](docs/findings-w5.md)) |
 
 W3 did not stay a separate phase — ordering had to be checked in the same run
 that reported the speedup, so the checks were built into W2.

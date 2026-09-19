@@ -228,6 +228,23 @@ not an allocation per request. The anchor must terminate in my pool carrying the
 same two properties as assertions — fixed count, and a direction that is not
 interchangeable.
 
+**Done.** `cpp/src/w5_ownership.cpp`, reported in
+[`docs/findings-w5.md`](findings-w5.md). 20,000 frames with zero steady-state
+allocations and every lease returned, across fifteen configurations of buffer
+count and worker count. The direction property came out stronger than DX-RT's:
+`Direction` is a template parameter here, so the mismatch is a compile error
+rather than a run-time condition, and `cpp/src/negative_direction.cpp` exists to
+fail to build.
+
+Two things the plan did not anticipate. **The allocation injection was
+optimised away** on its first attempt — a compiler may delete a `new`/`delete`
+pair it can prove unobservable, so the check reported "not as predicted" until
+the pointer was made to escape. An injection that cannot fail tests nothing, and
+only the prediction machinery caught it. **Early release broke 1.3–2.3% of
+frames and nothing else** — right count, right order, no leak, no allocation,
+another frame's data. Every count-based check passed. That is the argument for
+the value check, in one number.
+
 ### W5-2 — the scheduler
 
 `read -> preprocess -> infer -> postprocess -> output` as generic stages, with

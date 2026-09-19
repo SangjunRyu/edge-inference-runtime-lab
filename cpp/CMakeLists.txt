@@ -60,6 +60,33 @@ endif()
 add_executable(probe src/probe.cpp)
 target_link_libraries(probe PRIVATE eirl_base)
 
+# --- W5-1: ownership, with nothing else linked ---------------------------
+#
+# Deliberately does not link eirl_base, and therefore not OpenVINO and not
+# OpenCV. That link line *is* the fence around the zero-allocation claim: with
+# nothing else in the binary, every allocation the counter sees is one this
+# repository asked for. It is also why this target builds and runs on a machine
+# with no accelerator and no OpenCV.
+find_package(Threads REQUIRED)
+
+add_executable(w5_ownership
+  src/w5_ownership.cpp
+  src/alloc_counter.cpp)
+target_include_directories(w5_ownership PRIVATE include)
+target_link_libraries(w5_ownership PRIVATE Threads::Threads)
+if(MSVC)
+  target_compile_options(w5_ownership PRIVATE /W4)
+else()
+  target_compile_options(w5_ownership PRIVATE -Wall -Wextra)
+endif()
+
+# A target that must not compile. See src/negative_direction.cpp.
+option(EIRL_NEGATIVE_COMPILE "Add the target that proves leases are not interchangeable" OFF)
+if(EIRL_NEGATIVE_COMPILE)
+  add_executable(negative_direction src/negative_direction.cpp)
+  target_include_directories(negative_direction PRIVATE include)
+endif()
+
 # --- The part that needs OpenCV ------------------------------------------
 find_package(OpenCV QUIET COMPONENTS core imgproc videoio)
 if(OpenCV_FOUND)
