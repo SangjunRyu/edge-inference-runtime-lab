@@ -121,7 +121,7 @@ Every defect found while building this is a **runnable program** under
 [`repro/`](repro/), not only a paragraph: each takes `--mode broken` and
 `--mode fixed` and exits 0 when it behaved as that mode predicts, so a rewrite
 that reintroduces one is caught rather than described. `python repro/run_all.py`
-runs them all. Two of the eight currently report `NOT REPRO` — the condition
+runs them all. Two of the eleven currently report `NOT REPRO` — the condition
 stopped firing on this build — and the table says so instead of rounding it to
 a pass.
 
