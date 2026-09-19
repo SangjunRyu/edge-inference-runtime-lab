@@ -274,9 +274,16 @@ knob is the answer alone — more buffers buy nothing once the structure runs ou
 of places, and deeper queues buy nothing the pool will not fund. `RingReorder`
 replaces the map-based one, sized from the ceiling rather than guessed.
 
-The first run failed its own ceiling check at 9 against 8 buffers, and the
-design was not the problem: the counter was bracketed around the frame instead
-of the lease. Kept as `repro/cpp/06_inflight_overcount`.
+W5-2 turned out to be mostly about the bounds themselves. Three failures, all
+the same shape -- a capacity argument applied to something other than the
+quantity it was derived from -- and all three kept runnable: the counter
+bracketed around the frame rather than the lease
+(`repro/cpp/06_inflight_overcount`); the ceiling asserted about pipeline
+occupancy, which it does not bound (`repro/cpp/07_bound_wrong_metric`); and the
+reorder ring sized from that same wrong bound, which overwrote pending entries
+and hung the drain (`repro/cpp/08_reorder_window_overflow`). The rule they leave
+behind is in the header now: a capacity is only valid for the lifetime it was
+derived from.
 
 **Still open:** the paired comparison against W4's OpenVINO runners. The
 structural half is done and portable; reproducing W4's numbers through the

@@ -7,18 +7,24 @@
 // here, because W5's claim is that the pipeline allocates nothing in steady
 // state and a map would answer that question with the container's behaviour.
 //
-// The replacement is possible because of a fact W5-1 established rather than a
-// guess about workloads: **a frame that has not been emitted still holds a
-// lease**, so the number of indices simultaneously outstanding cannot exceed
-// the in-flight ceiling. A ring of that size can therefore hold every gap that
-// can physically exist, and needs no dynamic memory to do it.
+// The replacement is possible because the pipeline already decides how far
+// apart two completions can be: every frame that has not finished occupies a
+// place in the structure, so a ring sized from that bound can hold every gap
+// that can physically exist, with no dynamic memory.
 //
-// If the ring ever overflows, the bound was wrong, and that is worth far more
-// than a silent resize: the capacity is derived from the ownership rules, so an
-// overflow means one of those rules is not holding. Overflow is counted and
-// reported, never hidden, and the lowest index is released out of order so the
-// consumer still makes progress -- the same liveness trade `ReorderBuffer`
-// makes and counts.
+// Getting that derivation wrong is the interesting part, and it was wrong once.
+// The first version sized the ring from the in-flight ceiling, min(buffers,
+// structure), on the reasoning that an unemitted frame still holds a lease. It
+// does not: a completion reaches the reorder *after* its buffers have gone
+// back. The ring was therefore too small, arrivals aliased slots that were
+// still occupied, and the resulting disagreement between the held counter and
+// the flags turned `drain()` into an infinite loop. The caller now sizes it
+// from the structural bound plus the emit path; see `scheduler.cpp`, and
+// `repro/cpp/08_reorder_window_overflow` for the failure itself.
+//
+// Overflow is still possible in principle, so it is counted and reported rather
+// than hidden, and the lowest index is released out of order so the consumer
+// keeps making progress -- the same liveness trade `ReorderBuffer` makes.
 
 #ifndef EIRL_RING_REORDER_HPP
 #define EIRL_RING_REORDER_HPP
@@ -51,13 +57,26 @@ public:
             ++dropped_late_;
             return;
         }
-        if (index - next_ >= cap_) {
-            // The bound the ring was sized from did not hold. Make progress and
-            // say so rather than growing quietly.
+        // Flush until the index fits inside the window. One flush is not
+        // enough: a single arrival can be many indices ahead, and stopping
+        // early leaves `index % cap_` aliasing a slot that is still occupied.
+        // Overwriting it there was a real defect -- it destroyed a pending
+        // entry while still incrementing `held_`, so the counter outlived the
+        // flags and `drain()` never terminated. See
+        // repro/cpp/08_reorder_window_overflow.
+        while (index - next_ >= cap_) {
             ++overflows_;
             flush_lowest(sink);
         }
         const std::size_t at = static_cast<std::size_t>(index % cap_);
+        if (filled_[at]) {
+            // Only reachable if the same index arrived twice; releasing the
+            // older payload is better than losing track of it.
+            ++duplicates_;
+            filled_[at] = 0;
+            --held_;
+            sink(index, std::move(slots_[at]));
+        }
         slots_[at] = std::move(payload);
         filled_[at] = 1;
         if (++held_ > max_held_) max_held_ = held_;
@@ -72,15 +91,30 @@ public:
     }
 
     /// Release anything still held, lowest index first.
+    ///
+    /// Bounded by construction rather than by the held counter. A loop that
+    /// trusts `held_` to reach zero is a loop that hangs the moment the counter
+    /// and the flags disagree, and they did.
     template <typename Sink>
     void drain(Sink&& sink) {
-        while (held_ > 0) flush_lowest(sink);
+        const std::uint64_t base = next_;
+        for (std::uint64_t i = base; i < base + cap_; ++i) {
+            const std::size_t k = static_cast<std::size_t>(i % cap_);
+            if (filled_[k]) {
+                filled_[k] = 0;
+                if (held_) --held_;
+                sink(i, std::move(slots_[k]));
+            }
+        }
+        next_ = base + cap_;
+        held_ = 0;
     }
 
     std::uint64_t out_of_order() const { return out_of_order_; }
     std::uint64_t max_displacement() const { return max_displacement_; }
     std::uint64_t overflows() const { return overflows_; }
     std::uint64_t dropped_late() const { return dropped_late_; }
+    std::uint64_t duplicates() const { return duplicates_; }
     std::size_t max_held() const { return max_held_; }
     std::size_t capacity() const { return cap_; }
 
@@ -106,7 +140,7 @@ private:
     std::size_t held_ = 0, max_held_ = 0;
     std::uint64_t next_ = 0, arrivals_ = 0;
     std::uint64_t out_of_order_ = 0, max_displacement_ = 0;
-    std::uint64_t overflows_ = 0, dropped_late_ = 0;
+    std::uint64_t overflows_ = 0, dropped_late_ = 0, duplicates_ = 0;
 };
 
 }  // namespace eirl

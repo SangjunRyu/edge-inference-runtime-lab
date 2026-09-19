@@ -189,107 +189,182 @@ the fact. A pool that accepted it would corrupt its own free stack silently, and
 the counters that make every other check possible would stop meaning anything.
 
 
-# W5-2 -- the scheduler, and which knob bounds concurrency
+# W5-2 -- the scheduler, and the two bounds that decide concurrency
 
 W4's runners each hard-coded one shape. `cpp/include/scheduler.hpp` is the same
-shape with the numbers pulled out: worker counts per stage, queue depths, buffer
-count, and stages supplied by the caller.
+shape with the numbers pulled out: worker counts per stage, per-queue depths,
+buffer counts, and stages supplied by the caller.
 
 ```
 cpp/build/w5_scheduler.exe --frames 2000 --buffers 8 --queue-capacity 2
-cpp/build/w5_scheduler.exe --sweep
+cpp/build/w5_scheduler.exe --sweep --frames 4000
 ```
 
 ## The anchor question, answered with arithmetic
 
 DX-RT separates choosing a device from submitting to it (`lib/device_pool/`),
-which leaves three plausible answers to what actually limits concurrency: the
-queue depth, the worker count, or the buffer count. The plan asked for the
-answer as a number.
+which leaves three plausible answers to what limits concurrency: the queue
+depth, the worker count, or the buffer count. The plan asked for a number.
 
-It is not a measurement. A frame holds its input lease from the moment the
-reader takes one until postprocessing gives it back, so it cannot outnumber the
-pool; and it has to be standing somewhere, so it cannot outnumber the places
-there are to stand.
+There are two bounds, and the smaller wins.
 
 ```
-ceiling = min(buffers, 1 + 3*queue_capacity + pre + infer + post)
+C_structural = S + sum(Qi) + sum(Wj)
+C_resource   = the input pool
+ceiling      = min of the two
 ```
 
-`--sweep` checks that against what the pipeline does, at 4000 frames per cell:
+`C_structural` is one frame being prepared by the source, whatever fits in each
+bounded queue, and one per worker at each stage. The three in "three queues" is
+a fact about this topology and nothing else: a pipeline with different queues,
+or with different capacities per queue, changes the sum and not the form. The
+code takes the queue depths separately for that reason.
+
+`C_resource` is the input pool **because of this scheduler's lifetime model**,
+in which a frame holds its input lease from the reader to the end of
+postprocessing. The output pool is not in the bound: an output lease is held
+only from the start of inference, so it constrains a segment of the path rather
+than the whole of it. If every in-flight frame held both, the bound would be
+`min(B_in, B_out, C_structural)`. The formula is a property of the lifetimes,
+not a law, and the header says so beside it.
+
+## The sweep
+
+16 configurations, 4000 frames each:
 
 ```
-  buf  queue  pre/inf/post   places  ceiling   peak   binds
-    1      2   1/ 2/1          11        1      1   buffers
-    2      2   1/ 2/1          11        2      2   buffers
-    4      2   1/ 2/1          11        4      4   buffers
-    8      2   1/ 2/1          11        8      8   buffers
-   16      2   1/ 2/1          11       11     11   structure
-   32      2   1/ 2/1          11       11     11   structure
-   32      1   1/ 2/1           8        8      8   structure
-   32      4   1/ 2/1          17       17     17   structure
-   32      8   1/ 2/1          29       29     29   structure
-   32      1   1/ 1/1           7        7      7   structure
-   32      1   2/ 4/2          12       12     12   structure
-   32      1   4/ 8/4          20       20     19   structure
-    3      8   2/ 4/2          33        3      3   buffers
-   64      1   1/ 1/1           7        7      7   structure
+  buf  queues   pre/inf/post   struct  resrc  ceil   leases  inflight  binds
+    1   2/ 2/2    1/ 2/1         11      1     1         1       2   buffers
+    2   2/ 2/2    1/ 2/1         11      2     2         2       3   buffers
+    4   2/ 2/2    1/ 2/1         11      4     4         4       5   buffers
+    8   2/ 2/2    1/ 2/1         11      8     8         8       9   buffers
+   16   2/ 2/2    1/ 2/1         11     16    11        11      11   structure
+   32   2/ 2/2    1/ 2/1         11     32    11        11      11   structure
+   32   1/ 1/1    1/ 2/1          8     32     8         8       8   structure
+   32   4/ 4/4    1/ 2/1         17     32    17        17      17   structure
+   32   8/ 8/8    1/ 2/1         29     32    29        29      29   structure
+   32   8/ 1/1    1/ 2/1         15     32    15        15      15   structure
+   32   1/ 8/1    1/ 2/1         15     32    15        15      15   structure
+   32   1/ 1/1    1/ 1/1          7     32     7         7       7   structure
+   32   1/ 1/1    2/ 4/2         12     32    12        12      12   structure
+   32   1/ 1/1    4/ 8/4         20     32    20        16      18   structure
+    3   8/ 8/8    2/ 4/2         33      3     3         3       4   buffers
+   64   1/ 1/1    1/ 1/1          7     64     7         7       7   structure
 ```
 
-Thirteen of fourteen reached the ceiling; none exceeded it. Reaching it is a
-property of the run, not exceeding it is a property of the design, and only the
-second is asserted.
+Fifteen of sixteen reached the ceiling; none exceeded it.
 
-**Neither knob is the answer on its own, and each half kills an intuition.**
-Rows 5 and 6 raise the pool from 8 to 32 and buy nothing: the structure has
-eleven places and that is that. Row 13 has 33 places and three buffers and gets
-three. Rows 7 to 9 show queue depth buying concurrency *only* while the pool has
-spare buffers to fund it.
+**That second clause is the claim.** A ceiling is an upper bound, not a target:
+whether a run reaches it depends on the scheduling that day and on the workload
+being long enough, so "15 of 16" is not an accuracy figure and the formula is
+not 94% correct. The assertion is that nothing ever went above it, and that held
+in all sixteen.
 
-Which is why W5-4 matters. On a real device the buffer side is the one that is
-externally constrained: DX-RT derives the count from device memory
+**Neither knob is the answer alone, and each half kills an intuition.** Rows 5
+and 6 raise the pool from 8 to 32 and buy nothing: the structure has eleven
+places and that is that. Row 15 has 33 places and three buffers and gets three.
+Rows 8 and 9 show queue depth buying concurrency *only* while the pool has spare
+buffers to fund it, and rows 10 and 11 show that it does not matter which queue
+gets the depth -- the sum is what counts.
+
+Which is why W5-4 matters. On a real device the buffer side is the externally
+constrained one: DX-RT derives the count from device memory
 (`lib/task_data.cpp:453-454`), and `tools/dxnn_inspect.py` computes it for a
 compiled model. The knob that binds in production is the one nobody chose.
 
-## The reorder buffer stopped needing dynamic memory
+## Three quantities, not one
 
-`ReorderBuffer` uses `std::map` and allocates per completion, which is invisible
-next to an inference and fatal to a steady-state claim. `RingReorder` replaces
-it with a fixed ring, and the capacity is not a guess: an unemitted frame still
-holds a lease, so the number of indices outstanding at once cannot exceed the
-ceiling. A ring of that size can hold every gap that can physically exist.
-Overflow would mean an ownership rule had stopped holding, so it is counted and
-reported rather than resized away. Across the sweep it never overflowed, and
-held at most 4 of 9 in the default configuration.
+The `leases` and `inflight` columns differ, deliberately, and the first four
+rows differ by exactly one. Reporting them separately is the correction that
+this phase mostly consisted of.
 
-## The first run failed, and the design was not the problem
+| quantity | what it is | its bound |
+|---|---|---|
+| input leases | buffers checked out of the pool | `min(resource, structural)` |
+| output leases | the same for the output pool | its own pool |
+| pipeline in-flight | admitted, not yet finished | `structural` only |
 
-```
-ceiling        8 = min(buffers 8, places 11)   observed peak 9
-  FAIL  peak in-flight within the computed ceiling
-```
+Pipeline occupancy runs above lease occupancy because a frame keeps its place in
+a postprocess worker for a moment after giving its buffers back. Adding these
+into one "in-flight" number is what went wrong three separate times below.
 
-Nine frames in flight with eight buffers to hold them. Every other check passed.
+## Three failures, one shape
 
-The counter was bracketed around the *frame* rather than around the *lease*: it
-came down after postprocessing had already returned the buffer, and in that
-window another thread could take the buffer and count itself. Both frames
-counted, one buffer held.
+W5-2's real content turned out to be the bounds themselves, and every failure in
+it was a version of the same mistake: **a capacity argument applied to something
+other than the quantity it was derived from.** All three are runnable.
 
-The bound was real. The instrument was not, and it pointed at the design.
-Recording the high-water mark inside the pool, under the pool's own lock, at the
-instant the buffer leaves the free stack, makes the count and the thing it
-counts move together.
+### 1. The instrument measured across two events
 
-**Kept as `repro/cpp/06_inflight_overcount`**, where four buffers and twelve
-threads make the outside counter peak at 10 or 11 while the pool's own peak
-stays at exactly 4.
+The first run reported `peak in-flight 9` against a pool of 8 and failed its own
+check. Every other check passed.
+
+The counter was bracketed around the frame rather than the lease, and came down
+after postprocessing had already returned the buffer. In that window another
+thread could take the returned buffer and count itself: two frames counted, one
+buffer held. Two atomics are two events, and a high-water mark taken across them
+belongs to neither.
+
+Fixed by recording the mark inside the pool, under the pool's own lock, at the
+instant the buffer leaves the free stack. Kept as
+**`repro/cpp/06_inflight_overcount`** -- twelve threads against four buffers,
+where the outside counter peaks at 10 or 11 and the pool's own peak stays at 4.
 
 That reproduction needed a correction of its own. Its first version used four
-threads against eight buffers and reported NOT REPRODUCED -- with more buffers
+threads against eight buffers and reported NOT REPRODUCED: with more buffers
 than threads nobody ever waits, so there is no instant at which a returned
-buffer is taken again. The defect needs contention to exist, which is now in the
+buffer is taken again. The defect needs contention, which is now in the
 program's header rather than in someone's memory.
+
+### 2. The bound was right and the quantity was wrong
+
+With the counter fixed, the peak was still 9 against a ceiling of 8 -- and this
+time 9 was a value the counter genuinely held, linearized under one lock.
+
+`min(resource, structural)` had been written down as a bound on "frames in
+flight". It is not one. It bounds frames *holding a buffer*, and the derivation
+does not cover a frame that has released early or has not acquired yet. Split
+into two invariants over two quantities, both hold and neither is the other.
+
+Kept as **`repro/cpp/07_bound_wrong_metric`**.
+
+### 3. The same error sized a data structure, and it hung
+
+The corrected sweep then stopped producing output. No crash, no error, a live
+thread and a few megabytes resident -- indistinguishable from a slow machine
+until you check the clock.
+
+`RingReorder` had been sized from the ceiling, on the reasoning that an
+unemitted frame still holds a lease. It does not: a completion reaches the
+reorder *after* its buffers have gone back, so the indices outstanding there are
+bounded by pipeline occupancy plus the emit path. The ring was too small.
+
+On its own that would only have cost ordering. What made it a hang was the write
+path: on an arrival past the window it flushed exactly one entry and wrote
+anyway. One flush is not enough when the gap is wide, so `index % cap` still
+aliased an occupied slot; the write destroyed a pending entry while the held
+counter recorded it as new. From then on the counter and the flags disagreed,
+and `while (held_ > 0) flush_lowest();` had no reason to terminate.
+
+Two fixes for two mistakes: size the ring from the bound that applies to it, and
+flush until the index fits. `drain()` is now a bounded walk over the window
+rather than a loop that trusts a counter.
+
+Kept as **`repro/cpp/08_reorder_window_overflow`**, single-threaded and
+deterministic. Broken mode loses 4 of 16 entries at a window of 4; fixed mode
+loses none at 16. The reproduction's drain is budgeted, so it *reports*
+non-termination instead of demonstrating it -- a test that hangs is not a test.
+
+**The rule all three share:** a capacity is only valid for the lifetime it was
+derived from. Write the lifetime beside the formula, or the formula will outlive
+it. That is now how `scheduler.hpp` states both bounds.
+
+## What is not claimed
+
+The paired comparison against W4's OpenVINO runners has not been run. The
+structural half of W5-2 is done and portable; reproducing W4's numbers through
+the generic scheduler needs the accelerator and a machine that holds still, and
+W4 established this one does not.
 
 # W5-3 -- what the host pays to hand a tensor to an NPU
 

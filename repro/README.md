@@ -56,6 +56,9 @@ decoder is installed is a defect nobody will reproduce.
 | `03_request_busy` | OpenVINO, a model | the callback fires before the request leaves its running state, so accessors return `REQUEST_BUSY` |
 | `04_sentinel_overtakes` | **nothing** | end of stream announced while work was in flight: 198 frames of 200, and nothing looks wrong |
 | `05_reorder_off` | **nothing** | concurrent postprocessing emits frames out of order with the count exactly right |
+| `06_inflight_overcount` | **nothing** | a concurrency counter bracketed around the frame instead of the lease reports more frames in flight than there are buffers |
+| `07_bound_wrong_metric` | **nothing** | `min(resource, structural)` asserted about pipeline occupancy, which it does not bound -- it bounds frames holding a buffer |
+| `08_reorder_window_overflow` | **nothing** | a reorder ring sized from that same wrong bound overwrites pending entries and its drain never terminates |
 
 **04 and 05 need no accelerator and no runtime.** They are the two most likely
 to come back in a rewrite and they run anywhere, including the MX150.
@@ -138,6 +141,7 @@ already done.
 | 01, 02, 03 | [`docs/findings-w4.md`](../docs/findings-w4.md) — "Three bugs, and the one that matters" |
 | 04 | [`docs/findings-w2.md`](../docs/findings-w2.md), and again in the C++ port |
 | 05 | [`docs/findings-w4.md`](../docs/findings-w4.md) — "Phase 2 addendum: making the reorder path real" |
+| 06, 07, 08 | [`docs/findings-w5.md`](../docs/findings-w5.md) — "Three failures, one shape" |
 | stats/01, stats/02 | [`docs/findings-w4.md`](../docs/findings-w4.md) — "three faults in the instrument" |
 | stats/03 | [`docs/findings-w2.md`](../docs/findings-w2.md), `bench/run_ab.py` |
 | loader | [`docs/findings-w4.md`](../docs/findings-w4.md) — the fourth bug, "of my own diagnosis rather than the code" |

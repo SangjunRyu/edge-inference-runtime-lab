@@ -28,7 +28,7 @@ foreach(name 01_dangling_callback 02_callback_blocks_queue 03_request_busy)
 endforeach()
 
 # --- need nothing ---------------------------------------------------------
-foreach(name 04_sentinel_overtakes 05_reorder_off 06_inflight_overcount)
+foreach(name 04_sentinel_overtakes 05_reorder_off 06_inflight_overcount 08_reorder_window_overflow)
   add_executable(repro_${name} ${name}.cpp)
   target_link_libraries(repro_${name} PRIVATE eirl_json eirl_repro Threads::Threads)
   if(MSVC)
@@ -47,3 +47,16 @@ foreach(name 01_dangling_callback 02_callback_blocks_queue 03_request_busy)
             "${OV_ROOT}/libs" "$<TARGET_FILE_DIR:repro_${name}>"
     COMMENT "copying the OpenVINO runtime next to repro_${name}")
 endforeach()
+
+# --- needs the scheduler, but still no accelerator -------------------------
+# Links cpp/src/scheduler.cpp rather than restating the pipeline, so the
+# reproduction cannot drift away from the code whose bound it is about.
+add_executable(repro_07_bound_wrong_metric
+  07_bound_wrong_metric.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/src/scheduler.cpp)
+target_link_libraries(repro_07_bound_wrong_metric PRIVATE eirl_repro Threads::Threads)
+if(MSVC)
+  target_compile_options(repro_07_bound_wrong_metric PRIVATE /W4)
+else()
+  target_compile_options(repro_07_bound_wrong_metric PRIVATE -Wall -Wextra)
+endif()

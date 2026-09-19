@@ -160,6 +160,13 @@ timed as its own stage; service time never mixed with wait time; warm-up frames
 discarded; p50/p95/max always reported alongside the mean; and
 `E2E - sum(stages)` published as `unaccounted` rather than silently absorbed.
 
+## Re-running any of this
+
+[`RUNBOOK.md`](RUNBOOK.md) walks phase by phase through every command that
+produced a result here, what each one asks, and what a healthy answer looks
+like. It also says which tier of hardware each phase needs: most of W5 and five
+of the reproductions need only a C++ compiler.
+
 ## Quick start
 
 Call the venv interpreter directly instead of activating it. On Windows

@@ -42,6 +42,10 @@ CPP = [
      "right frame count, wrong frame order"),
     ("06_inflight_overcount", False,
      "a concurrency peak above the pool that holds it"),
+    ("07_bound_wrong_metric", False,
+     "a correct bound asserted about the wrong quantity"),
+    ("08_reorder_window_overflow", False,
+     "a ring sized from the wrong bound, losing entries and hanging"),
 ]
 STATS = [
     ("01_unpaired_ratio", "a paired comparison that formed ratios across pairs"),
