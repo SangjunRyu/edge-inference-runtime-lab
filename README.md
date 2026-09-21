@@ -20,6 +20,13 @@ naming is not incidental. This repository works out why.
 | W4 | Can the same pipeline be expressed with explicit C++ concurrency and memory ownership, and does that control reveal improvements Python cannot reach? |
 | W5 | What must a pipeline own to be able to refuse work, and what does refusing cost? ([plan](docs/w5-plan.md), [findings](docs/findings-w5.md)) |
 
+One question from W2 was left open for a year of sessions and is now answered
+as far as this machine allows: whether `read` gets cheaper when it is called
+more often. It does not, by enough to matter, and the attribution that rested on
+it is withdrawn. [`docs/findings-read-rate.md`](docs/findings-read-rate.md)
+also records why a control failed six times, which turned out to be the more
+useful half.
+
 W3 did not stay a separate phase — ordering had to be checked in the same run
 that reported the speedup, so the checks were built into W2.
 [`docs/findings-w3.md`](docs/findings-w3.md) records what it set out to ask,
@@ -121,7 +128,7 @@ Every defect found while building this is a **runnable program** under
 [`repro/`](repro/), not only a paragraph: each takes `--mode broken` and
 `--mode fixed` and exits 0 when it behaved as that mode predicts, so a rewrite
 that reintroduces one is caught rather than described. `python repro/run_all.py`
-runs them all. Two of the eleven currently report `NOT REPRO` — the condition
+runs them all. Two of the twelve currently report `NOT REPRO` — the condition
 stopped firing on this build — and the table says so instead of rounding it to
 a pass.
 

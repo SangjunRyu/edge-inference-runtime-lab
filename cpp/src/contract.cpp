@@ -18,32 +18,47 @@ const std::map<std::string, std::size_t> kDtypeBytes = {
     {"INT64", 8}, {"UINT64", 8}, {"FLOAT64", 8},
 };
 
-/// How many trailing axes each layout folds into the padded row. The same table
-/// the inspector uses, restated here on purpose: two independent derivations
-/// that agree are evidence, and one shared implementation would only ever agree
-/// with itself.
-const std::map<std::string, std::size_t> kLayoutRowAxes = {
-    {"ALIGNED", 1}, {"PRE_IM2COL", 2},
-};
-
+/// Which axis a layout pads, and by how much.
+///
+/// The same rule the inspector applies, written independently on purpose: two
+/// derivations that agree are evidence, and one shared implementation would
+/// only ever agree with itself.
+///
+///   ALIGNED      pads the channel axis, axis 1
+///   PRE_IM2COL   pads the flattened im2col row, the last two axes together
+///
+/// "Pads the last axis" was the first rule here, taken from a classifier whose
+/// output is [1, 1000], where the last axis and the channel axis are the same
+/// one. Eight detector containers disagreed and the check said so.
 std::size_t align_up(std::size_t v, std::size_t unit) {
     return unit ? (v + unit - 1) / unit * unit : v;
 }
 
 std::size_t predict(const TensorSpec& t) {
     auto w = kDtypeBytes.find(t.dtype);
-    auto a = kLayoutRowAxes.find(t.layout);
-    if (w == kDtypeBytes.end() || a == kLayoutRowAxes.end()) return 0;
-    if (t.align_unit == 0 || t.shape.size() < a->second) return 0;
-    std::size_t row = 1;
-    for (std::size_t i = t.shape.size() - a->second; i < t.shape.size(); ++i) {
-        row *= static_cast<std::size_t>(t.shape[i]);
+    if (w == kDtypeBytes.end() || t.align_unit == 0 || t.shape.size() < 2) return 0;
+
+    if (t.layout == "ALIGNED") {
+        std::size_t n = static_cast<std::size_t>(t.shape[0])
+                        * align_up(static_cast<std::size_t>(t.shape[1]), t.align_unit);
+        for (std::size_t i = 2; i < t.shape.size(); ++i) {
+            n *= static_cast<std::size_t>(t.shape[i]);
+        }
+        return n * w->second;
     }
-    std::size_t outer = 1;
-    for (std::size_t i = 0; i + a->second < t.shape.size(); ++i) {
-        outer *= static_cast<std::size_t>(t.shape[i]);
+
+    if (t.layout == "PRE_IM2COL") {
+        const std::size_t last = t.shape.size() - 1;
+        std::size_t row = static_cast<std::size_t>(t.shape[last])
+                          * static_cast<std::size_t>(t.shape[last - 1]);
+        std::size_t outer = 1;
+        for (std::size_t i = 0; i + 2 <= last; ++i) {
+            outer *= static_cast<std::size_t>(t.shape[i]);
+        }
+        return outer * align_up(row, t.align_unit) * w->second;
     }
-    return outer * align_up(row, t.align_unit) * w->second;
+
+    return 0;
 }
 
 TensorSpec read_spec(const json& j, Direction d) {

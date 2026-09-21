@@ -154,6 +154,21 @@ Write-up: [`docs/findings-w2.md`](docs/findings-w2.md).
 mismatch and confirm it is caught, so a pass means the check works rather than
 that the check ran.
 
+`bench/read_rate.py` answers the question W2 left open: whether `read` gets
+cheaper when it is called more often, which is the standing explanation for the
+one number in this repository that was never defended.
+
+```
+.venv\Scripts\python.exe -m bench.read_rate --compare-threads 16,1 --pin 6,7,8,9,10,11
+.venv\Scripts\python.exe -m bench.read_rate --source clips/bbb_360_2MB.mp4 --gaps 0,5,10,19,30
+```
+
+**Pin the process or the result is noise.** On a hybrid CPU an unpinned control
+of pure integer work moved 24% and 49% between the halves of a pair, which is
+W1 finding 4 arriving in a different experiment. Pick a group of same-type
+cores; the tool prints the control's spread and refuses to quote a ratio above
+15%.
+
 Write-up: [`docs/findings-w3.md`](docs/findings-w3.md).
 
 ---
@@ -295,6 +310,24 @@ dense tensor, which is what the code had before. The model needs 157696, and
 the difference is the padding. A run that starts anyway would have the device
 reading 7168 bytes past the end of every buffer, and nothing at run time would
 say so.
+
+### W5 tooling -- models without a device
+
+Two tools take a compiled model apart on a machine that has no NPU.
+
+```
+python -m tools.model_budget path/to/*.dxnn --memories 512M,1G,2G
+python -m tools.dxnn_cpu_subgraph model.dxnn --run
+```
+
+`model_budget` answers the deployment question for a shelf of models at once:
+given a device with N bytes, which ones fit and how many inferences can be in
+flight. Every figure comes from the containers and from DX-RT's arithmetic.
+
+`dxnn_cpu_subgraph` extracts the subgraphs the compiler left on the host and
+runs them. A classifier usually has none. A detector carries its decode-and-NMS
+tail as an ordinary ONNX model inside the container, and that half executes here
+with no device present.
 
 ### W5-4 -- backpressure
 

@@ -37,7 +37,7 @@ is the only way to settle it as asked.
 
 ## portable — answerable on any machine
 
-### Why per-stage service time falls in async mode
+### Why per-stage service time falls in async mode  -- ANSWERED, see docs/findings-read-rate.md
 `findings-w2.md`. `read` went 9.75 → 5.05 ms and `inference` 8.06 → 6.16 ms for
 identical work, which overlap cannot explain — overlap does not shorten a
 frame's own service time. The standing hypothesis is decoder read-ahead: in
@@ -64,7 +64,7 @@ the CUDA EP, or with ONNX Runtime's own profiler under any EP. It is the single
 change that would most improve what the harness can say, and it is a host-side
 change.
 
-### The GIL ceiling
+### The GIL ceiling  -- CLOSED by W4, "The GIL, separated at last"
 `docs/protocol.md`, "Known confounds". The W2 pipeline runs its stages as
 threads under one interpreter lock. NumPy and OpenCV release it for their heavy
 calls; the orchestration around them does not. Expected to cap scaling before

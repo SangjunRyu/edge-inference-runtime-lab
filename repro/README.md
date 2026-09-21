@@ -59,6 +59,7 @@ decoder is installed is a defect nobody will reproduce.
 | `06_inflight_overcount` | **nothing** | a concurrency counter bracketed around the frame instead of the lease reports more frames in flight than there are buffers |
 | `07_bound_wrong_metric` | **nothing** | `min(resource, structural)` asserted about pipeline occupancy, which it does not bound -- it bounds frames holding a buffer |
 | `08_reorder_window_overflow` | **nothing** | a reorder ring sized from that same wrong bound overwrites pending entries and its drain never terminates |
+| `09_constructor_cannot_refuse` | **nothing** | an absent device opens successfully, and the guard that was meant to catch it is both compiled out and incapable of helping if it were not |
 
 **04 and 05 need no accelerator and no runtime.** They are the two most likely
 to come back in a rewrite and they run anywhere, including the MX150.
@@ -142,6 +143,7 @@ already done.
 | 04 | [`docs/findings-w2.md`](../docs/findings-w2.md), and again in the C++ port |
 | 05 | [`docs/findings-w4.md`](../docs/findings-w4.md) — "Phase 2 addendum: making the reorder path real" |
 | 06, 07, 08 | [`docs/findings-w5.md`](../docs/findings-w5.md) — "Three failures, one shape" |
+| 09 | [`docs/findings-w5.md`](../docs/findings-w5.md) — "W5 tooling" |
 | stats/01, stats/02 | [`docs/findings-w4.md`](../docs/findings-w4.md) — "three faults in the instrument" |
 | stats/03 | [`docs/findings-w2.md`](../docs/findings-w2.md), `bench/run_ab.py` |
 | loader | [`docs/findings-w4.md`](../docs/findings-w4.md) — the fourth bug, "of my own diagnosis rather than the code" |

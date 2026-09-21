@@ -616,3 +616,107 @@ residency under overload, and says nothing about any real model's throughput.
 Latency is reported as age at output rather than as a stage breakdown, because
 the stages here are one spin loop. W1's decomposition is the tool for the other
 question and this is not it.
+
+# W5 tooling — a shelf of models, and the half that runs without a device
+
+Three additions after the phases closed, all portable, and one of them
+falsified a rule this document had already stated.
+
+## The alignment rule was over-generalised, and eight containers said so
+
+W5-0 established that the alignment unit counts elements rather than bytes, and
+wrote down which axis it pads: `ALIGNED` pads the last axis, `PRE_IM2COL` the
+last two together. The first half was right. The second was a guess with a
+sample size of one.
+
+densenet121's only `ALIGNED` output is `[1, 1000]`, and for a two-dimensional
+tensor "the last axis" and "the channel axis" are the same axis. Eight detector
+containers have four-dimensional outputs and they disagree immediately:
+
+| output shape | unit | declared | last-axis rule | channel-axis rule |
+|---|---|---|---|---|
+| `[1, 4, 80, 80]` | 16 | 409,600 | 102,400 | **409,600** |
+| `[1, 11, 40, 40]` | 16 | 102,400 | 84,480 | **102,400** |
+| `[1, 4, 20, 20]` | 16 | 25,600 | 10,240 | **25,600** |
+| `[1, 11, 20, 20]` | 16 | 25,600 | 28,160 | **25,600** |
+| `[1, 1000]` | 64 | 4,096 | **4,096** | **4,096** |
+
+**`ALIGNED` pads the channel axis, axis 1.** The classifier could not tell the
+two apart; the detectors could, and the check is what asked them. Both
+implementations are corrected, and the self-test now carries a four-dimensional
+case so the distinction cannot collapse again.
+
+The interesting part is not the rule. It is that the check found it without
+anyone looking: `dxnn_inspect` reported 14 of 20 passing on the first detector
+it was pointed at, and named the six tensors and the two numbers for each. A
+tool that only printed the container's own figures would have printed them
+correctly and said nothing.
+
+## `tools/model_budget` — which models fit, and at what concurrency
+
+`dxnn_inspect` answers that for one model. This answers it for a shelf, which is
+the question someone actually has before deploying.
+
+```
+  model                          input        cpu  fixed MB  per-buf MB  out share   256M   512M     1G
+  yolo26n_braintumor.dxnn   1x640x640x3         1       3.2        28.3      95.7%      6      6      6
+  ppe_yolo26n.dxnn          1x640x640x3         1       3.2        28.3      95.7%      6      6      6
+  yolo26n.dxnn              1x640x640x3         1       3.2        30.7      96.0%      6      6      6
+  densenet121_224x224.dxnn  1x224x224x3         0      17.3        56.3      99.7%      4      6      6
+```
+
+**A 224x224 classifier costs twice as much per buffer as a 640x640 detector.**
+The input is eight times smaller and the per-buffer cost is two times larger,
+because between 95.7% and 99.7% of that cost is `output_all_size` and nothing in
+a model's signature predicts it. At 256 MiB the classifier is the one that gets
+clamped, from six buffers to four, while every detector keeps six.
+
+That is the sentence the table exists to produce, and it is not one anybody
+would arrive at from input shapes.
+
+## `tools/dxnn_cpu_subgraph` — running the host half
+
+A `.dxnn` is not all NPU. When the compiler meets an operation the device does
+not implement it leaves that piece on the host and stores it in the container as
+an ordinary ONNX model, which `dx_rt` loads straight into an ONNX Runtime
+session (`lib/cpu_handle.cpp:236`).
+
+densenet121 has none: it compiles entirely to the NPU, which is why W5-0 never
+saw this. The detectors carry their decode-and-NMS tail as a 176,694-byte ONNX
+model, and **that half executes here with no device present**:
+
+```
+order      npu_0 -> cpu_0
+  npu_0    on NPU   in [images]   out [6 conv outputs]
+  cpu_0    on CPU   in [the same 6]  out [output0, TopK_output_0]
+
+subgraph   cpu_0   176,694 B   ONNX
+  out      output0                  float32   [1, 300, 6]
+  out      /model.23/TopK_output_0  float32   [1, 300]
+  ran      yes, on the CPU execution provider, with no device present
+```
+
+The NPU half cannot be run without a DX-M1. The host half can, and it is where a
+detector's output takes its final shape: 300 boxes with four coordinates, a
+score and a class. This is the difference between reading a container and
+executing one.
+
+## And one more reproduction
+
+`repro/cpp/09_constructor_cannot_refuse`. DX-RT's Windows driver adapter calls
+`CreateFile` in its constructor and does not look at the result, because the
+check is inside `#if 0`.
+
+The obvious half is that the check is compiled out. The half worth a program is
+that **turning it back on would not fix it**: the guarded code prints and
+returns, and returning from a constructor still constructs the object. There is
+no value to inspect and no way to refuse.
+
+`--mode probe` runs the guard exactly as written and shows the object arriving
+anyway, with the first real symptom appearing several calls later as
+`ERROR_INVALID_HANDLE` from a submission that was not at fault. The fix is a
+factory that can return nothing.
+
+Same family as OpenVINO's error 127, ONNX Runtime falling back to the CPU
+without saying so, and a missing MinGW runtime exiting 127: an absent dependency
+looks exactly like a program that chose not to use it.

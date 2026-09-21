@@ -46,6 +46,8 @@ CPP = [
      "a correct bound asserted about the wrong quantity"),
     ("08_reorder_window_overflow", False,
      "a ring sized from the wrong bound, losing entries and hanging"),
+    ("09_constructor_cannot_refuse", False,
+     "an absent device opens fine, and the disabled guard could not have helped"),
 ]
 STATS = [
     ("01_unpaired_ratio", "a paired comparison that formed ratios across pairs"),

@@ -374,45 +374,56 @@ def logical_bytes(tensor: dict) -> int | None:
     return n * width
 
 
-#: How many trailing axes each layout folds into the row it aligns.
-#: ``ALIGNED`` pads the last axis; ``PRE_IM2COL`` pads the flattened im2col row,
-#: which is the last two axes together.
-LAYOUT_ROW_AXES = {"ALIGNED": 1, "PRE_IM2COL": 2}
+#: Layouts whose padding rule this tool knows. Anything else is reported as
+#: unpredicted rather than guessed at.
+KNOWN_LAYOUTS = ("ALIGNED", "PRE_IM2COL")
 
 
 def predicted_allocation(tensor: dict) -> int | None:
     """Predict a tensor's allocated region from its shape, layout and align unit.
 
-    The rule, derived from the file and checked against it: **the alignment
-    unit counts elements, not bytes.** Fold the trailing axes the layout names
-    into one row, round that row up to a whole number of ``align_unit``
-    elements, then multiply by the element width.
+    **The alignment unit counts elements, not bytes**, and *which* axis it pads
+    depends on the layout:
 
-    It matters that this is elements. A 1000-wide float32 output aligned as
+    * ``ALIGNED`` pads the channel axis, axis 1, and leaves the rest alone.
+    * ``PRE_IM2COL`` pads the flattened im2col row, the last two axes together.
+
+    The channel-axis rule was not the first one written here. Derived from a
+    single classifier whose output is ``[1, 1000]``, "pad the last axis" and
+    "pad the channel axis" are the same rule, and the first was chosen. Eight
+    detector containers falsified it: a ``[1, 4, 80, 80]`` output declares
+    409,600 bytes, which is ``align(4, 16) x 80 x 80 x 4`` and is not anything
+    the last axis produces. A rule generalised from one model is a guess with a
+    sample size, and the check is what turned it back into one.
+
+    It matters that this counts elements. A 1000-wide float32 output aligned as
     *bytes* would occupy ``align(4000, 64) = 4032``; the file says 4096, which
-    is ``align(1000, 64) * 4``. Reading it as bytes gets the right order of
-    magnitude and the wrong number, which is the kind of error that survives
-    review. Returns ``None`` for a layout with no stated rule rather than
-    guessing one.
+    is ``align(1000, 64) * 4``.
+
+    Returns ``None`` for a layout with no stated rule rather than guessing one.
     """
     width = DTYPE_BYTES.get(str(tensor.get("dtype", "")).upper())
     shape = tensor.get("shape")
     unit = int(tensor.get("align_unit") or 0)
-    axes = LAYOUT_ROW_AXES.get(str(tensor.get("layout", "")).upper())
-    if width is None or not shape or unit <= 0 or axes is None or len(shape) < axes:
+    layout = str(tensor.get("layout", "")).upper()
+    if width is None or not shape or unit <= 0 or len(shape) < 2:
         return None
-    row = 1
-    for d in shape[-axes:]:
-        row *= int(d)
-    outer = 1
-    for d in shape[:-axes]:
-        outer *= int(d)
-    return outer * align(row, unit) * width
 
+    if layout == "ALIGNED":
+        n = int(shape[0]) * align(int(shape[1]), unit)
+        for d in shape[2:]:
+            n *= int(d)
+        return n * width
 
-# --------------------------------------------------------------------------
-# rendering
-# --------------------------------------------------------------------------
+    if layout == "PRE_IM2COL":
+        row = int(shape[-1]) * int(shape[-2])
+        outer = 1
+        for d in shape[:-2]:
+            outer *= int(d)
+        return outer * align(row, unit) * width
+
+    return None
+
 
 def _n(v: int) -> str:
     return f"{v:,}"
@@ -683,7 +694,15 @@ def self_test() -> int:
 
     out_tensor = {"dtype": "FLOAT32", "shape": [1, 1000],
                   "layout": "ALIGNED", "align_unit": 64}
-    check(predicted_allocation(out_tensor) == 4096, "ALIGNED pads the last axis")
+    check(predicted_allocation(out_tensor) == 4096, "ALIGNED pads the channel axis")
+    # A 4D output tells the two candidate rules apart; a 2D one cannot, which is
+    # how the wrong one survived until the detector containers arrived.
+    det = {"dtype": "FLOAT32", "shape": [1, 4, 80, 80],
+           "layout": "ALIGNED", "align_unit": 16}
+    check(predicted_allocation(det) == 409600,
+          "ALIGNED pads axis 1, not the last axis, on a 4D output")
+    check(predicted_allocation({**det, "shape": [1, 11, 40, 40]}) == 102400,
+          "and again with a channel count that is not a power of two")
     in_tensor = {"dtype": "UINT8", "shape": [1, 224, 224, 3],
                  "layout": "PRE_IM2COL", "align_unit": 64}
     check(predicted_allocation(in_tensor) == 157696, "PRE_IM2COL pads the im2col row")
