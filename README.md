@@ -160,6 +160,13 @@ timed as its own stage; service time never mixed with wait time; warm-up frames
 discarded; p50/p95/max always reported alongside the mean; and
 `E2E - sum(stages)` published as `unaccounted` rather than silently absorbed.
 
+## Korean write-up
+
+[`docs-ko/`](docs-ko/README.md) carries the whole set in Korean -- the phase
+findings, the reproductions, the measurement protocol and the runbook. It is
+rewritten rather than translated line by line, and the English documents remain
+authoritative when the two disagree.
+
 ## Re-running any of this
 
 [`RUNBOOK.md`](RUNBOOK.md) walks phase by phase through every command that
