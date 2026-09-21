@@ -25,6 +25,13 @@
 시간이 없으면 [00 개요](00-overview.md)와 [07 실행법](07-runbook.md) 둘이면 된다.
 개요에 결과 열 개가 한 화면에 있고, 실행법에 그걸 다시 만드는 명령이 있다.
 
+## 이 저장소의 다른 한글 문서
+
+[`study/`](../study/README.md) 는 결과 기록이 아니라 **학습 계획**이다. 같은
+유한 동시성 문제가 oneTBB 의 토큰, Taskflow 의 lines, GStreamer 의 `leaky`,
+Triton 의 `max_queue_size`, DX-RT 의 `bufferCount` 로 각각 나타나는 지형을 그리고,
+무엇을 어떤 순서로 볼지와 각각에서 무엇을 만들어야 하는지를 적는다.
+
 ## 원문 대응표
 
 | 한글 | 원문 |

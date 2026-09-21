@@ -167,6 +167,16 @@ timed as its own stage; service time never mixed with wait time; warm-up frames
 discarded; p50/p95/max always reported alongside the mean; and
 `E2E - sum(stages)` published as `unaccounted` rather than silently absorbed.
 
+## Where this goes next
+
+[`study/`](study/README.md) maps the ground around this project: the same
+bounded-concurrency problem as oneTBB names it (live tokens), Taskflow (lines),
+GStreamer (`leaky`, `max-size-buffers`), Triton (`max_queue_size`) and DX-RT
+(`bufferCount`). It carries the same rule W5 did -- reading is not a
+deliverable, so each framework's output is a program that reproduces W5-4's
+table in that framework's vocabulary rather than a comparison document. Written
+in Korean.
+
 ## Korean write-up
 
 [`docs-ko/`](docs-ko/README.md) carries the whole set in Korean -- the phase
