@@ -270,6 +270,47 @@ oracle. `--bench` prints UNMEASURABLE and declines to quote a ratio when its
 control moves more than 15 percent between pairs, which on a busy laptop is
 most of the large geometries.
 
+### W5-3 part two -- the model decides the buffers
+
+The size a buffer must be is not a constant in the code. It comes from the
+compiled model, once:
+
+```bash
+python -m tools.dxnn_inspect model.dxnn --contract contracts/model.json
+cpp/build/w5_contract.exe --contract contracts/model.json --npu-memory 512M
+```
+
+Then break each property on purpose. Every one of these must refuse **before a
+single stage runs**, and each prints `work executed  0 stages`:
+
+```bash
+cpp/build/w5_contract.exe --contract contracts/model.json --inject hardcoded-size
+cpp/build/w5_contract.exe --contract contracts/model.json --inject bad-allocated
+cpp/build/w5_contract.exe --contract contracts/model.json --inject bad-padding
+cpp/build/w5_contract.exe --contract contracts/model.json --inject overflow
+```
+
+`hardcoded-size` is the one to look at. It sizes the pool from 150528, the
+dense tensor, which is what the code had before. The model needs 157696, and
+the difference is the padding. A run that starts anyway would have the device
+reading 7168 bytes past the end of every buffer, and nothing at run time would
+say so.
+
+### W5-4 -- backpressure
+
+Needs a source with its own clock, or the policies are indistinguishable:
+
+```bash
+cpp/build/w5_backpressure.exe --compare --frames 240 --repeat 3
+cpp/build/w5_backpressure.exe --policy block --frames 200
+cpp/build/w5_backpressure.exe --policy drop-oldest --frames 200
+```
+
+Read the **age at output** column, not the throughput one. Age is measured from
+when a frame was due, so it counts the time a frame spent waiting to be
+captured as well as the time it spent in the pipeline. That is the difference
+between the policies, and pipeline latency alone hides it.
+
 Write-up: [`docs/findings-w5.md`](docs/findings-w5.md), plan in
 [`docs/w5-plan.md`](docs/w5-plan.md).
 
@@ -312,6 +353,7 @@ cpp/build/w5_ownership.exe --frames 5000 --inflight 4
 cpp/build/w5_ownership.exe --inject early-release
 cpp/build/w5_scheduler.exe --sweep --frames 1000
 cpp/build/w5_format.exe --verify
+cpp/build/w5_backpressure.exe --policy drop-oldest --frames 120
 python repro/run_all.py --skip-openvino
 python -m tools.dxnn_inspect --self-test
 ```

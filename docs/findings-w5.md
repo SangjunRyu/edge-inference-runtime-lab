@@ -461,3 +461,158 @@ Nothing is copied from DEEPX. Every `dx_rt` file states that the software is
 supplied to customers of a DEEPX NPU and may not be redistributed, so what is
 reproduced is behaviour, cited by file and line, and checked against the
 container's own declared sizes.
+
+# W5-3 part two -- the compiled model decides the buffers
+
+The format work above measured conversions. It did not fix the thing underneath
+them: **the buffer size was still a literal.** `150528` sat in a default
+argument, correct for densenet121's input if you forget that the device reads a
+padded tensor, and the padded one is `157696`.
+
+A pool built from the logical size is 7,168 bytes short of what the hardware
+reads. The allocation succeeds. The frames flow. The counts match. It is the
+same class of defect the rest of W5 keeps finding, arriving through a constant
+rather than through a bound.
+
+## One source of truth
+
+```
+python -m tools.dxnn_inspect model.dxnn --contract contracts/model.json
+cpp/build/w5_contract.exe --contract contracts/model.json --npu-memory 512M
+```
+
+The contract carries the dtype, shape, layout, alignment unit, logical and
+allocated sizes per tensor, the per-direction buffer sizes, and the fixed and
+per-buffer costs. Everything the pipeline needs in order to size and check
+itself, produced once from the model the compiler wrote.
+
+The loader does not take it on trust. `contract.cpp` re-derives the padded size
+from the layout rule and compares it with what the file declares, using its own
+table rather than sharing the inspector's -- two derivations that agree are
+evidence, and one implementation would only ever agree with itself.
+
+For densenet121 at 512 MiB of device memory:
+
+```
+  input   input.1 UINT8 [1,224,224,3] PRE_IM2COL align 64
+          logical 150528 B, allocated 157696 B
+  output  1164 FLOAT32 [1,1000] ALIGNED align 64
+          logical 4000 B, allocated 4096 B
+  buffers   input 157696 B, output 56143872 B
+  costs     fixed 17253056 B, per buffer 56301568 B
+
+buffers        6 of 6 requested, limited by 536870912 B of device memory
+host pools     input 157696 B x 6
+work executed  2000 stages, 0 rejected, all checks pass
+```
+
+The buffer count is not a flag. It is W5-2's resource bound, arriving from the
+model file and the device's memory instead of from a command line.
+
+## Refusing before the work, not after
+
+Four injections, and the line that matters is the same in all four:
+
+| injection | what it does | refused by |
+|---|---|---|
+| `hardcoded-size` | sizes the pool from `150528` | the start-up admission check |
+| `bad-allocated` | allocation below the logical size | contract validation, on load |
+| `bad-padding` | padding computed on bytes, not elements | contract validation, on load |
+| `overflow` | a device one byte short of a single buffer | the capacity calculation |
+
+```
+  FAIL  the input pool matches the contract
+        input buffer is 150528 B; the model requires 157696 B
+        (too small, the device would read past it)
+
+work executed  0 stages -- refused before the pipeline started
+```
+
+**Zero stages, in every case.** That is the property, not the message. After
+inference the only evidence left is an answer that is wrong and looks right;
+`repro/cpp/05` and W5-1's early-release injection are both records of how
+convincing that looks.
+
+`bad-padding` is worth its own line. It sets the allocation to
+`align(150528 bytes, 64)`, which is `150528` again, because the logical size
+already happens to be a multiple of 64. That is the byte-versus-element mistake
+the inspector's self-test caught in W5-0, arriving from the other direction --
+and it is refused here because the loader predicts `157696` from the layout and
+says so.
+
+# W5-4 -- what a bounded pipeline does when it cannot keep up
+
+## The prerequisite, restated
+
+The plan wrote this down before the code existed: with a file read as fast as
+the pipeline consumes it, `Block` and `DropOldest` are indistinguishable.
+Nothing is ever late, so a drop policy has nothing to drop.
+
+So the source here keeps its own clock. It emits at `--source-fps` and waits for
+nothing except under `block`, where waiting *is* the policy. That is what a
+camera is.
+
+The second half of the prerequisite is the measurement. **Age at output, not
+pipeline latency.** Age is counted from when a frame was due, so it includes the
+time a frame spent waiting to be captured. A policy that quietly captures late
+has excellent pipeline latency and stale output, and only the first number shows
+up if you measure the obvious thing.
+
+## The result
+
+A 60 FPS source, one worker at 25 ms per frame, so 40 FPS of capacity against 60
+offered. Queue 4, pool 8, three repeats with the policy order rotated:
+
+```
+  policy             FPS     CV   p95 age   max age   dropped  resident
+  unbounded        39.99   0.0%     208.8     212.0        73         7
+  block            39.97   0.1%    1920.8    2026.2         0         4
+  drop-oldest      39.96   0.1%     100.5     121.4        76         4
+  drop-newest      39.99   0.0%     133.8     134.2        76         4
+```
+
+**All four sustain the same rate, to within 0.1%.** The queue was never what
+limited throughput; the worker was. So a deeper queue buys nothing except older
+frames and more resident memory -- which is the systems result this experiment
+was built to produce, and it came out as predicted.
+
+The throughput column is the measured one, and for once the spread is tiny. That
+is not this laptop behaving: the service time is a spin loop of a fixed
+duration, so the rate is arithmetic. Every other column is counted.
+
+**Blocking costs 19x in staleness and hides it.** `block` drops nothing, which
+looks like the safe choice, and delivers frames that are on average almost two
+seconds old. The source itself ends up 1.5 seconds behind the wall clock,
+because under `block` falling behind is how the pipeline applies backpressure to
+a source that has nowhere to put it.
+
+**Drop-oldest beats drop-newest at the same drop count.** 100 ms against 134 ms
+of p95 age, 76 frames discarded either way. When the queue is full the freshest
+frame is the one worth keeping, and discarding the arrival instead means the
+consumer is served from a backlog it already could not clear.
+
+## The prediction that did not hold, and why it is the better finding
+
+The plan said an unbounded queue in front of a clocked source grows until the
+process dies. It does not. It settled at **7 resident and dropped 73 frames.**
+
+There was no unbounded queue, because there cannot be one. A frame needs a
+buffer before it can be queued, and the pool has eight. **The pool is admission
+control whether or not anybody designed it that way**, and removing the queue's
+limit only moves the refusal one step earlier, to `try_acquire` returning
+nothing.
+
+That is W5-1, W5-2 and W5-4 closing on the same point from three directions. A
+pipeline that owns its buffers already has a bound; the queue policy decides
+*which* frames survive it, not how many. And it is why DX-RT deriving
+`bufferCount` from device memory is not a detail of its configuration but the
+place its admission control actually lives.
+
+## What is not claimed
+
+The service time is synthetic. This says what the policies do to freshness and
+residency under overload, and says nothing about any real model's throughput.
+
+Latency is reported as age at output rather than as a stage breakdown, because
+the stages here are one spin loop. W1's decomposition is the tool for the other
+question and this is not it.

@@ -326,6 +326,17 @@ repository. See *Claim discipline*.
 oracle. The counted table is in [`findings-w5.md`](findings-w5.md): fusing
 removes 315,392 bytes of host traffic per frame.
 
+**Part two, the memory contract, is also done.** The gap ChatGPT's review
+identified was real: W5-1 and W5-2 both took the buffer size as a literal.
+`tools/dxnn_inspect.py --contract` now writes what the compiled model requires,
+`cpp/include/contract.hpp` reads and re-derives it, and
+`cpp/src/w5_contract.cpp` sizes its pools from that file, computes the buffer
+count from the model's cost model and the device's memory, and refuses a
+mismatch **before any stage runs**. Four injections, each printing
+`work executed 0 stages`: a pool sized from the old literal 150528, a contract
+whose allocation is below its logical size, a contract that disagrees with its
+own layout rule, and a device too small for one buffer.
+
 The expectation this phase was built on — that DX-RT's scalar fallback leaves
 performance on the table — **is false at the size that matters.** At the
 densenet121 input geometry the tensor is 157 KB, fits in cache, and the
@@ -350,6 +361,21 @@ and an overload induced by slowing the sink.
 repository's paired discipline and the rest counted. The conclusion it is set up
 to reach — that all three sustain the same throughput, so a larger queue buys
 nothing but stale frames and resident memory — is a genuine systems result.
+
+**Done.** `cpp/src/w5_backpressure.cpp`, reported in
+[`findings-w5.md`](findings-w5.md). All four policies sustain 40 FPS to within
+0.1%, so the conclusion held. Blocking costs 19x in staleness (p95 age 1,921 ms
+against 100 ms for drop-oldest) while dropping nothing, and drop-oldest beats
+drop-newest at an identical drop count.
+
+**One prediction in this plan was wrong, and the correction is better than the
+prediction.** An unbounded queue does not grow until the process dies. It
+settled at 7 resident and dropped 73 frames, because a frame needs a buffer
+before it can be queued and the pool has eight. **The pool is admission control
+whether or not anyone designed it that way**; removing the queue's limit only
+moves the refusal earlier. That is W5-1, W5-2 and W5-4 arriving at the same
+place from three directions, and it is why DX-RT deriving `bufferCount` from
+device memory is where its admission control actually lives.
 
 **DX-RT anchor, and this is the sharpest one.** In DX-RT the inflight limit is
 not a tuning knob. It is a memory budget. At `lib/task_data.cpp:453-454`:

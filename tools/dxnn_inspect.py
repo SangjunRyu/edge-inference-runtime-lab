@@ -588,6 +588,65 @@ def nfh_args(container: Container, which: str = "input") -> str | None:
     return None
 
 
+def contract(container: Container) -> dict:
+    """Emit the buffer contract a runtime has to honour, for a C++ side to read.
+
+    This is the single source of truth W5-3 is about. Everything a pipeline
+    needs in order to size and check its buffers is derived from the compiled
+    model here, once, rather than written as a constant somewhere and kept in
+    step by hand. `cpp/src/w5_contract.cpp` sizes its pools from this file and
+    refuses any buffer that does not match it.
+
+    The per-direction byte counts are the *allocated* sizes, not the logical
+    ones: a pool slot has to hold the padded tensor the device will read, and
+    the two differ by exactly the padding the layout rule produces.
+    """
+    tasks = []
+    in_bytes = 0
+    out_bytes = 0
+    for t in container.tasks:
+        entry = {
+            "name": t.name,
+            "inputs": [_spec(x, "input") for x in t.info.get("inputs", [])],
+            "outputs": [_spec(x, "output") for x in t.info.get("outputs", [])],
+            "output_all_size": t.output_mem_bytes,
+        }
+        tasks.append(entry)
+        in_bytes += align(t.encoded_input_bytes, 64)
+        out_bytes += t.output_mem_bytes
+
+    b = budget(container)
+    results = checks(container)
+    return {
+        "schema": "eirl/dxnn-contract/1",
+        "model": container.path.name,
+        "container_version": container.version,
+        "target": container.target,
+        "hw_config": container.hw,
+        "tasks": tasks,
+        "buffer_bytes": {"input": in_bytes, "output": out_bytes},
+        "fixed_cost": b.fixed,
+        "per_buffer_cost": b.per_buffer,
+        "default_buffers": DEFAULT_BUFFERS,
+        "max_buffers": MAX_BUFFERS,
+        "source_checks_passed": all(ok for ok, _ in results),
+    }
+
+
+def _spec(t: dict, direction: str) -> dict:
+    return {
+        "name": t.get("name"),
+        "direction": direction,
+        "dtype": t.get("dtype"),
+        "shape": t.get("shape"),
+        "layout": t.get("layout"),
+        "align_unit": t.get("align_unit"),
+        "logical_bytes": logical_bytes(t),
+        "allocated_bytes": int(t["memory"]["size"]),
+        "predicted_bytes": predicted_allocation(t),
+    }
+
+
 def _tensor_json(t: dict) -> dict:
     return {
         "name": t.get("name"),
@@ -681,6 +740,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--self-test", action="store_true", help="check the arithmetic and exit")
     ap.add_argument("--nfh-args", choices=["input", "output"], nargs="?", const="input",
                     help="print this tensor's geometry as flags for cpp w5_format")
+    ap.add_argument("--contract", metavar="OUT",
+                    help="write the buffer contract as JSON for the C++ side")
     args = ap.parse_args(argv)
 
     if args.self_test:
@@ -695,6 +756,19 @@ def main(argv: list[str] | None = None) -> int:
     except (DxnnError, OSError, json.JSONDecodeError) as e:
         print(f"error: {e}", file=sys.stderr)
         return 2
+
+    if args.contract:
+        doc = contract(container)
+        text = json.dumps(doc, indent=2)
+        if args.contract == "-":
+            print(text)
+        else:
+            Path(args.contract).write_text(text + "\n", encoding="utf-8")
+            print(f"wrote {args.contract}: "
+                  f"input {doc['buffer_bytes']['input']:,} B, "
+                  f"output {doc['buffer_bytes']['output']:,} B, "
+                  f"per-buffer {doc['per_buffer_cost']:,} B")
+        return 0 if doc["source_checks_passed"] else 1
 
     if args.nfh_args:
         line = nfh_args(container, args.nfh_args)

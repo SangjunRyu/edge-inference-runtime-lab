@@ -91,7 +91,21 @@ add_executable(w5_format
 target_include_directories(w5_format PRIVATE include)
 target_link_libraries(w5_format PRIVATE Threads::Threads)
 
-foreach(tgt w5_ownership w5_scheduler w5_format)
+# W5-3 part two: the compiled model as the single source of truth for buffers.
+# Needs the vendored nlohmann header, which is header-only and pulls in nothing.
+add_executable(w5_contract
+  src/w5_contract.cpp
+  src/contract.cpp
+  src/scheduler.cpp)
+target_include_directories(w5_contract PRIVATE include)
+target_link_libraries(w5_contract PRIVATE eirl_json Threads::Threads)
+
+# W5-4: admission policies against a source that keeps its own clock.
+add_executable(w5_backpressure src/w5_backpressure.cpp)
+target_include_directories(w5_backpressure PRIVATE include)
+target_link_libraries(w5_backpressure PRIVATE Threads::Threads)
+
+foreach(tgt w5_ownership w5_scheduler w5_format w5_contract w5_backpressure)
   if(MSVC)
     target_compile_options(${tgt} PRIVATE /W4)
   else()

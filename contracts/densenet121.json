@@ -1,0 +1,60 @@
+{
+  "schema": "eirl/dxnn-contract/1",
+  "model": "densenet121_224x224.dxnn",
+  "container_version": 8,
+  "target": "M1A_4K",
+  "hw_config": {
+    "chip_version": "M1A",
+    "mac": 4,
+    "is_unsigned": false
+  },
+  "tasks": [
+    {
+      "name": "npu_0",
+      "inputs": [
+        {
+          "name": "input.1",
+          "direction": "input",
+          "dtype": "UINT8",
+          "shape": [
+            1,
+            224,
+            224,
+            3
+          ],
+          "layout": "PRE_IM2COL",
+          "align_unit": 64,
+          "logical_bytes": 150528,
+          "allocated_bytes": 157696,
+          "predicted_bytes": 157696
+        }
+      ],
+      "outputs": [
+        {
+          "name": "1164",
+          "direction": "output",
+          "dtype": "FLOAT32",
+          "shape": [
+            1,
+            1000
+          ],
+          "layout": "ALIGNED",
+          "align_unit": 64,
+          "logical_bytes": 4000,
+          "allocated_bytes": 4096,
+          "predicted_bytes": 4096
+        }
+      ],
+      "output_all_size": 56143872
+    }
+  ],
+  "buffer_bytes": {
+    "input": 157696,
+    "output": 56143872
+  },
+  "fixed_cost": 17253056,
+  "per_buffer_cost": 56301568,
+  "default_buffers": 6,
+  "max_buffers": 100,
+  "source_checks_passed": true
+}
