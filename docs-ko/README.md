@@ -20,6 +20,7 @@
 | [06 재현 프로그램](06-repro.md) | 발견한 결함 11개를 실행 가능한 형태로 |
 | [07 실행법](07-runbook.md) | W1부터 W5까지 어떤 명령으로 어떻게 돌리는가 |
 | [08 측정 규율](08-protocol.md) | 첫 측정 전에 고정한 규칙과 계측기의 잡음 특성 |
+| [09 read 호출 빈도](09-read-rate.md) | W2 가 남긴 미귀속 수치의 결말, 그리고 통제가 여섯 번 깨진 원인 |
 
 시간이 없으면 [00 개요](00-overview.md)와 [07 실행법](07-runbook.md) 둘이면 된다.
 개요에 결과 열 개가 한 화면에 있고, 실행법에 그걸 다시 만드는 명령이 있다.
@@ -37,6 +38,7 @@
 | 06 재현 프로그램 | `repro/README.md` |
 | 07 실행법 | `RUNBOOK.md` |
 | 08 측정 규율 | `docs/protocol.md` |
+| 09 read 호출 빈도 | `docs/findings-read-rate.md` |
 
 여기에 대응본이 없는 원문도 있다. `docs/dxapp-callgraph.md`와
 `docs/dxapp-sync-async.md`는 DX-APP 소스를 읽으며 남긴 분석 노트이고,
