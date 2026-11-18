@@ -1,4 +1,10 @@
-# Clock-driven inspection and counting scenarios
+# Historical clock-driven inspection and counting scenarios
+
+> Retired synthetic workload: executable bus-image generation, scenario and rendering
+> tools were removed in favor of [actual video](real-video-demo.md). The numbers
+> below are historical, not real-camera or factory validation.
+> [Original sources](https://github.com/SangjunRyu/edge-inference-runtime-lab/blob/080068cd258678159e2b45bf037f740bacacbcc7/tools/run_industrial_scenarios.py) remain in Git history.
+
 
 [Korean findings](../docs-ko/10-industrial-scenarios.md) |
 [Recorded evidence](../results/industrial-20261118-public/)
@@ -105,7 +111,11 @@ dropped about 53/55/56% of offered frames respectively. This trades coverage
 for freshness; it is not a lossless inference speedup. All figures and the
 16-run CUDA correction history are in the published evidence linked above.
 
-## Reproduce
+## Historical reproduction (original commit only)
+
+The commands below require commit `080068c` in a separate checkout. They do
+not run against the current tree. Current commands are in
+[the actual-video guide](real-video-demo.md).
 
 Use the already working `.venv-cuda`; neither PyTorch nor Ultralytics is needed
 to run ONNX experiments on Windows. The initial ONNX export was done in a

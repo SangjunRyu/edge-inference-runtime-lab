@@ -3,7 +3,7 @@
 Backend x resolution grid, ResNet50 @224, Core Ultra 7 255H, Big Buck Bunny
 H.264 clips, 5 runs per cell x 200 counted frames after 100 warm-up, 60 s
 cooldown between runs and between cells. Raw data: `results/gram__*.json`.
-Regenerate with `python -m bench.summarize --tag gram`.
+Regenerate with `python -m bench.analysis.summarize --tag gram`.
 
 Rows are the median across the five runs of each run's p50, so one bad run
 cannot define a cell.

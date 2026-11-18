@@ -13,7 +13,7 @@ several threads, those threads overlap across *calls*, and a caller that returns
 immediately keeps them busy while a caller that waits 19 ms pays a full
 single-frame latency each time.
 
-`bench/read_rate.py` tests it by **turning the proposed cause off**, which is
+`bench/analysis/read_rate.py` tests it by **turning the proposed cause off**, which is
 stronger than measuring the effect again. The decoder's thread count reaches
 FFmpeg through `OPENCV_FFMPEG_CAPTURE_OPTIONS`, so the tool runs each setting in
 its own process and compares.
@@ -178,8 +178,8 @@ rather than an attribution.
 ## Running it
 
 ```
-.venv\Scripts\python.exe -m bench.read_rate --compare-threads 16,1 --pin 6,7,8,9,10,11
-.venv\Scripts\python.exe -m bench.read_rate --source clips/bbb_360_2MB.mp4 --gaps 0,5,10,19,30
+.venv\Scripts\python.exe -m bench.analysis.read_rate --compare-threads 16,1 --pin 6,7,8,9,10,11
+.venv\Scripts\python.exe -m bench.analysis.read_rate --source clips/bbb_360_2MB.mp4 --gaps 0,5,10,19,30
 ```
 
 The paired test fills the gap with work by default, because that is what a

@@ -1,17 +1,19 @@
 # edge-inference-runtime-lab
 
-The clock-driven application scenarios are documented in
-[`docs/industrial-scenarios.md`](docs/industrial-scenarios.md): four-camera
-triggered classification and a controlled detection/tracking/counting stream,
-with explicit admission policies, deadlines and per-request accounting.
-They run real ONNX Runtime CPU/CUDA inference; the inputs are virtual cameras
-and a public-image surrogate, not factory validation data or DEEPX hardware.
+The current application demo runs **actual pedestrian video** through YOLO11n
+with ONNX Runtime CPU/CUDA. See the [Korean walkthrough](docs-ko/11-real-video.md)
+and [execution guide](docs/real-video-demo.md) for frame decoding, bounded async
+requests, ordered tracking and side-by-side output. It processes files without
+frame dropping; it is not a live-camera overload benchmark.
 
-The [Korean findings](docs-ko/10-industrial-scenarios.md) explain the measured
-deadline/freshness tradeoffs and the CUDA output-value failure. The
-[published evidence](results/industrial-20261118-public/) contains 21 conditions,
-42 validated runs and the rejected-configuration diagnostics. Read the
-[reproduction guide](docs/industrial-scenarios.md) before reusing the numbers.
+The code is grouped by responsibility under [`bench/`](bench/README.md).
+Module commands now use `classification/`, `detection/`, `runtime/`,
+`measurement/`, `experiments/`, `analysis/`, `data/` and `workloads/`.
+
+The translated-bus-image generator and its scenario runner/rendering tools have
+been removed. [Earlier findings](docs-ko/10-industrial-scenarios.md) and
+[published measurements](results/industrial-20261118-public/) are historical
+synthetic-workload evidence, not real-footage validation.
 
 A study of inference pipeline execution models, inspired by the architecture of
 the open-source [DEEPX DX-APP](https://github.com/DEEPX-AI/dx_app) runtime and
@@ -45,12 +47,12 @@ that reported the speedup, so the checks were built into W2.
 [`docs/findings-w3.md`](docs/findings-w3.md) records what it set out to ask,
 what was answered. The gap it identified -- nothing verified that the async
 pipeline produced the same *predictions*, only that it emitted them in the
-right order -- is now closed by `bench/verify_equivalence.py`: bit-identical
+right order -- is now closed by `bench/classification/verify_equivalence.py`: bit-identical
 top-5 across 300 frames at every depth tested, on CPU, Arc iGPU and NPU alike,
 with a self-test proving the check can detect a fault and a sensitivity figure
 stating how much of the pairing it actually covers.
 
-`bench/compare_backends.py` asks the neighbouring question — whether the
+`bench/experiments/compare_backends.py` asks the neighbouring question — whether the
 backends agree with *each other*. OpenVINO's CPU kernels match ONNX Runtime's
 exactly; the two accelerators each flip the same two frames of 300, both at a
 margin of 0.0003 against a numerical spread of 0.004-0.006. They broke a tie
@@ -214,12 +216,12 @@ environment activated earlier in `PATH` can silently win.
 python -m venv .venv
 .venv\Scripts\python.exe -m pip install -r requirements.txt
 
-.venv\Scripts\python.exe -m bench.env_fingerprint           # what am I running on?
+.venv\Scripts\python.exe -m bench.measurement.env_fingerprint           # what am I running on?
 
 .venv\Scripts\python.exe -m pip install torch torchvision   # export only
-.venv\Scripts\python.exe -m bench.prepare_models --models resnet50 --sizes 224
+.venv\Scripts\python.exe -m bench.data.prepare_models --models resnet50 --sizes 224
 
-.venv\Scripts\python.exe -m bench.run_sync --model models/resnet50_224.onnx `
+.venv\Scripts\python.exe -m bench.classification.run_sync --model models/resnet50_224.onnx `
     --backend cpu --frames 300 --tag w1-baseline
 ```
 

@@ -29,7 +29,7 @@ Two things W1's harness was built to support and this run finally needs:
 * **Order is checked, not assumed.** Async completions do not preserve
   submission order. Counting frames would not notice; `OrderChecker` does.
 
-    python -m bench.run_async --model models/resnet50_224.onnx --backend cpu \
+    python -m bench.classification.run_async --model models/resnet50_224.onnx --backend cpu \
         --source clips/bbb_720_5MB.mp4 --inflight 4 --repeat 3 --tag w2
 """
 from __future__ import annotations
@@ -41,12 +41,13 @@ import threading
 import time
 from pathlib import Path
 
-from bench import env_fingerprint, noise
-from bench.backends import OnnxBackend, available
-from bench.harness import Recorder
-from bench.pipeline import postprocess, preprocess
-from bench.reorder import OrderChecker, ReorderBuffer
-from bench.sources import make_source
+from bench.measurement import env_fingerprint
+from bench.measurement import noise
+from bench.runtime.backends import OnnxBackend, available
+from bench.measurement.harness import Recorder
+from bench.runtime.pipeline import postprocess, preprocess
+from bench.runtime.reorder import OrderChecker, ReorderBuffer
+from bench.runtime.sources import make_source
 
 SERVICE = ("read", "preprocess", "inference", "postprocess")
 WAITS = ("q_read", "q_inflight", "q_output", "q_reorder")

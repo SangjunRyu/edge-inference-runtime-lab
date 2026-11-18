@@ -45,7 +45,7 @@ One off-host backend. In priority order, to be settled in the first session:
 
 1. **`cuda`** — `onnxruntime-gpu` against a CUDA 12.x runtime. CUDA 13 dropped
    Pascal, so 12.x is the ceiling and the wheel must match it. Verify with
-   `python -m bench.env_fingerprint`; `backends.py` already treats a missing
+   `python -m bench.measurement.env_fingerprint`; `backends.py` already treats a missing
    `CUDAExecutionProvider` as a normal outcome to be recorded, not a failure.
 2. **DirectML EP** — `onnxruntime-directml`, DX12, which the MX150 supports. It
    works where the CUDA EP does not, at the cost of changing the engine as well

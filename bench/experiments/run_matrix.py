@@ -14,10 +14,10 @@ Each cell runs in a fresh process so no session, allocator or driver state
 carries between backends. Cells whose result file already exists are skipped,
 so the grid can be filled in sittings and resumed after an interrupt.
 
-    python -m bench.run_matrix --tag gram --repeat 5 --cooldown 60 \
+    python -m bench.experiments.run_matrix --tag gram --repeat 5 --cooldown 60 \
         --max-busy-pct 25
 
-    python -m bench.run_matrix --tag gram --dry-run     # show the plan only
+    python -m bench.experiments.run_matrix --tag gram --dry-run     # show the plan only
 """
 from __future__ import annotations
 
@@ -82,11 +82,11 @@ def main() -> int:
 
     if not Path(args.model).exists():
         print(f"model not found: {args.model}\n"
-              f"  python -m bench.prepare_models --models resnet50 --sizes 224")
+              f"  python -m bench.data.prepare_models --models resnet50 --sizes 224")
         return 1
     missing = [c for c in args.clips if not Path(c).exists()]
     if missing:
-        print(f"clips not found: {missing}\n  python -m bench.get_clips")
+        print(f"clips not found: {missing}\n  python -m bench.data.get_clips")
         return 1
 
     backends = ([parse_backend(s) for s in args.backends]
@@ -116,7 +116,7 @@ def main() -> int:
         print("#" * 70)
         print(f"# cell {i}/{len(todo)}: {label}")
         print("#" * 70)
-        cmd = [sys.executable, "-m", "bench.run_sync",
+        cmd = [sys.executable, "-m", "bench.classification.run_sync",
                "--model", args.model, "--backend", backend,
                "--source", clip, "--frames", str(args.frames),
                "--warmup", str(args.warmup), "--repeat", str(args.repeat),
@@ -145,7 +145,7 @@ def main() -> int:
         print(" failed cells (no result saved, by design):")
         for f in failed:
             print(f"   - {f}")
-    print(" summarise with:  python -m bench.summarize --tag " + args.tag)
+    print(" summarise with:  python -m bench.analysis.summarize --tag " + args.tag)
     print("=" * 70)
     return 1 if failed else 0
 

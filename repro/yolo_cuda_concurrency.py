@@ -13,7 +13,7 @@ a.out_dir.mkdir(parents=True,exist_ok=True)
 attempts=3 if a.mode=='broken' else 1
 for attempt in range(attempts):
     folder=a.out_dir/f'{a.mode}-{attempt+1}'
-    cmd=[sys.executable,str(ROOT/'tools/verify_industrial_model.py'),str(folder),'--samples','64']
+    cmd=[sys.executable,'-m','bench.detection.verify',str(folder),'--samples','64']
     if a.mode=='broken':cmd+=['--unsafe-default-stream']
     r=subprocess.run(cmd,cwd=ROOT,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=90)
     (a.out_dir/f'{a.mode}-{attempt+1}.log').write_bytes(r.stdout)

@@ -252,7 +252,7 @@ worker counts and queue capacities on the command line: `--pre-workers`,
 `--post-workers`, `--inflight`, `--queue-capacity`.
 
 **Success:** the existing runners are reproducible as configurations of it, and
-`bench/compare_variants.py` pairs old against new with the control holding. If
+`bench/experiments/compare_variants.py` pairs old against new with the control holding. If
 the generic version cannot reproduce W4's numbers, the abstraction cost
 something and the amount is the result.
 
@@ -526,7 +526,7 @@ the ability to compare against everything measured so far.
 
 **Equivalence.** Buffer reuse and view binding are *precisely* the class of
 change that produces the right number of frames with the wrong values in them.
-`bench/verify_equivalence.py` must pass on every W5 path before any of its
+`bench/classification/verify_equivalence.py` must pass on every W5 path before any of its
 numbers are quoted, and the order checks must run in the same session that
 reports the throughput.
 

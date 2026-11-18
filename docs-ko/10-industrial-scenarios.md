@@ -1,5 +1,10 @@
 # 카메라 입력의 기한과 최신성 — 트리거 검사와 스트리밍 계수 실험
 
+> 과거 모사 실험 기록이다. 버스 이미지를 이동시키는 입력 생성·실험 실행·렌더링 코드는 제거했다.
+> 현재 실행 방법과 해석은 [실제 영상 실험](11-real-video.md)을 따른다.
+> 아래 수치는 실제 카메라나 공장 제품의 검증 결과가 아니다.
+
+
 실행일: 2026-11-18 (Asia/Seoul). 환경: i7-8565U / GeForce MX150 2GB / RAM 8GB, ONNX Runtime 1.26.0, Python OpenCV 5.0.0.
 
 ## 실험의 질문
@@ -92,8 +97,8 @@
 - [`docs/industrial-scenarios.md`](../docs/industrial-scenarios.md): 실험 조건·구현·재실행 명령·공개 기술 자료.
 - [`summary.csv`](../results/industrial-20261118-public/summary.csv): 전체 21조건 요약.
 - [`request-traces.zip`](../results/industrial-20261118-public/request-traces.zip): 최종 42회 요청별 기록·환경·값 검증·재현 진단. 모델 가중치 제외.
-- [`bench/industrial.py`](../bench/industrial.py), [`tools/run_industrial_scenarios.py`](../tools/run_industrial_scenarios.py): 입력 시계·입장 정책·순서 복원·실험 실행 코드.
-- [`tools/render_industrial_demo.py`](../tools/render_industrial_demo.py): 측정 기록의 예정 시각과 완료 시각으로 비교 영상을 만든다. 렌더링은 실측에 포함하지 않았다. 영상·모델 가중치는 저장소에 포함하지 않는다.
+- [`bench/industrial.py`](https://github.com/SangjunRyu/edge-inference-runtime-lab/blob/080068cd258678159e2b45bf037f740bacacbcc7/bench/industrial.py), [`tools/run_industrial_scenarios.py`](https://github.com/SangjunRyu/edge-inference-runtime-lab/blob/080068cd258678159e2b45bf037f740bacacbcc7/tools/run_industrial_scenarios.py): 입력 시계·입장 정책·순서 복원·실험 실행 코드.
+- [`tools/render_industrial_demo.py`](https://github.com/SangjunRyu/edge-inference-runtime-lab/blob/080068cd258678159e2b45bf037f740bacacbcc7/tools/render_industrial_demo.py): 측정 기록의 예정 시각과 완료 시각으로 비교 영상을 만든다. 렌더링은 실측에 포함하지 않았다. 영상·모델 가중치는 저장소에 포함하지 않는다.
 - 검증한 원본 결과는 로컬 `results/industrial-20261118-validated/`에 보존했다. 공개 자료는 [`results/industrial-20261118-public/`](../results/industrial-20261118-public/)에 모았다. 공개 사본의 로컬 절대 경로만 상대 경로로 바꿨고 측정값은 그대로 뒀다.
 
 <!-- HUMANIZE-SUMMARY -->

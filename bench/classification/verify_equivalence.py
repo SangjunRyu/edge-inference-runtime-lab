@@ -30,7 +30,7 @@ there is no buffer to mutate. Its value is as the net under W4 -- buffer reuse
 and a fused preprocessing pass are exactly the optimisations that would
 introduce the bug nothing else here detects.
 
-    python -m bench.verify_equivalence --model models/resnet50_224.onnx \\
+    python -m bench.classification.verify_equivalence --model models/resnet50_224.onnx \\
         --backend cpu --source clips/bbb_360_2MB.mp4 --frames 300 \\
         --depths 1 2 4 8 16
 """
@@ -41,8 +41,10 @@ import json
 from argparse import Namespace
 from pathlib import Path
 
-from bench import env_fingerprint, run_async, run_sync
-from bench.backends import OnnxBackend, available
+from bench.measurement import env_fingerprint
+from bench.classification import run_async
+from bench.classification import run_sync
+from bench.runtime.backends import OnnxBackend, available
 
 
 def parse_args():

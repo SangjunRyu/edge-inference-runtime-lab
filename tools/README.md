@@ -1,7 +1,7 @@
 # tools
 
-Instrumentation for W5. Not part of the benchmark harness in [`bench/`](../bench):
-nothing here measures anything, so nothing here depends on the machine.
+W5 inspection utilities and native C++ build/validation helpers. Python
+benchmarks and actual-video detection live in [`bench/`](../bench/README.md).
 
 ## `dxnn_inspect`
 

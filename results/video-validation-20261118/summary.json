@@ -1,0 +1,158 @@
+{
+  "date": "2026-11-18",
+  "source": {
+    "name": "vtest.avi",
+    "upstream": "https://github.com/opencv/opencv/blob/4.x/samples/data/vtest.avi",
+    "sha256": "45cddc9490be69345cbdab64ca583be65987e864ca408038e648db99e10516cf",
+    "size": [
+      768,
+      576
+    ],
+    "fps": 10,
+    "frames": 795
+  },
+  "model": {
+    "name": "yolo11n_320.onnx",
+    "sha256": "686b95e2adfa963c3a460fa193f9dcf1f5fc215bb5dbe94605e6918e1487a8ee",
+    "input_shape": [
+      1,
+      3,
+      320,
+      320
+    ],
+    "selected_class": "person (COCO 0)"
+  },
+  "runs": [
+    {
+      "mode": "sync",
+      "frames": 300,
+      "video_duration_s": 30.0,
+      "processing_seconds": 9.520629999984521,
+      "processing_fps": 31.51051978708213,
+      "max_outstanding": 1,
+      "frames_with_people": 300,
+      "detection_instances": 1772,
+      "submit_to_callback_ms": {
+        "n": 300,
+        "p50": 17.36460000392981,
+        "p95": 23.284480013535358,
+        "max": 36.16270003840327,
+        "mean": 17.897851334807154
+      },
+      "requested_backend": "cpu",
+      "actual_providers": [
+        "CPUExecutionProvider"
+      ],
+      "fell_back_to_cpu": false
+    },
+    {
+      "mode": "async",
+      "frames": 300,
+      "video_duration_s": 30.0,
+      "processing_seconds": 6.968491300009191,
+      "processing_fps": 43.05092552811314,
+      "max_outstanding": 2,
+      "frames_with_people": 300,
+      "detection_instances": 1772,
+      "submit_to_callback_ms": {
+        "n": 300,
+        "p50": 27.781350014265627,
+        "p95": 39.28561004286167,
+        "max": 66.07360002817586,
+        "mean": 28.88720233323208
+      },
+      "requested_backend": "cpu",
+      "actual_providers": [
+        "CPUExecutionProvider"
+      ],
+      "fell_back_to_cpu": false
+    },
+    {
+      "mode": "sync",
+      "frames": 300,
+      "video_duration_s": 30.0,
+      "processing_seconds": 7.397947399993427,
+      "processing_fps": 40.551788729974824,
+      "max_outstanding": 1,
+      "frames_with_people": 300,
+      "detection_instances": 1772,
+      "submit_to_callback_ms": {
+        "n": 300,
+        "p50": 13.823600020259619,
+        "p95": 16.474165007821284,
+        "max": 24.998200009576976,
+        "mean": 14.171183335129172
+      },
+      "requested_backend": "cuda",
+      "actual_providers": [
+        "CUDAExecutionProvider",
+        "CPUExecutionProvider"
+      ],
+      "fell_back_to_cpu": false
+    },
+    {
+      "mode": "async",
+      "frames": 300,
+      "video_duration_s": 30.0,
+      "processing_seconds": 6.693013300013263,
+      "processing_fps": 44.82286028019779,
+      "max_outstanding": 2,
+      "frames_with_people": 300,
+      "detection_instances": 1772,
+      "submit_to_callback_ms": {
+        "n": 300,
+        "p50": 19.342900021001697,
+        "p95": 33.215329993981875,
+        "max": 67.86879996070638,
+        "mean": 21.08062433505741
+      },
+      "requested_backend": "cuda",
+      "actual_providers": [
+        "CUDAExecutionProvider",
+        "CPUExecutionProvider"
+      ],
+      "fell_back_to_cpu": false
+    }
+  ],
+  "validation": {
+    "output_videos_decoded_frames_each": 300,
+    "strict_frame_order": true,
+    "within_backend_sync_async_boxes_scores_ids_match": true,
+    "box_tolerance_px": 0.1,
+    "score_tolerance": 0.0001,
+    "cuda_sampled_raw_checks": 64,
+    "cuda_raw_allclose": true,
+    "cuda_raw_rtol": 0.001,
+    "cuda_raw_atol": 0.001,
+    "cuda_max_raw_abs_difference": 0.0,
+    "cuda_profile_node_events": {
+      "CUDAExecutionProvider": 478
+    },
+    "cuda_options": {
+      "use_ep_level_unified_stream": "1"
+    },
+    "unit_contract_tests": 6,
+    "cli_help_checks": 15,
+    "classification_regression": {
+      "model": "resnet50_224.onnx",
+      "backend": "cpu",
+      "source": "bbb_360_2MB.mp4",
+      "frames": 24,
+      "depths": [
+        1,
+        2
+      ],
+      "top5_identical": true,
+      "max_probability_delta": 0.0,
+      "self_test_enabled": true
+    }
+  },
+  "limitations": [
+    "Single runs; no statistical speedup claim.",
+    "Offline processing includes decode, preprocessing, ordered postprocessing and encoding; excludes session startup/warmup.",
+    "No live-source clock or frame dropping.",
+    "No labeled accuracy evaluation; IDs are simple centroid tracking.",
+    "CUDA node profiling performed separately from timing runs.",
+    "No model weights or footage redistributed."
+  ]
+}

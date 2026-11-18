@@ -139,7 +139,7 @@ void OvBackend::infer_bound(ov_infer_request_t* req, float* output) const {
 }
 
 nlohmann::json OvBackend::describe() const {
-    // Same field names as bench/backends.py so summarize.py and the rest read
+    // Same field names as bench/runtime/backends.py so summarize.py and the rest read
     // C++ results unchanged. `engine` is the one addition: these runs go
     // through OpenVINO directly, while the Python accelerator rows went
     // through it as an ONNX Runtime execution provider, and that is a

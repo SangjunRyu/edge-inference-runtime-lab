@@ -1,4 +1,4 @@
-// Pre/post-processing -- the C++ side of bench/pipeline.py.
+// Pre/post-processing -- the C++ side of bench/runtime/pipeline.py.
 //
 // Deliberately the *same* five passes the Python does: resize, BGR->RGB,
 // /255, normalise, transpose to NCHW. Writing the fused single-pass version
@@ -17,7 +17,7 @@
 
 namespace eirl {
 
-/// ImageNet normalisation, matching bench/pipeline.py.
+/// ImageNet normalisation, matching bench/runtime/pipeline.py.
 constexpr float kMean[3] = {0.485f, 0.456f, 0.406f};
 constexpr float kStd[3] = {0.229f, 0.224f, 0.225f};
 

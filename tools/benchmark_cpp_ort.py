@@ -9,8 +9,8 @@ import time
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
-from bench.env_fingerprint import collect
-from bench.noise import idle_gate
+from bench.measurement.env_fingerprint import collect
+from bench.measurement.noise import idle_gate
 
 def main():
     p=argparse.ArgumentParser()

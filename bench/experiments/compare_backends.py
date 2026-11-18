@@ -16,7 +16,7 @@ flips a decision the reference won by 0.0003 has not disagreed about the image;
 it has broken a tie differently, and saying "2 of 300 frames differ" without
 that context overstates it considerably.
 
-    python -m bench.compare_backends --model models/resnet50_224.onnx \\
+    python -m bench.experiments.compare_backends --model models/resnet50_224.onnx \\
         --source clips/bbb_360_2MB.mp4 --frames 300 \\
         --reference cpu --against openvino:CPU openvino:GPU openvino:NPU
 """
@@ -27,9 +27,10 @@ import json
 from argparse import Namespace
 from pathlib import Path
 
-from bench import env_fingerprint, run_sync
-from bench.backends import OnnxBackend
-from bench.verify_equivalence import _as_map, compare
+from bench.measurement import env_fingerprint
+from bench.classification import run_sync
+from bench.runtime.backends import OnnxBackend
+from bench.classification.verify_equivalence import _as_map, compare
 
 
 def _spec(text: str) -> tuple[str, str | None]:

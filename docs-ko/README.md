@@ -53,3 +53,7 @@ Triton 의 `max_queue_size`, DX-RT 의 `bufferCount` 로 각각 나타나는 지
 `docs/dxapp-sync-async.md`는 DX-APP 소스를 읽으며 남긴 분석 노트이고,
 `tools/README.md`는 DXNN 인스펙터 사용법이다. 필요한 내용은
 [05 W5](05-w5.md)와 [07 실행법](07-runbook.md)에 녹여 뒀다.
+
+## 실제 영상 실험
+
+[11 실제 동영상과 비동기 추론](11-real-video.md): vtest.avi 입력, 요청 수와 배치의 차이, CPU/CUDA 실행, 현재 측정 범위와 코드 경로. 기존 10장은 과거 모사 실험 기록이다.

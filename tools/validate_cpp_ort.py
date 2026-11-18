@@ -8,10 +8,10 @@ from types import SimpleNamespace
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from bench.backends import OnnxBackend
-from bench.env_fingerprint import collect
-from bench.run_sync import measure_once
-from bench.verify_equivalence import compare, load_dump, self_test, sensitivity
+from bench.runtime.backends import OnnxBackend
+from bench.measurement.env_fingerprint import collect
+from bench.classification.run_sync import measure_once
+from bench.classification.verify_equivalence import compare, load_dump, self_test, sensitivity
 
 
 def main():

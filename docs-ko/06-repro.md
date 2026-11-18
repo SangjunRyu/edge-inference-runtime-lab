@@ -113,4 +113,4 @@ W5-2에서 연달아 나온 셋인데 전부 같은 실수의 변형이다. **�
 | 06, 07, 08 | [W5](05-w5.md) — 실패 셋, 같은 모양 |
 | 09 | [W5](05-w5.md) — W5 도구 |
 | stats/01, stats/02 | [W4](04-w4.md) — 계측기의 결함 셋 |
-| stats/03 | [W2](02-w2.md), `bench/run_ab.py` |
+| stats/03 | [W2](02-w2.md), `bench/experiments/run_ab.py` |

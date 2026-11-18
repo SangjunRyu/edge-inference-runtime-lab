@@ -72,7 +72,7 @@ way — `env_fingerprint` does that automatically.
 python -m venv .venv-cpu
 .venv-cpu\Scripts\python.exe -m pip install --upgrade pip
 .venv-cpu\Scripts\python.exe -m pip install numpy opencv-python psutil onnxruntime
-.venv-cpu\Scripts\python.exe -m bench.env_fingerprint
+.venv-cpu\Scripts\python.exe -m bench.measurement.env_fingerprint
 ```
 
 Call the venv interpreter by path rather than activating it. `activate` needs a
@@ -125,8 +125,8 @@ ignored). Both are regenerated, not restored.
 
 ```powershell
 .venv-cpu\Scripts\python.exe -m pip install torch torchvision onnx --index-url https://download.pytorch.org/whl/cpu
-.venv-cpu\Scripts\python.exe -m bench.prepare_models --models resnet50 --sizes 224
-.venv-cpu\Scripts\python.exe -m bench.get_clips
+.venv-cpu\Scripts\python.exe -m bench.data.prepare_models --models resnet50 --sizes 224
+.venv-cpu\Scripts\python.exe -m bench.data.get_clips
 ```
 
 **Use the CPU index URL.** The default `pip install torch` on Windows pulls the
@@ -143,7 +143,7 @@ deliberately and records `restarts`.
 ## 4. Smoke test
 
 ```powershell
-.venv-cpu\Scripts\python.exe -m bench.run_sync --model models/resnet50_224.onnx `
+.venv-cpu\Scripts\python.exe -m bench.classification.run_sync --model models/resnet50_224.onnx `
     --backend cpu --source clips/bbb_360_2MB.mp4 --frames 40 --warmup 10 `
     --no-idle-gate --tag smoke
 ```
@@ -183,13 +183,13 @@ order is by installation friction, not by preference.
 ```powershell
 python -m venv .venv-dml
 .venv-dml\Scripts\python.exe -m pip install numpy opencv-python psutil onnxruntime-directml
-.venv-dml\Scripts\python.exe -m bench.env_fingerprint
+.venv-dml\Scripts\python.exe -m bench.measurement.env_fingerprint
 ```
 
 Look for `DmlExecutionProvider` in the provider list, then:
 
 ```powershell
-.venv-dml\Scripts\python.exe -m bench.run_sync --model models/resnet50_224.onnx `
+.venv-dml\Scripts\python.exe -m bench.classification.run_sync --model models/resnet50_224.onnx `
     --backend dml --source clips/bbb_360_2MB.mp4 --frames 200 --warmup 50 `
     --no-idle-gate --tag dmlcheck
 ```
@@ -292,7 +292,7 @@ plus cuDNN 9 on `PATH`. The `preload_dlls()` call is harmless either way.
 Then the real test, which is a session creation and not a provider listing:
 
 ```powershell
-.venv-cuda\Scripts\python.exe -m bench.run_sync --model models/resnet50_224.onnx `
+.venv-cuda\Scripts\python.exe -m bench.classification.run_sync --model models/resnet50_224.onnx `
     --backend cuda --source clips/bbb_360_2MB.mp4 --frames 200 --warmup 50 `
     --no-idle-gate --tag cudacheck
 ```
@@ -414,7 +414,7 @@ protocol's first rule is that a claim smaller than the noise is not a claim.
 **Idle floor**, which sets `--max-busy-pct`:
 
 ```powershell
-.venv-cpu\Scripts\python.exe -c "from bench import noise; print(noise.busy_percent(5.0))"
+.venv-cpu\Scripts\python.exe -c "from bench.measurement import noise; print(noise.busy_percent(5.0))"
 ```
 
 Run it with your normal desktop open, because that is the condition you will
@@ -425,7 +425,7 @@ above your measured floor, not below it.
 **Noise and cooldown**, one cell, five repeats:
 
 ```powershell
-.venv-cpu\Scripts\python.exe -m bench.run_sync --model models/resnet50_224.onnx `
+.venv-cpu\Scripts\python.exe -m bench.classification.run_sync --model models/resnet50_224.onnx `
     --backend cpu --source clips/bbb_1080_10MB.mp4 --duration-s 10 `
     --frames 100000 --warmup 100 --repeat 5 --cooldown 60 `
     --max-busy-pct <your floor + margin> --intra-threads 4 --tag noise550
@@ -458,16 +458,16 @@ Once you know which backends exist and what the noise is:
 
 ```powershell
 # whichever accelerator venv came up, plus the CPU row from the same wheel
-.venv-dml\Scripts\python.exe -m bench.run_matrix --tag 550xbe `
+.venv-dml\Scripts\python.exe -m bench.experiments.run_matrix --tag 550xbe `
     --backends cpu dml --repeat 5 --cooldown 60 --between-cells 60 `
     --max-busy-pct <your floor + margin> --intra-threads 4
 
 # the Intel row, from the other venv, same tag
-.venv-ov\Scripts\python.exe -m bench.run_matrix --tag 550xbe `
+.venv-ov\Scripts\python.exe -m bench.experiments.run_matrix --tag 550xbe `
     --backends openvino:CPU openvino:GPU --repeat 5 --cooldown 60 `
     --between-cells 60 --max-busy-pct <your floor + margin>
 
-.venv-cpu\Scripts\python.exe -m bench.summarize --tag 550xbe
+.venv-cpu\Scripts\python.exe -m bench.analysis.summarize --tag 550xbe
 ```
 
 `--dry-run` prints the plan and a time estimate first; use it, because the full

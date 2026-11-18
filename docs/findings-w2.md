@@ -10,7 +10,7 @@ throughput moves 10-30% by itself.
 order.** Order is verified on both modes, and `run_ab` refuses to report a
 speedup for any configuration that violated it.
 
-Raw data: `results/ab-*.json`. Regenerate with `python -m bench.run_ab`.
+Raw data: `results/ab-*.json`. Regenerate with `python -m bench.experiments.run_ab`.
 
 ## The result depends on where inference runs and on how much host work there is
 

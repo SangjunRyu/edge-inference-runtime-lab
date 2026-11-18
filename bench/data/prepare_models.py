@@ -4,7 +4,7 @@ Model choice and input resolution are the *balance axis* of this project: they
 move where time is spent between the host stages and inference. Exporting a
 grid up front means W2 can sweep that axis without touching code.
 
-    python -m bench.prepare_models --models resnet50 resnet18 mobilenet_v3_small \
+    python -m bench.data.prepare_models --models resnet50 resnet18 mobilenet_v3_small \
         --sizes 224 160 128
 """
 from __future__ import annotations

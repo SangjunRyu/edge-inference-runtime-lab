@@ -19,7 +19,7 @@ Two rules are enforced rather than hoped for:
   ratios disagree with each other, the machine is not steady enough to support
   the claim, whatever the mean says.
 
-    python -m bench.run_ab --model models/resnet50_224.onnx --backend cpu \\
+    python -m bench.experiments.run_ab --model models/resnet50_224.onnx --backend cpu \\
         --source clips/bbb_360_2MB.mp4 --inflight 4 --pairs 5 --tag ab
 """
 from __future__ import annotations
@@ -30,8 +30,11 @@ import statistics
 from argparse import Namespace
 from pathlib import Path
 
-from bench import env_fingerprint, noise, run_async, run_sync
-from bench.backends import OnnxBackend, available
+from bench.measurement import env_fingerprint
+from bench.measurement import noise
+from bench.classification import run_async
+from bench.classification import run_sync
+from bench.runtime.backends import OnnxBackend, available
 
 
 def parse_args():

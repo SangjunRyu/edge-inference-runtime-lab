@@ -24,9 +24,9 @@ can be spent idle or spent evicting cache. If only the gap's *length* matters it
 is the decoder; if filling it with work makes things worse, some of it is
 locality.
 
-    python -m bench.read_rate --compare-threads 16,1
-    python -m bench.read_rate --source clips/bbb_360_2MB.mp4 --gaps 0,5,10,19,30
-    python -m bench.read_rate --ffmpeg-threads 1 --json
+    python -m bench.analysis.read_rate --compare-threads 16,1
+    python -m bench.analysis.read_rate --source clips/bbb_360_2MB.mp4 --gaps 0,5,10,19,30
+    python -m bench.analysis.read_rate --ffmpeg-threads 1 --json
 
 The thread count reaches FFmpeg through `OPENCV_FFMPEG_CAPTURE_OPTIONS`, which
 must be set before OpenCV loads, so `--compare-threads` runs each setting in its
@@ -300,7 +300,7 @@ def print_one(r: dict) -> None:
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(
-        prog="bench.read_rate",
+        prog="bench.analysis.read_rate",
         description="Does read get faster when called more often, and why?")
     ap.add_argument("--source", default="clips/bbb_1080_10MB.mp4")
     ap.add_argument("--frames", type=int, default=120)
@@ -326,7 +326,7 @@ def main(argv: list[str] | None = None) -> int:
         settings = [int(t) for t in args.compare_threads.split(",") if t.strip()]
         results = []
         for nt in settings:
-            cmd = [sys.executable, "-m", "bench.read_rate",
+            cmd = [sys.executable, "-m", "bench.analysis.read_rate",
                    "--source", args.source, "--frames", str(args.frames),
                    "--warmup", str(args.warmup), "--gaps", args.gaps,
                    "--gap-ms", str(args.gap_ms), "--pairs", str(args.pairs),

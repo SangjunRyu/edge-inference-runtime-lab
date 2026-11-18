@@ -5,7 +5,7 @@ produced again. Recorded 2026-09-14, before the machine was returned.
 
 ## The environment
 
-From `python -m bench.env_fingerprint`, and stored verbatim in
+From `python -m bench.measurement.env_fingerprint`, and stored verbatim in
 [`gram-env.json`](gram-env.json). Every result file already embeds its own copy
 under `meta.env`; this is the one to compare a future machine against.
 

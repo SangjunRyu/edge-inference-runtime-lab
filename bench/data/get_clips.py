@@ -19,8 +19,8 @@ Each file is 10s / 300 frames at 30fps. Keep ``--frames`` at or below 300 so the
 source never loops; a loop costs a seek and a keyframe re-decode that shows up
 as an outlier in ``read.max``.
 
-    python -m bench.get_clips                    # default 3-resolution set
-    python -m bench.get_clips --all              # full 3 x 6 grid
+    python -m bench.data.get_clips                    # default 3-resolution set
+    python -m bench.data.get_clips --all              # full 3 x 6 grid
 """
 from __future__ import annotations
 

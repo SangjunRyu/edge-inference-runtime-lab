@@ -12,7 +12,7 @@ Because the instrument is a laptop, a single run is not evidence. Use
 ``--repeat`` so the result carries its own run-to-run spread: a difference
 smaller than that spread is not a finding.
 
-    python -m bench.run_sync --model models/resnet50_224.onnx --backend cpu \
+    python -m bench.classification.run_sync --model models/resnet50_224.onnx --backend cpu \
         --source clips/bbb_360_2MB.mp4 --frames 300 --warmup 150 \
         --repeat 3 --cooldown 20 --tag w1-360
 """
@@ -22,12 +22,13 @@ import argparse
 import time
 from pathlib import Path
 
-from bench import env_fingerprint, noise
-from bench.backends import OnnxBackend, available
-from bench.harness import Recorder, Timer
-from bench.pipeline import postprocess, preprocess
-from bench.reorder import OrderChecker
-from bench.sources import make_source
+from bench.measurement import env_fingerprint
+from bench.measurement import noise
+from bench.runtime.backends import OnnxBackend, available
+from bench.measurement.harness import Recorder, Timer
+from bench.runtime.pipeline import postprocess, preprocess
+from bench.runtime.reorder import OrderChecker
+from bench.runtime.sources import make_source
 
 
 def parse_args():

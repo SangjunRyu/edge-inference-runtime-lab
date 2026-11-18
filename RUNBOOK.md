@@ -35,7 +35,7 @@ activated earlier in `PATH` can silently win.
 ```powershell
 python -m venv .venv
 .venv\Scripts\python.exe -m pip install -r requirements.txt
-.venv\Scripts\python.exe -m bench.env_fingerprint
+.venv\Scripts\python.exe -m bench.measurement.env_fingerprint
 ```
 
 On Linux or macOS substitute `.venv/bin/python` throughout.
@@ -74,8 +74,8 @@ $env:PATH = "C:\msys64\ucrt64\bin;$env:PATH" # PowerShell
 
 ```powershell
 .venv\Scripts\python.exe -m pip install torch torchvision   # export only
-.venv\Scripts\python.exe -m bench.prepare_models --models resnet50 --sizes 224
-.venv\Scripts\python.exe -m bench.get_clips
+.venv\Scripts\python.exe -m bench.data.prepare_models --models resnet50 --sizes 224
+.venv\Scripts\python.exe -m bench.data.get_clips
 ```
 
 `get_clips` fetches the Big Buck Bunny grid at three resolutions. Three clips at
@@ -90,7 +90,7 @@ have nothing to do with the pipeline.
 One frame at a time, every stage timed separately.
 
 ```powershell
-.venv\Scripts\python.exe -m bench.run_sync --model models/resnet50_224.onnx `
+.venv\Scripts\python.exe -m bench.classification.run_sync --model models/resnet50_224.onnx `
     --backend cpu --source clips/bbb_360_2MB.mp4 --frames 300 --warmup 150 --tag w1-360
 ```
 
@@ -98,8 +98,8 @@ Then the full grid — three backends by three resolutions, five runs per cell,
 with a cool-down and a busy-CPU gate between runs:
 
 ```powershell
-.venv\Scripts\python.exe -m bench.run_matrix --tag gram --repeat 5 --cooldown 60 --max-busy-pct 25
-.venv\Scripts\python.exe -m bench.summarize --tag gram
+.venv\Scripts\python.exe -m bench.experiments.run_matrix --tag gram --repeat 5 --cooldown 60 --max-busy-pct 25
+.venv\Scripts\python.exe -m bench.analysis.summarize --tag gram
 ```
 
 **What a healthy answer looks like.** `summarize` prints two tables and the
@@ -115,11 +115,11 @@ Write-up: [`docs/findings-w1.md`](docs/findings-w1.md).
 ## W2 — what does overlap buy, and where?
 
 ```powershell
-.venv\Scripts\python.exe -m bench.run_async --model models/resnet50_224.onnx `
+.venv\Scripts\python.exe -m bench.classification.run_async --model models/resnet50_224.onnx `
     --backend openvino --ov-device NPU --source clips/bbb_360_2MB.mp4 `
     --frames 600 --inflight 4 --tag w2-npu
 
-.venv\Scripts\python.exe -m bench.run_ab --model models/resnet50_224.onnx `
+.venv\Scripts\python.exe -m bench.experiments.run_ab --model models/resnet50_224.onnx `
     --backend openvino --ov-device NPU --tag w2-ab
 ```
 
@@ -130,7 +130,7 @@ mistaken for a speedup.
 In-flight depth:
 
 ```powershell
-.venv\Scripts\python.exe -m bench.run_sweep --depths 1,2,4,8,16 --tag w2-sweep
+.venv\Scripts\python.exe -m bench.experiments.run_sweep --depths 1,2,4,8,16 --tag w2-sweep
 ```
 
 **Watch the order violations, not just the throughput.** Overlap that produces
@@ -144,23 +144,23 @@ Write-up: [`docs/findings-w2.md`](docs/findings-w2.md).
 ## W3 — are the answers still correct?
 
 ```powershell
-.venv\Scripts\python.exe -m bench.verify_equivalence --model models/resnet50_224.onnx `
+.venv\Scripts\python.exe -m bench.classification.verify_equivalence --model models/resnet50_224.onnx `
     --source clips/bbb_360_2MB.mp4 --frames 200
 
-.venv\Scripts\python.exe -m bench.compare_backends --model models/resnet50_224.onnx
+.venv\Scripts\python.exe -m bench.experiments.compare_backends --model models/resnet50_224.onnx
 ```
 
 `verify_equivalence` carries its own self-test: it can inject a deliberate
 mismatch and confirm it is caught, so a pass means the check works rather than
 that the check ran.
 
-`bench/read_rate.py` answers the question W2 left open: whether `read` gets
+`bench/analysis/read_rate.py` answers the question W2 left open: whether `read` gets
 cheaper when it is called more often, which is the standing explanation for the
 one number in this repository that was never defended.
 
 ```
-.venv\Scripts\python.exe -m bench.read_rate --compare-threads 16,1 --pin 6,7,8,9,10,11
-.venv\Scripts\python.exe -m bench.read_rate --source clips/bbb_360_2MB.mp4 --gaps 0,5,10,19,30
+.venv\Scripts\python.exe -m bench.analysis.read_rate --compare-threads 16,1 --pin 6,7,8,9,10,11
+.venv\Scripts\python.exe -m bench.analysis.read_rate --source clips/bbb_360_2MB.mp4 --gaps 0,5,10,19,30
 ```
 
 **Pin the process or the result is noise.** On a hybrid CPU an unpinned control
@@ -186,9 +186,9 @@ cpp/build/run_async_cpp.exe --model models/resnet50_224.onnx \
 The comparisons, which are the point:
 
 ```powershell
-.venv\Scripts\python.exe -m bench.compare_impl --mode sync   --tag w4-impl
-.venv\Scripts\python.exe -m bench.compare_variants --variant fused --tag w4-fused
-.venv\Scripts\python.exe -m bench.compare_variants --reanalyse results/w4-fused__*.json
+.venv\Scripts\python.exe -m bench.experiments.compare_impl --mode sync   --tag w4-impl
+.venv\Scripts\python.exe -m bench.experiments.compare_variants --variant fused --tag w4-fused
+.venv\Scripts\python.exe -m bench.experiments.compare_variants --reanalyse results/w4-fused__*.json
 ```
 
 `--reanalyse` re-reads saved pairs and applies the current criteria with **zero
@@ -403,8 +403,8 @@ Results land in `results/` as JSON with one schema, which is what lets Python
 and C++ runs sit in the same table and what makes `--reanalyse` possible.
 
 ```powershell
-.venv\Scripts\python.exe -m bench.summarize --tag <tag>
-.venv\Scripts\python.exe -m bench.summarize --tag <tag> --markdown
+.venv\Scripts\python.exe -m bench.analysis.summarize --tag <tag>
+.venv\Scripts\python.exe -m bench.analysis.summarize --tag <tag> --markdown
 ```
 
 Files whose contents did not survive their own control are kept with a label
@@ -412,24 +412,27 @@ saying so rather than deleted. A cell marked unmeasurable describes the machine
 that day, and throwing it away would leave the impression that every attempt
 succeeded.
 
-## Clock-driven camera scenarios
+## Actual-video detection
 
-The trigger-inspection and streaming-counting suite uses real ORT inference
-with virtual camera clocks, explicit admission outcomes and application
-deadlines. Setup, model export, the 42-run matrix and the output-value check
-are in [docs/industrial-scenarios.md](docs/industrial-scenarios.md). Read the
-[Korean analysis](docs-ko/10-industrial-scenarios.md) and
-[published evidence](results/industrial-20261118-public/) for the measured
-tradeoffs and the configuration that failed correctness checks.
+See [the Korean explanation](docs-ko/11-real-video.md) and
+[the module map](bench/README.md). Run from the repository root:
 
 ```powershell
-.\.venv-cuda\Scripts\python.exe -m unittest discover -s tests -p test_industrial.py -v
-.\.venv-cuda\Scripts\python.exe tools/verify_industrial_model.py results/yolo-verification
-.\.venv-cuda\Scripts\python.exe tools/run_industrial_scenarios.py --repeat 2 --out-dir results/industrial-rerun
-.\.venv-cuda\Scripts\python.exe tools/analyze_industrial.py results/industrial-rerun
+.\.venv-cuda\Scripts\python.exe -m bench.data.get_detection_video
+.\.venv-cuda\Scripts\python.exe -m bench.detection.run_video --backend cuda --mode async --inflight 2 --out-dir results/real-video-cuda
+Invoke-Item .\results\real-video-cuda\detection.mp4
+.\.venv-cuda\Scripts\python.exe -m bench.detection.verify results/yolo-verification --samples 64
+.\.venv-cuda\Scripts\python.exe -m unittest discover -s tests -v
 ```
 
-The multi-request YOLO CUDA path explicitly uses a shared CUDA EP stream after
-the default configuration produced wrong box coordinates on this machine.
-Check output values before comparing its speed. This suite is a Python
-orchestration experiment, not a Python/C++ language comparison or a DX-RT run.
+`--display` previews frames; `--backend cpu` selects CPU; `--mode sync` is the
+sequential control. Keep output directories separate. The async limit bounds
+submitted/unconsumed frames, not batch size or guaranteed GPU concurrency.
+File input waits for processing and never drops frames. Preview and video
+encoding affect reported processing FPS.
+
+The executable synthetic-bus scenario has been retired. Its 42-run evidence
+remains in [the historical report](docs/industrial-scenarios.md). The reusable
+clock/admission protocol lives in `bench/workloads/clocked.py`; it is not used
+by the offline video runner. CUDA output verification now uses actual video
+frames with the shared CUDA EP stream option.

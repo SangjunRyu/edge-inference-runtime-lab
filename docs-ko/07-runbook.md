@@ -34,7 +34,7 @@
 ```powershell
 python -m venv .venv
 .venv\Scripts\python.exe -m pip install -r requirements.txt
-.venv\Scripts\python.exe -m bench.env_fingerprint
+.venv\Scripts\python.exe -m bench.measurement.env_fingerprint
 ```
 
 리눅스나 macOS에서는 `.venv/bin/python`으로 바꾼다.
@@ -72,8 +72,8 @@ $env:PATH = "C:\msys64\ucrt64\bin;$env:PATH" # PowerShell
 
 ```powershell
 .venv\Scripts\python.exe -m pip install torch torchvision   # 내보내기 전용
-.venv\Scripts\python.exe -m bench.prepare_models --models resnet50 --sizes 224
-.venv\Scripts\python.exe -m bench.get_clips
+.venv\Scripts\python.exe -m bench.data.prepare_models --models resnet50 --sizes 224
+.venv\Scripts\python.exe -m bench.data.get_clips
 ```
 
 `get_clips`는 Big Buck Bunny를 세 해상도로 받는다. 같은 내용의 클립 셋이라 해상도만
@@ -83,11 +83,11 @@ $env:PATH = "C:\msys64\ucrt64\bin;$env:PATH" # PowerShell
 ## W1 — 프레임 하나는 시간을 어디에 쓰는가
 
 ```powershell
-.venv\Scripts\python.exe -m bench.run_sync --model models/resnet50_224.onnx `
+.venv\Scripts\python.exe -m bench.classification.run_sync --model models/resnet50_224.onnx `
     --backend cpu --source clips/bbb_360_2MB.mp4 --frames 300 --warmup 150 --tag w1-360
 
-.venv\Scripts\python.exe -m bench.run_matrix --tag gram --repeat 5 --cooldown 60 --max-busy-pct 25
-.venv\Scripts\python.exe -m bench.summarize --tag gram
+.venv\Scripts\python.exe -m bench.experiments.run_matrix --tag gram --repeat 5 --cooldown 60 --max-busy-pct 25
+.venv\Scripts\python.exe -m bench.analysis.summarize --tag gram
 ```
 
 **정상 응답의 모양.** `summarize`가 표 둘과 실행 간 변동계수를 출력한다. `inference`는
@@ -98,14 +98,14 @@ CV도 함께 출력하는데, 그게 크면 격자가 백엔드가 아니라 기
 ## W2 — 겹치면 무엇이 달라지는가
 
 ```powershell
-.venv\Scripts\python.exe -m bench.run_async --model models/resnet50_224.onnx `
+.venv\Scripts\python.exe -m bench.classification.run_async --model models/resnet50_224.onnx `
     --backend openvino --ov-device NPU --source clips/bbb_360_2MB.mp4 `
     --frames 600 --inflight 4 --tag w2-npu
 
-.venv\Scripts\python.exe -m bench.run_ab --model models/resnet50_224.onnx `
+.venv\Scripts\python.exe -m bench.experiments.run_ab --model models/resnet50_224.onnx `
     --backend openvino --ov-device NPU --tag w2-ab
 
-.venv\Scripts\python.exe -m bench.run_sweep --depths 1,2,4,8,16 --tag w2-sweep
+.venv\Scripts\python.exe -m bench.experiments.run_sweep --depths 1,2,4,8,16 --tag w2-sweep
 ```
 
 믿을 것은 `run_ab`다. 순차와 겹침을 **쌍으로**, 순서를 교대하며 돌린다. 세션 중에
@@ -117,10 +117,10 @@ CV도 함께 출력하는데, 그게 크면 격자가 백엔드가 아니라 기
 ## W3 — 답이 여전히 맞는가
 
 ```powershell
-.venv\Scripts\python.exe -m bench.verify_equivalence --model models/resnet50_224.onnx `
+.venv\Scripts\python.exe -m bench.classification.verify_equivalence --model models/resnet50_224.onnx `
     --source clips/bbb_360_2MB.mp4 --frames 200
 
-.venv\Scripts\python.exe -m bench.compare_backends --model models/resnet50_224.onnx
+.venv\Scripts\python.exe -m bench.experiments.compare_backends --model models/resnet50_224.onnx
 ```
 
 `verify_equivalence`는 자체 시험을 들고 있다. 일부러 불일치를 주입하고 잡히는지
@@ -139,9 +139,9 @@ cpp/build/run_async_cpp.exe --model models/resnet50_224.onnx \
 핵심인 비교들이다.
 
 ```powershell
-.venv\Scripts\python.exe -m bench.compare_impl --mode sync   --tag w4-impl
-.venv\Scripts\python.exe -m bench.compare_variants --variant fused --tag w4-fused
-.venv\Scripts\python.exe -m bench.compare_variants --reanalyse results/w4-fused__*.json
+.venv\Scripts\python.exe -m bench.experiments.compare_impl --mode sync   --tag w4-impl
+.venv\Scripts\python.exe -m bench.experiments.compare_variants --variant fused --tag w4-fused
+.venv\Scripts\python.exe -m bench.experiments.compare_variants --reanalyse results/w4-fused__*.json
 ```
 
 `--reanalyse`는 저장된 쌍을 다시 읽어 현재 기준을 **기계 시간 0으로** 적용한다. W4가
@@ -302,8 +302,8 @@ python -m tools.dxnn_inspect --self-test
 실행이 같은 표에 앉고 `--reanalyse`가 가능하다.
 
 ```powershell
-.venv\Scripts\python.exe -m bench.summarize --tag <tag>
-.venv\Scripts\python.exe -m bench.summarize --tag <tag> --markdown
+.venv\Scripts\python.exe -m bench.analysis.summarize --tag <tag>
+.venv\Scripts\python.exe -m bench.analysis.summarize --tag <tag> --markdown
 ```
 
 자기 통제를 통과하지 못한 파일은 지우지 않고 그렇다는 라벨을 달아 남긴다. 측정

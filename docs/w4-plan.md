@@ -64,7 +64,7 @@ Port in the order the Python grew, which is also dependency order:
 | `run_sync.py` | `run_sync.cpp` | the loop |
 
 **The single highest-leverage decision: emit the same JSON schema.** Then
-`bench/summarize.py` reads C++ results unchanged, the two implementations land
+`bench/analysis/summarize.py` reads C++ results unchanged, the two implementations land
 in one table, and the comparison costs nothing. Deviating here means writing a
 second analysis path and never quite trusting the comparison.
 

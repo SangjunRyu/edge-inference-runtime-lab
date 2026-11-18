@@ -16,7 +16,7 @@ top-5    754:0.1191 905:0.0660 753:0.0574 904:0.0365 921:0.0264
 ```
 
 The same synthetic input through the Python OpenVINO API and
-`bench.pipeline.postprocess` gives those five values exactly. **The C API path
+`bench.runtime.pipeline.postprocess` gives those five values exactly. **The C API path
 and the C++ softmax agreed with Python before a single stage was timed.** The
 GPU returns 754:0.1202 against the NPU's 0.1191, the same 4-6e-3 spread
 between accelerators that W3 measured.
@@ -24,7 +24,7 @@ between accelerators that W3 measured.
 ## Phase 1 -- the sequential pipeline
 
 NPU, 360p, 10 s per run, paired and alternating in one session
-(`bench/compare_impl.py`):
+(`bench/experiments/compare_impl.py`):
 
 | stage | cpp ms | python ms | cpp/python |
 |---|---|---|---|
@@ -148,7 +148,7 @@ went into a hang that had not happened.
 Measured at 1080p, where host work is comparable to inference and a host-side
 win therefore raises the ceiling. Paired: the two configurations alternate in
 one session and the ratio inside each pair is reported
-(`bench/compare_variants.py`).
+(`bench/experiments/compare_variants.py`).
 
 | candidate | stage it targets | B/A | per-pair CV | verdict |
 |---|---|---|---|---|

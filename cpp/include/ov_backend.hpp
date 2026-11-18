@@ -1,4 +1,4 @@
-// OpenVINO backend -- the C++ side of bench/backends.py.
+// OpenVINO backend -- the C++ side of bench/runtime/backends.py.
 //
 // Built on OpenVINO's **C** API rather than its C++ one, for two reasons that
 // are not compromises:

@@ -69,7 +69,7 @@ rather than eyeballed.
 
 ## 3. Value — now answered, and passing
 
-`bench/verify_equivalence.py` runs the same clip through both pipelines and
+`bench/classification/verify_equivalence.py` runs the same clip through both pipelines and
 compares top-k per frame index. It reads results out of the **real** runners --
 `run_sync.measure_once` and `run_async.measure_once`, through a collector they
 now accept -- because a second implementation written for the test could not
@@ -122,7 +122,7 @@ green imply more than it checked.
 
 A different question, and one the sensitivity figures raised: the three
 backends produced 176 / 174 / 175 distinct top-k sets over the same 300 frames,
-so they are not all answering identically. `bench/compare_backends.py` runs the
+so they are not all answering identically. `bench/experiments/compare_backends.py` runs the
 same sequential pipeline on each and compares against ONNX Runtime's CPU:
 
 | backend | top-1 differs | top-k order | max prob delta |
@@ -160,10 +160,10 @@ have to beat before its own numbers meant anything.
 ## Where W3 lives now
 
 - Ordering evidence and the reorder trade-off: `docs/findings-w2.md`
-- `bench/reorder.py` — `ReorderBuffer`, `OrderChecker`
-- `bench/verify_equivalence.py` — value equivalence, its self-test, its
+- `bench/runtime/reorder.py` — `ReorderBuffer`, `OrderChecker`
+- `bench/classification/verify_equivalence.py` — value equivalence, its self-test, its
   sensitivity figure
-- `bench/compare_backends.py` — cross-backend agreement, reported against the
+- `bench/experiments/compare_backends.py` — cross-backend agreement, reported against the
   margin each disagreement happened at
 - `run_ab` refuses to report a speedup when order was violated; `run_sweep`
   excludes such depths from the curve

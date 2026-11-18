@@ -1,23 +1,34 @@
 """Real YOLO sync/async value check and separate CUDA node-assignment profile."""
-import argparse,json,sys,threading
+import argparse,json,threading
 from pathlib import Path
-ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))
-import numpy as np,onnxruntime as ort
-from bench.backends import OnnxBackend
-from bench.industrial import letterbox,decode_yolo
-from bench.surrogate_camera import SurrogateCamera
+ROOT=Path(__file__).resolve().parents[2]
+import cv2,numpy as np,onnxruntime as ort
+from bench.runtime.backends import OnnxBackend
+from bench.detection.yolo import letterbox,decode_yolo
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('out_dir',type=Path);p.add_argument('--samples',type=int,default=64)
+    p.add_argument('--video',type=Path,default=ROOT/'clips/real-video/vtest.avi')
     p.add_argument('--unsafe-default-stream',action='store_true',help='Negative control; may fail on this MX150 stack')
     a=p.parse_args()
     a.out_dir.mkdir(parents=True,exist_ok=True)
     cuda_options=None if a.unsafe_default_stream else {'use_ep_level_unified_stream':'1'}
     b=OnnxBackend(str(ROOT/'models/yolo11n_320.onnx'),'cuda',4,cuda_options=cuda_options)
     if b.fell_back:raise RuntimeError('CUDA unavailable')
-    source=SurrogateCamera(ROOT/'clips/scenario-assets/object-crop.jpg')
-    indices=[(i*37)%len(source) for i in range(a.samples)]
-    inputs=[letterbox(source[i],320) for i in indices]
+    if a.samples < 1: p.error('--samples must be positive')
+    cap=cv2.VideoCapture(str(a.video))
+    if not cap.isOpened(): raise RuntimeError(f'Cannot open {a.video}')
+    count=int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    if count < 1: raise RuntimeError('Video has no frames')
+    indices=np.linspace(0,count-1,min(a.samples,count),dtype=int).tolist()
+    inputs=[]
+    try:
+        for index in indices:
+            cap.set(cv2.CAP_PROP_POS_FRAMES,index)
+            ok,frame=cap.read()
+            if not ok: raise RuntimeError(f'Cannot decode frame {index}')
+            inputs.append(letterbox(frame,320))
+    finally: cap.release()
     refs=[b.run(x) for x,_ in inputs]
     results={};errors=[];done=threading.Event();lock=threading.Lock();slots=threading.Semaphore(4)
     def complete(outputs,index,error):
@@ -32,7 +43,7 @@ def main():
     checks=[]
     for index,(ref,(_,transform)) in enumerate(zip(refs,inputs)):
         got=results[index]
-        boxes_ref=decode_yolo(ref,transform);boxes_got=decode_yolo(got,transform)
+        boxes_ref=decode_yolo(ref,transform,class_id=0);boxes_got=decode_yolo(got,transform,class_id=0)
         diagnostic={'frame':indices[index],'max_raw_abs_difference':float(np.max(np.abs(ref-got))),
                     'max_class_score_abs_difference':float(np.max(np.abs(ref[:,4:]-got[:,4:]))),
                     'raw_allclose_rtol_atol_1e3':bool(np.allclose(ref,got,rtol=1e-3,atol=1e-3)),
@@ -56,7 +67,7 @@ def main():
         provider=event.get('args',{}).get('provider')
         if provider:counts[provider]=counts.get(provider,0)+1
     if not counts.get('CUDAExecutionProvider'):raise RuntimeError('No CUDA node events')
-    result={'passed':True,'application_tolerance':{'box_pixels':.1,'score_absolute':1e-4},
+    result={'passed':True,'source_video':str(a.video),'sampled_frames':indices,'application_tolerance':{'box_pixels':.1,'score_absolute':1e-4},
             'all_raw_allclose':all(c['raw_allclose_rtol_atol_1e3'] for c in checks),
             'cuda_options':cuda_options,
             'sync_async_checks':checks,'profile_node_events':counts,'profile':profile.name,'profile_during_benchmarks':False}

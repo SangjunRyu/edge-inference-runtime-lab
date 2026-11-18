@@ -11,7 +11,7 @@ W2는 같은 작업인데 `read`가 순차에서 9.75 ms, 겹침에서 5.05 ms�
 스레드들은 **호출 사이에** 겹친다. 바로 돌아오는 호출자는 워커를 계속 바쁘게 하고,
 19 ms씩 기다리는 호출자는 매번 단일 프레임 지연을 온전히 낸다는 것이다.
 
-`bench/read_rate.py`는 효과를 다시 재는 대신 **제안된 원인을 꺼서** 시험한다.
+`bench/analysis/read_rate.py`는 효과를 다시 재는 대신 **제안된 원인을 꺼서** 시험한다.
 디코더 스레드 수를 `OPENCV_FFMPEG_CAPTURE_OPTIONS`로 넘기고, 설정마다 별도
 프로세스로 돌려 비교한다.
 
@@ -148,8 +148,8 @@ W1은 원래 격자의 두 수준 CPU 타이밍을 정확히 이것으로 설명
 ## 실행법
 
 ```
-.venv\Scripts\python.exe -m bench.read_rate --compare-threads 16,1 --pin 6,7,8,9,10,11
-.venv\Scripts\python.exe -m bench.read_rate --source clips/bbb_360_2MB.mp4 --gaps 0,5,10,19,30
+.venv\Scripts\python.exe -m bench.analysis.read_rate --compare-threads 16,1 --pin 6,7,8,9,10,11
+.venv\Scripts\python.exe -m bench.analysis.read_rate --source clips/bbb_360_2MB.mp4 --gaps 0,5,10,19,30
 ```
 
 쌍 비교는 기본적으로 간격을 작업으로 채운다. 순차 파이프라인이 거기에 넣는 게 그거다.

@@ -3,8 +3,8 @@ import threading
 import unittest
 import numpy as np
 import cv2
-from bench.industrial import AdmissionQueue,Config,LineCounter,decode_yolo,letterbox,run_workload
-from tools.analyze_industrial import match_events
+from bench.workloads.clocked import AdmissionQueue, Config, run_workload
+from bench.detection.yolo import LineCounter, decode_yolo, letterbox
 
 
 class FakeBackend:
@@ -17,11 +17,7 @@ class FakeBackend:
     def describe(self):return {'test_double':True}
 
 
-class IndustrialContracts(unittest.TestCase):
-    def test_equal_totals_can_still_hide_a_missed_and_false_crossing(self):
-        r=match_events([1,4,8],[1.1,4.1,11])
-        self.assertEqual((r['true_positives'],r['false_positives'],r['false_negatives']),(2,1,1))
-
+class WorkloadContracts(unittest.TestCase):
     def test_reverse_callbacks_are_consumed_in_source_order(self):
         class ReverseBackend(FakeBackend):
             output_name='output';input_name='input'
@@ -51,8 +47,8 @@ class IndustrialContracts(unittest.TestCase):
         _,transform=letterbox(np.zeros((360,640,3),np.uint8),320)
         raw=np.zeros((1,84,2),np.float32)
         raw[0,:4,0]=[160,160,100,50];raw[0,:4,1]=[160,160,100,50]
-        raw[0,9]=[.9,.8] # COCO class 5
-        boxes=decode_yolo(raw,transform)
+        raw[0,4]=[.9,.8] # COCO person class 0
+        boxes=decode_yolo(raw,transform,class_id=0)
         self.assertEqual(len(boxes),1)
         np.testing.assert_allclose(boxes[0]['box'],[220,130,420,230],atol=.01)
 

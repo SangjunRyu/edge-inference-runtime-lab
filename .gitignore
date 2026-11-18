@@ -6,6 +6,8 @@ models/*.onnx
 clips/*.mp4
 cpp/build/
 clips/scenario-assets/
+clips/real-video/
+results/real-video*/
 results/local-20261114-*/
 results/industrial-20261118*/
 !results/industrial-20261118-public/
@@ -13,3 +15,4 @@ results/industrial-smoke-*/
 results/industrial-rerun/
 results/yolo-concurrency-repro/
 results/yolo-verification/
+results/yolo-verification-real-video/

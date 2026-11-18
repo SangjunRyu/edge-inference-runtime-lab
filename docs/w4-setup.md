@@ -147,7 +147,7 @@ top-5    754:0.1191 905:0.0660 753:0.0574 904:0.0365 921:0.0264
 ```
 
 Cross-checked rather than merely run: the same synthetic input through the
-Python OpenVINO API and `bench.pipeline.postprocess` gives
+Python OpenVINO API and `bench.runtime.pipeline.postprocess` gives
 `754:0.1191 905:0.0660 753:0.0574 904:0.0365 921:0.0264`, identical to four
 decimals. The C API path and the C++ softmax agree with the Python ones before
 a single stage has been timed.
@@ -195,7 +195,7 @@ cpp/
 ```
 
 `bench/` keeps the Python. The C++ writes the **same JSON schema**, so
-`bench/summarize.py`, `bench/compare_backends.py` and the existing analysis read
+`bench/analysis/summarize.py`, `bench/experiments/compare_backends.py` and the existing analysis read
 both without modification — the single decision that makes the comparison cost
 nothing.
 

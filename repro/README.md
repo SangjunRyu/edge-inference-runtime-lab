@@ -145,5 +145,5 @@ already done.
 | 06, 07, 08 | [`docs/findings-w5.md`](../docs/findings-w5.md) — "Three failures, one shape" |
 | 09 | [`docs/findings-w5.md`](../docs/findings-w5.md) — "W5 tooling" |
 | stats/01, stats/02 | [`docs/findings-w4.md`](../docs/findings-w4.md) — "three faults in the instrument" |
-| stats/03 | [`docs/findings-w2.md`](../docs/findings-w2.md), `bench/run_ab.py` |
+| stats/03 | [`docs/findings-w2.md`](../docs/findings-w2.md), `bench/experiments/run_ab.py` |
 | loader | [`docs/findings-w4.md`](../docs/findings-w4.md) — the fourth bug, "of my own diagnosis rather than the code" |

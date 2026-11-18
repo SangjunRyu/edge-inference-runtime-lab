@@ -37,7 +37,7 @@ What this is for, in order:
    -- both decode the same clip with the same OpenCV, and neither pipeline's
    concurrency changes what a decode costs.
 
-    python -m bench.compare_impl --cpp cpp/build/run_sync_cpp.exe \\
+    python -m bench.experiments.compare_impl --cpp cpp/build/run_sync_cpp.exe \\
         --model models/resnet50_224.onnx --device NPU \\
         --source clips/bbb_360_2MB.mp4 --duration-s 10 --pairs 3
 """
@@ -53,8 +53,11 @@ import tempfile
 from argparse import Namespace
 from pathlib import Path
 
-from bench import env_fingerprint, noise, run_async, run_sync
-from bench.backends import OnnxBackend
+from bench.measurement import env_fingerprint
+from bench.measurement import noise
+from bench.classification import run_async
+from bench.classification import run_sync
+from bench.runtime.backends import OnnxBackend
 
 STAGES = ("read", "preprocess", "inference", "postprocess")
 

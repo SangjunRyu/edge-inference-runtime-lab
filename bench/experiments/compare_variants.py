@@ -27,7 +27,7 @@ Both corrections arrived after phase 3 was measured, so `--reanalyse` re-reads a
 saved run under the current criteria. The pairs are stored in full; correcting a
 criterion therefore costs no machine time.
 
-    python -m bench.compare_variants --cpp cpp/build/run_sync_cpp.exe \\
+    python -m bench.experiments.compare_variants --cpp cpp/build/run_sync_cpp.exe \\
         --model models/resnet50_224.onnx --device NPU \\
         --source clips/bbb_1080_10MB.mp4 --variant --fused --pairs 4
 """
@@ -44,7 +44,8 @@ from pathlib import Path
 
 from argparse import Namespace
 
-from bench import env_fingerprint, noise
+from bench.measurement import env_fingerprint
+from bench.measurement import noise
 
 STAGES = ("read", "preprocess", "inference", "postprocess")
 

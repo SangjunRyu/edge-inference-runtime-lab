@@ -14,13 +14,13 @@ onnxruntime                 # CPU only
 # onnxruntime-openvino==1.24.1
 # openvino==2025.4.1
 #
-# onnxruntime-openvino does not bundle the OpenVINO DLLs; bench/backends.py
+# onnxruntime-openvino does not bundle the OpenVINO DLLs; bench/runtime/backends.py
 # calls openvino.utils.add_openvino_libs_to_path() before creating a session.
 # Then: --backend openvino --ov-device CPU | GPU | NPU
 
 # --- NVIDIA ---------------------------------------------------------------
 # MX150 is Pascal (sm_61). If CUDAExecutionProvider does not appear in
-# `python -m bench.env_fingerprint`, stay on CPU and record that.
+# `python -m bench.measurement.env_fingerprint`, stay on CPU and record that.
 #   pip uninstall -y onnxruntime && pip install onnxruntime-gpu
 # onnxruntime-gpu bundles neither the CUDA runtime nor cuDNN, and CUDA 13 has
 # dropped Pascal, so the runtime must be 12.x and must match the major the

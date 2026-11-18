@@ -85,7 +85,7 @@ class Machine:
 
 
 def spread(values):
-    """mean/min/max/CV, matching bench.noise.spread closely enough to compare."""
+    """mean/min/max/CV, matching bench.measurement.noise.spread closely enough to compare."""
     n = len(values)
     if n == 0:
         return {"n": 0}

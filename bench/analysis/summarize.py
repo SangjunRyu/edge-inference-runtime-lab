@@ -10,8 +10,8 @@ Spread is reported as a coefficient of variation so it can be compared against
 the machine's own run-to-run noise, which is printed alongside. A difference
 smaller than that noise is not a difference.
 
-    python -m bench.summarize --tag gram
-    python -m bench.summarize --tag gram --markdown >> README.md
+    python -m bench.analysis.summarize --tag gram
+    python -m bench.analysis.summarize --tag gram --markdown >> README.md
 """
 from __future__ import annotations
 

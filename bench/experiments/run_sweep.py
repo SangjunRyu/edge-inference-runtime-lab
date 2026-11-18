@@ -20,7 +20,7 @@ Two numbers decide where the knee is:
 Any depth that emits frames out of submission order is reported as failed and
 excluded from the curve rather than plotted with an asterisk.
 
-    python -m bench.run_sweep --model models/resnet50_224.onnx \\
+    python -m bench.experiments.run_sweep --model models/resnet50_224.onnx \\
         --backend openvino --ov-device NPU --source clips/bbb_1080_10MB.mp4 \\
         --depths 1 2 4 8 16 --repeat 3 --tag sweep-npu
 """
@@ -35,8 +35,10 @@ import tempfile
 from argparse import Namespace
 from pathlib import Path
 
-from bench import env_fingerprint, noise, run_async
-from bench.backends import OnnxBackend, available
+from bench.measurement import env_fingerprint
+from bench.measurement import noise
+from bench.classification import run_async
+from bench.runtime.backends import OnnxBackend, available
 
 
 def parse_args():
@@ -108,7 +110,7 @@ def _run_depth_isolated(args, depth: int, height: int, width: int,
                         tmpdir: str) -> tuple[list[dict], str | None]:
     """Run one depth in a fresh process. Returns (runs, failure reason)."""
     tag = f"_sweepdepth{depth}"
-    cmd = [sys.executable, "-u", "-m", "bench.run_async",
+    cmd = [sys.executable, "-u", "-m", "bench.classification.run_async",
            "--model", args.model, "--backend", args.backend,
            "--frames", str(args.frames), "--warmup", str(args.warmup),
            "--top-k", str(args.top_k), "--inflight", str(depth),
