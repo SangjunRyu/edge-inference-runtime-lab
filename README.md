@@ -1,5 +1,18 @@
 # edge-inference-runtime-lab
 
+The clock-driven application scenarios are documented in
+[`docs/industrial-scenarios.md`](docs/industrial-scenarios.md): four-camera
+triggered classification and a controlled detection/tracking/counting stream,
+with explicit admission policies, deadlines and per-request accounting.
+They run real ONNX Runtime CPU/CUDA inference; the inputs are virtual cameras
+and a public-image surrogate, not factory validation data or DEEPX hardware.
+
+The [Korean findings](docs-ko/10-industrial-scenarios.md) explain the measured
+deadline/freshness tradeoffs and the CUDA output-value failure. The
+[published evidence](results/industrial-20261118-public/) contains 21 conditions,
+42 validated runs and the rejected-configuration diagnostics. Read the
+[reproduction guide](docs/industrial-scenarios.md) before reusing the numbers.
+
 A study of inference pipeline execution models, inspired by the architecture of
 the open-source [DEEPX DX-APP](https://github.com/DEEPX-AI/dx_app) runtime and
 reimplemented with ONNX Runtime on commodity hardware.
@@ -333,6 +346,12 @@ behaviour. Full write-up in [`docs/findings-w4.md`](docs/findings-w4.md).
 Built with MSYS2 UCRT64 GCC against OpenVINO's **C** API — no Microsoft
 software involved, and the C ABI is the bridge because MinGW and MSVC share no
 C++ ABI.
+
+For the current i7-8565U / MX150 laptop, an additional native **ONNX Runtime
+CPU/CUDA** build is available with MSVC and the same ORT runtime as Python.
+See [`docs/cpp-onnxruntime.md`](docs/cpp-onnxruntime.md) for the build helper,
+sync/async commands and prediction checks. The NPU measurements below describe
+the original OpenVINO implementation; they are not results from the ORT build.
 
 **Sequential, C++ against Python** (NPU, 360p, 6 counterbalanced pairs):
 

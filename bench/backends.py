@@ -108,7 +108,8 @@ class OnnxBackend:
 
     def __init__(self, model_path: str, backend: str = "cpu",
                  intra_threads: int | None = None, ov_device: str | None = None,
-                 allow_fallback: bool = False):
+                 allow_fallback: bool = False,
+                 cuda_options: dict | None = None):
         import onnxruntime as ort
 
         if backend not in BACKENDS:
@@ -133,6 +134,8 @@ class OnnxBackend:
             opts.execution_mode = ort.ExecutionMode.ORT_SEQUENTIAL
 
         providers: list = list(BACKENDS[backend])
+        if backend == "cuda" and cuda_options:
+            providers[0] = (providers[0], {str(k): str(v) for k, v in cuda_options.items()})
         if backend == "openvino" and ov_device:
             # OpenVINO reaches Intel CPU / iGPU / NPU. device_type picks which;
             # without it the plugin chooses and the result says nothing about
@@ -205,4 +208,5 @@ class OnnxBackend:
             "actual_providers": self.actual_providers,
             "fell_back_to_cpu": self.fell_back,
             "input_shape": [str(d) for d in self.input_shape],
+            "provider_options": self.session.get_provider_options(),
         }

@@ -5,3 +5,11 @@ models/*.onnx
 *.mp4
 clips/*.mp4
 cpp/build/
+clips/scenario-assets/
+results/local-20261114-*/
+results/industrial-20261118*/
+!results/industrial-20261118-public/
+results/industrial-smoke-*/
+results/industrial-rerun/
+results/yolo-concurrency-repro/
+results/yolo-verification/

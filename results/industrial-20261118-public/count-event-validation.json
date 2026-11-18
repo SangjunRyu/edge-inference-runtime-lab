@@ -1,0 +1,973 @@
+{
+  "ground_truth_crossings_s": [
+    1.3666666666666667,
+    4.7,
+    8.033333333333333
+  ],
+  "ground_truth_time_resolution_s": 0.03333333333333333,
+  "note": "Match capture-time crossing events, not output time; deadline misses are measured separately. Controlled surrogate only.",
+  "runs": [
+    {
+      "true_positives": 3,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "matches": [
+        {
+          "expected_s": 1.3666666666666667,
+          "observed_s": 1.4,
+          "error_ms": 33.333333333333215,
+          "reported_s": 1.4241170000168495,
+          "signed_output_lag_ms": 57.45033335018279
+        },
+        {
+          "expected_s": 4.7,
+          "observed_s": 4.8,
+          "error_ms": 99.99999999999964,
+          "reported_s": 4.8427332999999635,
+          "signed_output_lag_ms": 142.73329999996332
+        },
+        {
+          "expected_s": 8.033333333333333,
+          "observed_s": 8.2,
+          "error_ms": 166.66666666666606,
+          "reported_s": 8.2460640000063,
+          "signed_output_lag_ms": 212.73066667296627
+        }
+      ],
+      "false_positive_times_s": [],
+      "tolerance_s": 0.5,
+      "name": "stream-cpu-normal-async",
+      "repeat": 1,
+      "observed_times_s": [
+        1.4,
+        4.8,
+        8.2
+      ]
+    },
+    {
+      "true_positives": 3,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "matches": [
+        {
+          "expected_s": 1.3666666666666667,
+          "observed_s": 1.4,
+          "error_ms": 33.333333333333215,
+          "reported_s": 1.4212302000378259,
+          "signed_output_lag_ms": 54.56353337115915
+        },
+        {
+          "expected_s": 4.7,
+          "observed_s": 4.8,
+          "error_ms": 99.99999999999964,
+          "reported_s": 4.846885700011626,
+          "signed_output_lag_ms": 146.88570001162572
+        },
+        {
+          "expected_s": 8.033333333333333,
+          "observed_s": 8.2,
+          "error_ms": 166.66666666666606,
+          "reported_s": 8.253416499996092,
+          "signed_output_lag_ms": 220.08316666275897
+        }
+      ],
+      "false_positive_times_s": [],
+      "tolerance_s": 0.5,
+      "name": "stream-cpu-normal-sync",
+      "repeat": 1,
+      "observed_times_s": [
+        1.4,
+        4.8,
+        8.2
+      ]
+    },
+    {
+      "true_positives": 3,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "matches": [
+        {
+          "expected_s": 1.3666666666666667,
+          "observed_s": 1.3583333333333334,
+          "error_ms": 8.333333333333304,
+          "reported_s": 1.4440391000243835,
+          "signed_output_lag_ms": 77.37243335771682
+        },
+        {
+          "expected_s": 4.7,
+          "observed_s": 4.7,
+          "error_ms": 0.0,
+          "reported_s": 4.778588200046215,
+          "signed_output_lag_ms": 78.58820004621504
+        },
+        {
+          "expected_s": 8.033333333333333,
+          "observed_s": 8.025,
+          "error_ms": 8.33333333333286,
+          "reported_s": 8.109085700009018,
+          "signed_output_lag_ms": 75.75236667568497
+        }
+      ],
+      "false_positive_times_s": [],
+      "tolerance_s": 0.5,
+      "name": "stream-cpu-over-fresh-d1",
+      "repeat": 1,
+      "observed_times_s": [
+        1.3583333333333334,
+        4.7,
+        8.025
+      ]
+    },
+    {
+      "true_positives": 3,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "matches": [
+        {
+          "expected_s": 1.3666666666666667,
+          "observed_s": 1.3583333333333334,
+          "error_ms": 8.333333333333304,
+          "reported_s": 1.5020815000170842,
+          "signed_output_lag_ms": 135.4148333504175
+        },
+        {
+          "expected_s": 4.7,
+          "observed_s": 4.7,
+          "error_ms": 0.0,
+          "reported_s": 4.824655900010839,
+          "signed_output_lag_ms": 124.65590001083893
+        },
+        {
+          "expected_s": 8.033333333333333,
+          "observed_s": 8.016666666666667,
+          "error_ms": 16.66666666666572,
+          "reported_s": 8.123765899974387,
+          "signed_output_lag_ms": 90.43256664105392
+        }
+      ],
+      "false_positive_times_s": [],
+      "tolerance_s": 0.5,
+      "name": "stream-cpu-over-fresh-d4",
+      "repeat": 1,
+      "observed_times_s": [
+        1.3583333333333334,
+        4.7,
+        8.016666666666667
+      ]
+    },
+    {
+      "true_positives": 3,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "matches": [
+        {
+          "expected_s": 1.3666666666666667,
+          "observed_s": 1.35,
+          "error_ms": 16.666666666666607,
+          "reported_s": 1.5113157000159845,
+          "signed_output_lag_ms": 144.6490333493178
+        },
+        {
+          "expected_s": 4.7,
+          "observed_s": 4.7,
+          "error_ms": 0.0,
+          "reported_s": 4.8567047000397,
+          "signed_output_lag_ms": 156.7047000396995
+        },
+        {
+          "expected_s": 8.033333333333333,
+          "observed_s": 8.016666666666667,
+          "error_ms": 16.66666666666572,
+          "reported_s": 8.248158500064164,
+          "signed_output_lag_ms": 214.8251667308312
+        }
+      ],
+      "false_positive_times_s": [],
+      "tolerance_s": 0.5,
+      "name": "stream-cpu-over-reject-d1",
+      "repeat": 1,
+      "observed_times_s": [
+        1.35,
+        4.7,
+        8.016666666666667
+      ]
+    },
+    {
+      "true_positives": 3,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "matches": [
+        {
+          "expected_s": 1.3666666666666667,
+          "observed_s": 1.4,
+          "error_ms": 33.333333333333215,
+          "reported_s": 1.4294276000000536,
+          "signed_output_lag_ms": 62.760933333386944
+        },
+        {
+          "expected_s": 4.7,
+          "observed_s": 4.8,
+          "error_ms": 99.99999999999964,
+          "reported_s": 4.8180329000460915,
+          "signed_output_lag_ms": 118.03290004609136
+        },
+        {
+          "expected_s": 8.033333333333333,
+          "observed_s": 8.2,
+          "error_ms": 166.66666666666606,
+          "reported_s": 8.220277899992652,
+          "signed_output_lag_ms": 186.94456665931904
+        }
+      ],
+      "false_positive_times_s": [],
+      "tolerance_s": 0.5,
+      "name": "stream-cuda-normal-async",
+      "repeat": 1,
+      "observed_times_s": [
+        1.4,
+        4.8,
+        8.2
+      ]
+    },
+    {
+      "true_positives": 3,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "matches": [
+        {
+          "expected_s": 1.3666666666666667,
+          "observed_s": 1.4,
+          "error_ms": 33.333333333333215,
+          "reported_s": 1.4297879000077955,
+          "signed_output_lag_ms": 63.12123334112884
+        },
+        {
+          "expected_s": 4.7,
+          "observed_s": 4.8,
+          "error_ms": 99.99999999999964,
+          "reported_s": 4.826559000008274,
+          "signed_output_lag_ms": 126.5590000082737
+        },
+        {
+          "expected_s": 8.033333333333333,
+          "observed_s": 8.2,
+          "error_ms": 166.66666666666606,
+          "reported_s": 8.228478600038216,
+          "signed_output_lag_ms": 195.14526670488232
+        }
+      ],
+      "false_positive_times_s": [],
+      "tolerance_s": 0.5,
+      "name": "stream-cuda-normal-sync",
+      "repeat": 1,
+      "observed_times_s": [
+        1.4,
+        4.8,
+        8.2
+      ]
+    },
+    {
+      "true_positives": 3,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "matches": [
+        {
+          "expected_s": 1.3666666666666667,
+          "observed_s": 1.3583333333333334,
+          "error_ms": 8.333333333333304,
+          "reported_s": 1.441783200018108,
+          "signed_output_lag_ms": 75.11653335144119
+        },
+        {
+          "expected_s": 4.7,
+          "observed_s": 4.683333333333334,
+          "error_ms": 16.666666666666607,
+          "reported_s": 4.766482200007886,
+          "signed_output_lag_ms": 66.48220000788552
+        },
+        {
+          "expected_s": 8.033333333333333,
+          "observed_s": 8.016666666666667,
+          "error_ms": 16.66666666666572,
+          "reported_s": 8.0929433000274,
+          "signed_output_lag_ms": 59.60996669406704
+        }
+      ],
+      "false_positive_times_s": [],
+      "tolerance_s": 0.5,
+      "name": "stream-cuda-over-fresh-d1",
+      "repeat": 1,
+      "observed_times_s": [
+        1.3583333333333334,
+        4.683333333333334,
+        8.016666666666667
+      ]
+    },
+    {
+      "true_positives": 3,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "matches": [
+        {
+          "expected_s": 1.3666666666666667,
+          "observed_s": 1.3833333333333333,
+          "error_ms": 16.666666666666607,
+          "reported_s": 1.491463600017596,
+          "signed_output_lag_ms": 124.79693335092934
+        },
+        {
+          "expected_s": 4.7,
+          "observed_s": 4.716666666666667,
+          "error_ms": 16.666666666666607,
+          "reported_s": 4.832428199995775,
+          "signed_output_lag_ms": 132.4281999957746
+        },
+        {
+          "expected_s": 8.033333333333333,
+          "observed_s": 8.016666666666667,
+          "error_ms": 16.66666666666572,
+          "reported_s": 8.145070400030818,
+          "signed_output_lag_ms": 111.73706669748462
+        }
+      ],
+      "false_positive_times_s": [],
+      "tolerance_s": 0.5,
+      "name": "stream-cuda-over-fresh-d4",
+      "repeat": 1,
+      "observed_times_s": [
+        1.3833333333333333,
+        4.716666666666667,
+        8.016666666666667
+      ]
+    },
+    {
+      "true_positives": 3,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "matches": [
+        {
+          "expected_s": 1.3666666666666667,
+          "observed_s": 1.3583333333333334,
+          "error_ms": 8.333333333333304,
+          "reported_s": 1.3842258999939077,
+          "signed_output_lag_ms": 17.559233327240964
+        },
+        {
+          "expected_s": 4.7,
+          "observed_s": 4.683333333333334,
+          "error_ms": 16.666666666666607,
+          "reported_s": 4.70979689998785,
+          "signed_output_lag_ms": 9.79689998785016
+        },
+        {
+          "expected_s": 8.033333333333333,
+          "observed_s": 8.025,
+          "error_ms": 8.33333333333286,
+          "reported_s": 8.052223599981517,
+          "signed_output_lag_ms": 18.890266648183385
+        }
+      ],
+      "false_positive_times_s": [],
+      "tolerance_s": 0.5,
+      "name": "stream-cuda-over-fresh-q2",
+      "repeat": 1,
+      "observed_times_s": [
+        1.3583333333333334,
+        4.683333333333334,
+        8.025
+      ]
+    },
+    {
+      "true_positives": 3,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "matches": [
+        {
+          "expected_s": 1.3666666666666667,
+          "observed_s": 1.3583333333333334,
+          "error_ms": 8.333333333333304,
+          "reported_s": 1.4963961000321433,
+          "signed_output_lag_ms": 129.7294333654766
+        },
+        {
+          "expected_s": 4.7,
+          "observed_s": 4.691666666666666,
+          "error_ms": 8.333333333333748,
+          "reported_s": 4.836919800029136,
+          "signed_output_lag_ms": 136.91980002913607
+        },
+        {
+          "expected_s": 8.033333333333333,
+          "observed_s": 8.025,
+          "error_ms": 8.33333333333286,
+          "reported_s": 8.219774700002745,
+          "signed_output_lag_ms": 186.4413666694116
+        }
+      ],
+      "false_positive_times_s": [],
+      "tolerance_s": 0.5,
+      "name": "stream-cuda-over-reject-d1",
+      "repeat": 1,
+      "observed_times_s": [
+        1.3583333333333334,
+        4.691666666666666,
+        8.025
+      ]
+    },
+    {
+      "true_positives": 3,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "matches": [
+        {
+          "expected_s": 1.3666666666666667,
+          "observed_s": 1.35,
+          "error_ms": 16.666666666666607,
+          "reported_s": 1.5509006999782287,
+          "signed_output_lag_ms": 184.23403331156197
+        },
+        {
+          "expected_s": 4.7,
+          "observed_s": 4.708333333333333,
+          "error_ms": 8.33333333333286,
+          "reported_s": 5.014144999964628,
+          "signed_output_lag_ms": 314.1449999646282
+        },
+        {
+          "expected_s": 8.033333333333333,
+          "observed_s": 8.025,
+          "error_ms": 8.33333333333286,
+          "reported_s": 8.272581900004297,
+          "signed_output_lag_ms": 239.2485666709643
+        }
+      ],
+      "false_positive_times_s": [],
+      "tolerance_s": 0.5,
+      "name": "stream-cuda-over-reject-d4",
+      "repeat": 1,
+      "observed_times_s": [
+        1.35,
+        4.708333333333333,
+        8.025
+      ]
+    },
+    {
+      "true_positives": 3,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "matches": [
+        {
+          "expected_s": 1.3666666666666667,
+          "observed_s": 1.35,
+          "error_ms": 16.666666666666607,
+          "reported_s": 1.4860926000401378,
+          "signed_output_lag_ms": 119.42593337347107
+        },
+        {
+          "expected_s": 4.7,
+          "observed_s": 4.691666666666666,
+          "error_ms": 8.333333333333748,
+          "reported_s": 4.836076600011438,
+          "signed_output_lag_ms": 136.07660001143796
+        },
+        {
+          "expected_s": 8.033333333333333,
+          "observed_s": 8.016666666666667,
+          "error_ms": 16.66666666666572,
+          "reported_s": 8.16209009999875,
+          "signed_output_lag_ms": 128.7567666654166
+        }
+      ],
+      "false_positive_times_s": [],
+      "tolerance_s": 0.5,
+      "name": "stream-cuda-over-sync",
+      "repeat": 1,
+      "observed_times_s": [
+        1.35,
+        4.691666666666666,
+        8.016666666666667
+      ]
+    },
+    {
+      "true_positives": 3,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "matches": [
+        {
+          "expected_s": 1.3666666666666667,
+          "observed_s": 1.4,
+          "error_ms": 33.333333333333215,
+          "reported_s": 1.4242448000004515,
+          "signed_output_lag_ms": 57.578133333784805
+        },
+        {
+          "expected_s": 4.7,
+          "observed_s": 4.8,
+          "error_ms": 99.99999999999964,
+          "reported_s": 4.8236201999825425,
+          "signed_output_lag_ms": 123.62019998254237
+        },
+        {
+          "expected_s": 8.033333333333333,
+          "observed_s": 8.2,
+          "error_ms": 166.66666666666606,
+          "reported_s": 8.264144700020552,
+          "signed_output_lag_ms": 230.81136668721848
+        }
+      ],
+      "false_positive_times_s": [],
+      "tolerance_s": 0.5,
+      "name": "stream-cpu-normal-async",
+      "repeat": 2,
+      "observed_times_s": [
+        1.4,
+        4.8,
+        8.2
+      ]
+    },
+    {
+      "true_positives": 3,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "matches": [
+        {
+          "expected_s": 1.3666666666666667,
+          "observed_s": 1.4,
+          "error_ms": 33.333333333333215,
+          "reported_s": 1.4571536000003107,
+          "signed_output_lag_ms": 90.48693333364399
+        },
+        {
+          "expected_s": 4.7,
+          "observed_s": 4.8,
+          "error_ms": 99.99999999999964,
+          "reported_s": 4.817509300017264,
+          "signed_output_lag_ms": 117.50930001726357
+        },
+        {
+          "expected_s": 8.033333333333333,
+          "observed_s": 8.2,
+          "error_ms": 166.66666666666606,
+          "reported_s": 8.220479600015096,
+          "signed_output_lag_ms": 187.14626668176317
+        }
+      ],
+      "false_positive_times_s": [],
+      "tolerance_s": 0.5,
+      "name": "stream-cpu-normal-sync",
+      "repeat": 2,
+      "observed_times_s": [
+        1.4,
+        4.8,
+        8.2
+      ]
+    },
+    {
+      "true_positives": 3,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "matches": [
+        {
+          "expected_s": 1.3666666666666667,
+          "observed_s": 1.35,
+          "error_ms": 16.666666666666607,
+          "reported_s": 1.4395759999752045,
+          "signed_output_lag_ms": 72.90933330853777
+        },
+        {
+          "expected_s": 4.7,
+          "observed_s": 4.683333333333334,
+          "error_ms": 16.666666666666607,
+          "reported_s": 4.7652659000013955,
+          "signed_output_lag_ms": 65.26590000139532
+        },
+        {
+          "expected_s": 8.033333333333333,
+          "observed_s": 8.016666666666667,
+          "error_ms": 16.66666666666572,
+          "reported_s": 8.103557599999476,
+          "signed_output_lag_ms": 70.22426666614301
+        }
+      ],
+      "false_positive_times_s": [],
+      "tolerance_s": 0.5,
+      "name": "stream-cpu-over-fresh-d1",
+      "repeat": 2,
+      "observed_times_s": [
+        1.35,
+        4.683333333333334,
+        8.016666666666667
+      ]
+    },
+    {
+      "true_positives": 3,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "matches": [
+        {
+          "expected_s": 1.3666666666666667,
+          "observed_s": 1.3666666666666667,
+          "error_ms": 0.0,
+          "reported_s": 1.4808982000104152,
+          "signed_output_lag_ms": 114.23153334374847
+        },
+        {
+          "expected_s": 4.7,
+          "observed_s": 4.691666666666666,
+          "error_ms": 8.333333333333748,
+          "reported_s": 4.863235700002406,
+          "signed_output_lag_ms": 163.23570000240562
+        },
+        {
+          "expected_s": 8.033333333333333,
+          "observed_s": 8.025,
+          "error_ms": 8.33333333333286,
+          "reported_s": 8.184935199969914,
+          "signed_output_lag_ms": 151.6018666365806
+        }
+      ],
+      "false_positive_times_s": [],
+      "tolerance_s": 0.5,
+      "name": "stream-cpu-over-fresh-d4",
+      "repeat": 2,
+      "observed_times_s": [
+        1.3666666666666667,
+        4.691666666666666,
+        8.025
+      ]
+    },
+    {
+      "true_positives": 3,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "matches": [
+        {
+          "expected_s": 1.3666666666666667,
+          "observed_s": 1.3583333333333334,
+          "error_ms": 8.333333333333304,
+          "reported_s": 1.5506525000091642,
+          "signed_output_lag_ms": 183.98583334249753
+        },
+        {
+          "expected_s": 4.7,
+          "observed_s": 4.691666666666666,
+          "error_ms": 8.333333333333748,
+          "reported_s": 4.888415099994745,
+          "signed_output_lag_ms": 188.41509999474493
+        },
+        {
+          "expected_s": 8.033333333333333,
+          "observed_s": 8.033333333333333,
+          "error_ms": 0.0,
+          "reported_s": 8.222571599995717,
+          "signed_output_lag_ms": 189.2382666623842
+        }
+      ],
+      "false_positive_times_s": [],
+      "tolerance_s": 0.5,
+      "name": "stream-cpu-over-reject-d1",
+      "repeat": 2,
+      "observed_times_s": [
+        1.3583333333333334,
+        4.691666666666666,
+        8.033333333333333
+      ]
+    },
+    {
+      "true_positives": 3,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "matches": [
+        {
+          "expected_s": 1.3666666666666667,
+          "observed_s": 1.4,
+          "error_ms": 33.333333333333215,
+          "reported_s": 1.4287384999915957,
+          "signed_output_lag_ms": 62.071833324929045
+        },
+        {
+          "expected_s": 4.7,
+          "observed_s": 4.8,
+          "error_ms": 99.99999999999964,
+          "reported_s": 4.827511300041806,
+          "signed_output_lag_ms": 127.51130004180578
+        },
+        {
+          "expected_s": 8.033333333333333,
+          "observed_s": 8.2,
+          "error_ms": 166.66666666666606,
+          "reported_s": 8.241212900029495,
+          "signed_output_lag_ms": 207.87956669616216
+        }
+      ],
+      "false_positive_times_s": [],
+      "tolerance_s": 0.5,
+      "name": "stream-cuda-normal-async",
+      "repeat": 2,
+      "observed_times_s": [
+        1.4,
+        4.8,
+        8.2
+      ]
+    },
+    {
+      "true_positives": 3,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "matches": [
+        {
+          "expected_s": 1.3666666666666667,
+          "observed_s": 1.4,
+          "error_ms": 33.333333333333215,
+          "reported_s": 1.4185127000091597,
+          "signed_output_lag_ms": 51.846033342493044
+        },
+        {
+          "expected_s": 4.7,
+          "observed_s": 4.8,
+          "error_ms": 99.99999999999964,
+          "reported_s": 4.829900900018401,
+          "signed_output_lag_ms": 129.90090001840127
+        },
+        {
+          "expected_s": 8.033333333333333,
+          "observed_s": 8.2,
+          "error_ms": 166.66666666666606,
+          "reported_s": 8.22289550001733,
+          "signed_output_lag_ms": 189.56216668399685
+        }
+      ],
+      "false_positive_times_s": [],
+      "tolerance_s": 0.5,
+      "name": "stream-cuda-normal-sync",
+      "repeat": 2,
+      "observed_times_s": [
+        1.4,
+        4.8,
+        8.2
+      ]
+    },
+    {
+      "true_positives": 3,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "matches": [
+        {
+          "expected_s": 1.3666666666666667,
+          "observed_s": 1.3583333333333334,
+          "error_ms": 8.333333333333304,
+          "reported_s": 1.4389815000467934,
+          "signed_output_lag_ms": 72.31483338012667
+        },
+        {
+          "expected_s": 4.7,
+          "observed_s": 4.683333333333334,
+          "error_ms": 16.666666666666607,
+          "reported_s": 4.767746600031387,
+          "signed_output_lag_ms": 67.74660003138689
+        },
+        {
+          "expected_s": 8.033333333333333,
+          "observed_s": 8.025,
+          "error_ms": 8.33333333333286,
+          "reported_s": 8.120419600047171,
+          "signed_output_lag_ms": 87.0862667138379
+        }
+      ],
+      "false_positive_times_s": [],
+      "tolerance_s": 0.5,
+      "name": "stream-cuda-over-fresh-d1",
+      "repeat": 2,
+      "observed_times_s": [
+        1.3583333333333334,
+        4.683333333333334,
+        8.025
+      ]
+    },
+    {
+      "true_positives": 3,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "matches": [
+        {
+          "expected_s": 1.3666666666666667,
+          "observed_s": 1.3583333333333334,
+          "error_ms": 8.333333333333304,
+          "reported_s": 1.4865224999957718,
+          "signed_output_lag_ms": 119.8558333291051
+        },
+        {
+          "expected_s": 4.7,
+          "observed_s": 4.683333333333334,
+          "error_ms": 16.666666666666607,
+          "reported_s": 4.825126500043552,
+          "signed_output_lag_ms": 125.1265000435522
+        },
+        {
+          "expected_s": 8.033333333333333,
+          "observed_s": 8.041666666666666,
+          "error_ms": 8.33333333333286,
+          "reported_s": 8.152973100019153,
+          "signed_output_lag_ms": 119.63976668581999
+        }
+      ],
+      "false_positive_times_s": [],
+      "tolerance_s": 0.5,
+      "name": "stream-cuda-over-fresh-d4",
+      "repeat": 2,
+      "observed_times_s": [
+        1.3583333333333334,
+        4.683333333333334,
+        8.041666666666666
+      ]
+    },
+    {
+      "true_positives": 3,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "matches": [
+        {
+          "expected_s": 1.3666666666666667,
+          "observed_s": 1.3583333333333334,
+          "error_ms": 8.333333333333304,
+          "reported_s": 1.3896770999999717,
+          "signed_output_lag_ms": 23.01043333330499
+        },
+        {
+          "expected_s": 4.7,
+          "observed_s": 4.691666666666666,
+          "error_ms": 8.333333333333748,
+          "reported_s": 4.72609209996881,
+          "signed_output_lag_ms": 26.092099968809457
+        },
+        {
+          "expected_s": 8.033333333333333,
+          "observed_s": 8.025,
+          "error_ms": 8.33333333333286,
+          "reported_s": 8.052589299972169,
+          "signed_output_lag_ms": 19.255966638835886
+        }
+      ],
+      "false_positive_times_s": [],
+      "tolerance_s": 0.5,
+      "name": "stream-cuda-over-fresh-q2",
+      "repeat": 2,
+      "observed_times_s": [
+        1.3583333333333334,
+        4.691666666666666,
+        8.025
+      ]
+    },
+    {
+      "true_positives": 3,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "matches": [
+        {
+          "expected_s": 1.3666666666666667,
+          "observed_s": 1.3583333333333334,
+          "error_ms": 8.333333333333304,
+          "reported_s": 1.511493000027258,
+          "signed_output_lag_ms": 144.82633336059126
+        },
+        {
+          "expected_s": 4.7,
+          "observed_s": 4.691666666666666,
+          "error_ms": 8.333333333333748,
+          "reported_s": 4.845376000041142,
+          "signed_output_lag_ms": 145.37600004114194
+        },
+        {
+          "expected_s": 8.033333333333333,
+          "observed_s": 8.016666666666667,
+          "error_ms": 16.66666666666572,
+          "reported_s": 8.22483339998871,
+          "signed_output_lag_ms": 191.50006665537768
+        }
+      ],
+      "false_positive_times_s": [],
+      "tolerance_s": 0.5,
+      "name": "stream-cuda-over-reject-d1",
+      "repeat": 2,
+      "observed_times_s": [
+        1.3583333333333334,
+        4.691666666666666,
+        8.016666666666667
+      ]
+    },
+    {
+      "true_positives": 3,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "matches": [
+        {
+          "expected_s": 1.3666666666666667,
+          "observed_s": 1.375,
+          "error_ms": 8.333333333333304,
+          "reported_s": 1.5351588999619707,
+          "signed_output_lag_ms": 168.49223329530406
+        },
+        {
+          "expected_s": 4.7,
+          "observed_s": 4.7,
+          "error_ms": 0.0,
+          "reported_s": 4.902490600012243,
+          "signed_output_lag_ms": 202.49060001224262
+        },
+        {
+          "expected_s": 8.033333333333333,
+          "observed_s": 8.016666666666667,
+          "error_ms": 16.66666666666572,
+          "reported_s": 8.342451400007121,
+          "signed_output_lag_ms": 309.11806667378806
+        }
+      ],
+      "false_positive_times_s": [],
+      "tolerance_s": 0.5,
+      "name": "stream-cuda-over-reject-d4",
+      "repeat": 2,
+      "observed_times_s": [
+        1.375,
+        4.7,
+        8.016666666666667
+      ]
+    },
+    {
+      "true_positives": 3,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "matches": [
+        {
+          "expected_s": 1.3666666666666667,
+          "observed_s": 1.3583333333333334,
+          "error_ms": 8.333333333333304,
+          "reported_s": 1.5051129000494257,
+          "signed_output_lag_ms": 138.44623338275898
+        },
+        {
+          "expected_s": 4.7,
+          "observed_s": 4.683333333333334,
+          "error_ms": 16.666666666666607,
+          "reported_s": 4.846808000060264,
+          "signed_output_lag_ms": 146.80800006026385
+        },
+        {
+          "expected_s": 8.033333333333333,
+          "observed_s": 8.025,
+          "error_ms": 8.33333333333286,
+          "reported_s": 8.190245600009803,
+          "signed_output_lag_ms": 156.91226667646953
+        }
+      ],
+      "false_positive_times_s": [],
+      "tolerance_s": 0.5,
+      "name": "stream-cuda-over-sync",
+      "repeat": 2,
+      "observed_times_s": [
+        1.3583333333333334,
+        4.683333333333334,
+        8.025
+      ]
+    }
+  ]
+}

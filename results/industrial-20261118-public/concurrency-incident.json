@@ -1,0 +1,12 @@
+{
+  "environment": "MX150 / ORT 1.26 / local CUDA-cuDNN / YOLO11n 320 static ONNX",
+  "observations": {
+    "cpu_depth4": "0/32 raw mismatches",
+    "cuda_depth1": "0/32 raw mismatches",
+    "cuda_depth4_with_output_copy": "2/32 mismatches, max absolute raw difference 211.67050170898438",
+    "cuda_shared_stream_depth4": "three 64-frame checks passed; raw difference 0"
+  },
+  "interpretation": "Stream-related containment is supported by these controls. Underlying runtime/model/driver root cause is not established.",
+  "repro": "repro/yolo_cuda_concurrency.py --mode broken|fixed",
+  "performance_rule": "Discard initial CUDA streaming results; use only remeasured shared-stream results."
+}

@@ -411,3 +411,25 @@ Files whose contents did not survive their own control are kept with a label
 saying so rather than deleted. A cell marked unmeasurable describes the machine
 that day, and throwing it away would leave the impression that every attempt
 succeeded.
+
+## Clock-driven camera scenarios
+
+The trigger-inspection and streaming-counting suite uses real ORT inference
+with virtual camera clocks, explicit admission outcomes and application
+deadlines. Setup, model export, the 42-run matrix and the output-value check
+are in [docs/industrial-scenarios.md](docs/industrial-scenarios.md). Read the
+[Korean analysis](docs-ko/10-industrial-scenarios.md) and
+[published evidence](results/industrial-20261118-public/) for the measured
+tradeoffs and the configuration that failed correctness checks.
+
+```powershell
+.\.venv-cuda\Scripts\python.exe -m unittest discover -s tests -p test_industrial.py -v
+.\.venv-cuda\Scripts\python.exe tools/verify_industrial_model.py results/yolo-verification
+.\.venv-cuda\Scripts\python.exe tools/run_industrial_scenarios.py --repeat 2 --out-dir results/industrial-rerun
+.\.venv-cuda\Scripts\python.exe tools/analyze_industrial.py results/industrial-rerun
+```
+
+The multi-request YOLO CUDA path explicitly uses a shared CUDA EP stream after
+the default configuration produced wrong box coordinates on this machine.
+Check output values before comparing its speed. This suite is a Python
+orchestration experiment, not a Python/C++ language comparison or a DX-RT run.

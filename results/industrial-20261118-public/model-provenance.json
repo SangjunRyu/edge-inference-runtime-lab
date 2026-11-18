@@ -1,0 +1,10 @@
+{
+  "models/resnet50_224.onnx": {
+    "sha256": "c2104531ae0cefc52bc198c00d6286af5b7406b8cc00ba4c07ed8cbdb7fdf94e",
+    "bytes": 102146373
+  },
+  "models/yolo11n_320.onnx": {
+    "sha256": "686b95e2adfa963c3a460fa193f9dcf1f5fc215bb5dbe94605e6918e1487a8ee",
+    "bytes": 10575970
+  }
+}

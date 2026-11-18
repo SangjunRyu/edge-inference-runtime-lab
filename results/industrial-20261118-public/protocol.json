@@ -1,0 +1,669 @@
+{
+  "environment": {
+    "timestamp_utc": "2026-11-18T09:35:12+00:00",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.13.14",
+    "cpu_name": "Intel(R) Core(TM) i7-8565U CPU @ 1.80GHz",
+    "cpu_count_logical": 8,
+    "gpus_nvidia_smi": [
+      "NVIDIA GeForce MX150, 2048 MiB, 582.66"
+    ],
+    "ram_total_gb": 23.9,
+    "cpu_freq_mhz_at_start": 1792.0,
+    "onnxruntime_version": "1.26.0",
+    "onnxruntime_available_providers": [
+      "TensorrtExecutionProvider",
+      "CUDAExecutionProvider",
+      "CPUExecutionProvider"
+    ],
+    "opencv_version": "5.0.0"
+  },
+  "assets": {
+    "scenario": "controlled surrogate object line crossing",
+    "source_image": "https://raw.githubusercontent.com/ultralytics/ultralytics/main/ultralytics/assets/bus.jpg",
+    "source_image_sha256": "c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63",
+    "model": "YOLO11n COCO FP32 320x320 opset17 raw output [1,84,2100]",
+    "duration_s": 10,
+    "fps": 30,
+    "ground_truth_crossings": 3,
+    "line_x": 320,
+    "objects": 3,
+    "sanity_detected_crossings": 3,
+    "sanity_samples": [
+      {
+        "frame": 0,
+        "detections": 0,
+        "count": 0
+      },
+      {
+        "frame": 5,
+        "detections": 1,
+        "count": 0
+      },
+      {
+        "frame": 10,
+        "detections": 1,
+        "count": 0
+      },
+      {
+        "frame": 15,
+        "detections": 1,
+        "count": 0
+      },
+      {
+        "frame": 20,
+        "detections": 1,
+        "count": 0
+      },
+      {
+        "frame": 25,
+        "detections": 1,
+        "count": 0
+      },
+      {
+        "frame": 30,
+        "detections": 1,
+        "count": 0
+      },
+      {
+        "frame": 35,
+        "detections": 1,
+        "count": 0
+      },
+      {
+        "frame": 40,
+        "detections": 1,
+        "count": 0
+      },
+      {
+        "frame": 45,
+        "detections": 1,
+        "count": 1
+      },
+      {
+        "frame": 50,
+        "detections": 1,
+        "count": 1
+      },
+      {
+        "frame": 55,
+        "detections": 1,
+        "count": 1
+      },
+      {
+        "frame": 60,
+        "detections": 1,
+        "count": 1
+      },
+      {
+        "frame": 65,
+        "detections": 1,
+        "count": 1
+      },
+      {
+        "frame": 70,
+        "detections": 0,
+        "count": 1
+      },
+      {
+        "frame": 75,
+        "detections": 0,
+        "count": 1
+      },
+      {
+        "frame": 80,
+        "detections": 0,
+        "count": 1
+      },
+      {
+        "frame": 85,
+        "detections": 0,
+        "count": 1
+      },
+      {
+        "frame": 90,
+        "detections": 0,
+        "count": 1
+      },
+      {
+        "frame": 95,
+        "detections": 0,
+        "count": 1
+      },
+      {
+        "frame": 100,
+        "detections": 0,
+        "count": 1
+      },
+      {
+        "frame": 105,
+        "detections": 1,
+        "count": 1
+      },
+      {
+        "frame": 110,
+        "detections": 1,
+        "count": 1
+      },
+      {
+        "frame": 115,
+        "detections": 1,
+        "count": 1
+      },
+      {
+        "frame": 120,
+        "detections": 1,
+        "count": 1
+      },
+      {
+        "frame": 125,
+        "detections": 1,
+        "count": 1
+      },
+      {
+        "frame": 130,
+        "detections": 1,
+        "count": 1
+      },
+      {
+        "frame": 135,
+        "detections": 1,
+        "count": 1
+      },
+      {
+        "frame": 140,
+        "detections": 1,
+        "count": 1
+      },
+      {
+        "frame": 145,
+        "detections": 1,
+        "count": 2
+      },
+      {
+        "frame": 150,
+        "detections": 1,
+        "count": 2
+      },
+      {
+        "frame": 155,
+        "detections": 1,
+        "count": 2
+      },
+      {
+        "frame": 160,
+        "detections": 1,
+        "count": 2
+      },
+      {
+        "frame": 165,
+        "detections": 1,
+        "count": 2
+      },
+      {
+        "frame": 170,
+        "detections": 0,
+        "count": 2
+      },
+      {
+        "frame": 175,
+        "detections": 0,
+        "count": 2
+      },
+      {
+        "frame": 180,
+        "detections": 0,
+        "count": 2
+      },
+      {
+        "frame": 185,
+        "detections": 0,
+        "count": 2
+      },
+      {
+        "frame": 190,
+        "detections": 0,
+        "count": 2
+      },
+      {
+        "frame": 195,
+        "detections": 0,
+        "count": 2
+      },
+      {
+        "frame": 200,
+        "detections": 0,
+        "count": 2
+      },
+      {
+        "frame": 205,
+        "detections": 1,
+        "count": 2
+      },
+      {
+        "frame": 210,
+        "detections": 1,
+        "count": 2
+      },
+      {
+        "frame": 215,
+        "detections": 1,
+        "count": 2
+      },
+      {
+        "frame": 220,
+        "detections": 1,
+        "count": 2
+      },
+      {
+        "frame": 225,
+        "detections": 1,
+        "count": 2
+      },
+      {
+        "frame": 230,
+        "detections": 1,
+        "count": 2
+      },
+      {
+        "frame": 235,
+        "detections": 1,
+        "count": 2
+      },
+      {
+        "frame": 240,
+        "detections": 1,
+        "count": 2
+      },
+      {
+        "frame": 245,
+        "detections": 1,
+        "count": 3
+      },
+      {
+        "frame": 250,
+        "detections": 1,
+        "count": 3
+      },
+      {
+        "frame": 255,
+        "detections": 1,
+        "count": 3
+      },
+      {
+        "frame": 260,
+        "detections": 1,
+        "count": 3
+      },
+      {
+        "frame": 265,
+        "detections": 1,
+        "count": 3
+      },
+      {
+        "frame": 270,
+        "detections": 0,
+        "count": 3
+      },
+      {
+        "frame": 275,
+        "detections": 0,
+        "count": 3
+      },
+      {
+        "frame": 280,
+        "detections": 0,
+        "count": 3
+      },
+      {
+        "frame": 285,
+        "detections": 0,
+        "count": 3
+      },
+      {
+        "frame": 290,
+        "detections": 0,
+        "count": 3
+      },
+      {
+        "frame": 295,
+        "detections": 0,
+        "count": 3
+      }
+    ],
+    "limitation": "Same public bus crop repeated on a synthetic background; no industrial product or defect accuracy claim."
+  },
+  "source": "virtual JPEG trigger channels / procedural raw-BGR camera",
+  "implementation": "Python orchestration, real ORT native inference and callbacks",
+  "deadline_note": "Trigger 200ms and stream 100ms are illustrative requirements, not measured factory budgets.",
+  "plan": [
+    {
+      "name": "trigger-cpu-2-sync",
+      "backend": "cpu",
+      "workload": "trigger",
+      "mode": "sync",
+      "duration_s": 6,
+      "cameras": 4,
+      "fps_per_camera": 2,
+      "inflight": 4,
+      "capacity": 4,
+      "policy": "reject-newest",
+      "deadline_ms": 200,
+      "source_fps": 30,
+      "expected_crossings": 3
+    },
+    {
+      "name": "trigger-cpu-2-async",
+      "backend": "cpu",
+      "workload": "trigger",
+      "mode": "async",
+      "duration_s": 6,
+      "cameras": 4,
+      "fps_per_camera": 2,
+      "inflight": 4,
+      "capacity": 4,
+      "policy": "reject-newest",
+      "deadline_ms": 200,
+      "source_fps": 30,
+      "expected_crossings": 3
+    },
+    {
+      "name": "trigger-cpu-12-sync",
+      "backend": "cpu",
+      "workload": "trigger",
+      "mode": "sync",
+      "duration_s": 6,
+      "cameras": 4,
+      "fps_per_camera": 12,
+      "inflight": 4,
+      "capacity": 4,
+      "policy": "reject-newest",
+      "deadline_ms": 200,
+      "source_fps": 30,
+      "expected_crossings": 3
+    },
+    {
+      "name": "trigger-cpu-12-async",
+      "backend": "cpu",
+      "workload": "trigger",
+      "mode": "async",
+      "duration_s": 6,
+      "cameras": 4,
+      "fps_per_camera": 12,
+      "inflight": 4,
+      "capacity": 4,
+      "policy": "reject-newest",
+      "deadline_ms": 200,
+      "source_fps": 30,
+      "expected_crossings": 3
+    },
+    {
+      "name": "stream-cpu-normal-sync",
+      "backend": "cpu",
+      "workload": "stream",
+      "mode": "sync",
+      "duration_s": 10,
+      "cameras": 1,
+      "fps_per_camera": 5,
+      "inflight": 1,
+      "capacity": 8,
+      "policy": "reject-newest",
+      "deadline_ms": 100,
+      "source_fps": 120,
+      "expected_crossings": 3
+    },
+    {
+      "name": "stream-cpu-normal-async",
+      "backend": "cpu",
+      "workload": "stream",
+      "mode": "async",
+      "duration_s": 10,
+      "cameras": 1,
+      "fps_per_camera": 5,
+      "inflight": 4,
+      "capacity": 8,
+      "policy": "reject-newest",
+      "deadline_ms": 100,
+      "source_fps": 120,
+      "expected_crossings": 3
+    },
+    {
+      "name": "stream-cpu-over-reject-d1",
+      "backend": "cpu",
+      "workload": "stream",
+      "mode": "async",
+      "duration_s": 10,
+      "cameras": 1,
+      "fps_per_camera": 120,
+      "inflight": 1,
+      "capacity": 8,
+      "policy": "reject-newest",
+      "deadline_ms": 100,
+      "source_fps": 120,
+      "expected_crossings": 3
+    },
+    {
+      "name": "stream-cpu-over-fresh-d1",
+      "backend": "cpu",
+      "workload": "stream",
+      "mode": "async",
+      "duration_s": 10,
+      "cameras": 1,
+      "fps_per_camera": 120,
+      "inflight": 1,
+      "capacity": 8,
+      "policy": "drop-oldest",
+      "deadline_ms": 100,
+      "source_fps": 120,
+      "expected_crossings": 3
+    },
+    {
+      "name": "stream-cpu-over-fresh-d4",
+      "backend": "cpu",
+      "workload": "stream",
+      "mode": "async",
+      "duration_s": 10,
+      "cameras": 1,
+      "fps_per_camera": 120,
+      "inflight": 4,
+      "capacity": 8,
+      "policy": "drop-oldest",
+      "deadline_ms": 100,
+      "source_fps": 120,
+      "expected_crossings": 3
+    },
+    {
+      "name": "trigger-cuda-2-sync",
+      "backend": "cuda",
+      "workload": "trigger",
+      "mode": "sync",
+      "duration_s": 6,
+      "cameras": 4,
+      "fps_per_camera": 2,
+      "inflight": 4,
+      "capacity": 4,
+      "policy": "reject-newest",
+      "deadline_ms": 200,
+      "source_fps": 30,
+      "expected_crossings": 3
+    },
+    {
+      "name": "trigger-cuda-2-async",
+      "backend": "cuda",
+      "workload": "trigger",
+      "mode": "async",
+      "duration_s": 6,
+      "cameras": 4,
+      "fps_per_camera": 2,
+      "inflight": 4,
+      "capacity": 4,
+      "policy": "reject-newest",
+      "deadline_ms": 200,
+      "source_fps": 30,
+      "expected_crossings": 3
+    },
+    {
+      "name": "trigger-cuda-12-sync",
+      "backend": "cuda",
+      "workload": "trigger",
+      "mode": "sync",
+      "duration_s": 6,
+      "cameras": 4,
+      "fps_per_camera": 12,
+      "inflight": 4,
+      "capacity": 4,
+      "policy": "reject-newest",
+      "deadline_ms": 200,
+      "source_fps": 30,
+      "expected_crossings": 3
+    },
+    {
+      "name": "trigger-cuda-12-async",
+      "backend": "cuda",
+      "workload": "trigger",
+      "mode": "async",
+      "duration_s": 6,
+      "cameras": 4,
+      "fps_per_camera": 12,
+      "inflight": 4,
+      "capacity": 4,
+      "policy": "reject-newest",
+      "deadline_ms": 200,
+      "source_fps": 30,
+      "expected_crossings": 3
+    },
+    {
+      "name": "stream-cuda-normal-sync",
+      "backend": "cuda",
+      "workload": "stream",
+      "mode": "sync",
+      "duration_s": 10,
+      "cameras": 1,
+      "fps_per_camera": 5,
+      "inflight": 1,
+      "capacity": 8,
+      "policy": "reject-newest",
+      "deadline_ms": 100,
+      "source_fps": 120,
+      "expected_crossings": 3
+    },
+    {
+      "name": "stream-cuda-normal-async",
+      "backend": "cuda",
+      "workload": "stream",
+      "mode": "async",
+      "duration_s": 10,
+      "cameras": 1,
+      "fps_per_camera": 5,
+      "inflight": 4,
+      "capacity": 8,
+      "policy": "reject-newest",
+      "deadline_ms": 100,
+      "source_fps": 120,
+      "expected_crossings": 3
+    },
+    {
+      "name": "stream-cuda-over-reject-d1",
+      "backend": "cuda",
+      "workload": "stream",
+      "mode": "async",
+      "duration_s": 10,
+      "cameras": 1,
+      "fps_per_camera": 120,
+      "inflight": 1,
+      "capacity": 8,
+      "policy": "reject-newest",
+      "deadline_ms": 100,
+      "source_fps": 120,
+      "expected_crossings": 3
+    },
+    {
+      "name": "stream-cuda-over-fresh-d1",
+      "backend": "cuda",
+      "workload": "stream",
+      "mode": "async",
+      "duration_s": 10,
+      "cameras": 1,
+      "fps_per_camera": 120,
+      "inflight": 1,
+      "capacity": 8,
+      "policy": "drop-oldest",
+      "deadline_ms": 100,
+      "source_fps": 120,
+      "expected_crossings": 3
+    },
+    {
+      "name": "stream-cuda-over-fresh-d4",
+      "backend": "cuda",
+      "workload": "stream",
+      "mode": "async",
+      "duration_s": 10,
+      "cameras": 1,
+      "fps_per_camera": 120,
+      "inflight": 4,
+      "capacity": 8,
+      "policy": "drop-oldest",
+      "deadline_ms": 100,
+      "source_fps": 120,
+      "expected_crossings": 3
+    },
+    {
+      "name": "stream-cuda-over-sync",
+      "backend": "cuda",
+      "workload": "stream",
+      "mode": "sync",
+      "duration_s": 10,
+      "cameras": 1,
+      "fps_per_camera": 120,
+      "inflight": 1,
+      "capacity": 8,
+      "policy": "reject-newest",
+      "deadline_ms": 100,
+      "source_fps": 120,
+      "expected_crossings": 3
+    },
+    {
+      "name": "stream-cuda-over-reject-d4",
+      "backend": "cuda",
+      "workload": "stream",
+      "mode": "async",
+      "duration_s": 10,
+      "cameras": 1,
+      "fps_per_camera": 120,
+      "inflight": 4,
+      "capacity": 8,
+      "policy": "reject-newest",
+      "deadline_ms": 100,
+      "source_fps": 120,
+      "expected_crossings": 3
+    },
+    {
+      "name": "stream-cuda-over-fresh-q2",
+      "backend": "cuda",
+      "workload": "stream",
+      "mode": "async",
+      "duration_s": 10,
+      "cameras": 1,
+      "fps_per_camera": 120,
+      "inflight": 1,
+      "capacity": 2,
+      "policy": "drop-oldest",
+      "deadline_ms": 100,
+      "source_fps": 120,
+      "expected_crossings": 3
+    }
+  ],
+  "model_sha256": {
+    "resnet50_224.onnx": "c2104531ae0cefc52bc198c00d6286af5b7406b8cc00ba4c07ed8cbdb7fdf94e",
+    "yolo11n_320.onnx": "686b95e2adfa963c3a460fa193f9dcf1f5fc215bb5dbe94605e6918e1487a8ee"
+  },
+  "correction": {
+    "reason": "YOLO CUDA multi-request box-value mismatch discovered in default-stream control",
+    "cuda_yolo_options": {
+      "use_ep_level_unified_stream": "1"
+    },
+    "replaced_runs": 16,
+    "phases": "26 unchanged CPU/trigger runs from initial phase; all 16 CUDA-stream runs remeasured after value verification",
+    "initial_results": "Retained separately; initial CUDA-stream timings excluded from final dataset."
+  }
+}

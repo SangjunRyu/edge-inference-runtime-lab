@@ -1,0 +1,52 @@
+{
+  "experiment_date": "2026-11-18",
+  "validated_runs": 42,
+  "conditions": 21,
+  "normalization": "Local absolute paths only; measured values unchanged.",
+  "files": {
+    "concurrency-incident.json": {
+      "sha256": "c41b08f51f3e8026556f48148b2fa20798506d14e7088123464980719cb22e44",
+      "bytes": 696
+    },
+    "count-event-validation.json": {
+      "sha256": "b5e0db409dce375081d5dee97b6ffeed4962e7a4254d0f2421dec294dc54d6d0",
+      "bytes": 27246
+    },
+    "initial-bad-box-diagnostic.json": {
+      "sha256": "2484ccd25c932a6d165ecdcb4369722e46b5fa4c432491f4133ac97b4dec25c2",
+      "bytes": 5132
+    },
+    "model-provenance.json": {
+      "sha256": "f253a02572b377fa73564141a3aa69fdeae5f39aed30fddcd3fb3a2e758d7442",
+      "bytes": 285
+    },
+    "model-verification.json": {
+      "sha256": "642514d9eb9ecfbc52f2fde9ff3e4c4ad863e82890cbf0f6ba0e2eaff9420eed",
+      "bytes": 108156
+    },
+    "protocol.json": {
+      "sha256": "0e807e1417e75bb25afc0bd4c1836eb0164667c8f44c63fdcb94692d3b202a54",
+      "bytes": 14622
+    },
+    "request-traces.zip": {
+      "sha256": "9865a7c6bbbe43098a6aa840b9597226eafed34a180d092e01232fcb9edc18ca",
+      "bytes": 2933041
+    },
+    "summary.csv": {
+      "sha256": "6927b04b30eadcc2fbcb0563b6f9d7cc82185b39f2dec2795ca79b59ca9aba9c",
+      "bytes": 3771
+    },
+    "summary.json": {
+      "sha256": "88dd4d2f61d05994c17f896c685f79e297cea9434117c0665bb3427c0685927c",
+      "bytes": 11869
+    },
+    "README.md": {
+      "sha256": "06477348ad2547f77feca6b843cf511e9e56c8e8c2e692ba98e5699f39df8a89",
+      "bytes": 3680
+    },
+    ".gitattributes": {
+      "sha256": "705fd4d6451a31d36b3df7de96f83f30ac976c9b4a6d1e51671d8e2f33e2d0da",
+      "bytes": 8
+    }
+  }
+}
