@@ -5,21 +5,21 @@
 //
 // Structure follows the Python async runner, which follows DX-APP's:
 //
-//   read_worker -> [read_q] -> preprocess_worker --start_async--> (OV callback)
+//   read_worker -> [read_q] -> preprocess_worker --start_async--> (native callback)
 //                                                                      |
 //              main <- [result_q] <- postprocess_worker <--------------+ [output_q]
 //
 // Submission and collection are separate, which is what makes this
 // asynchronous rather than merely threaded: the preprocess worker calls
-// `ov_infer_request_start_async` and moves straight to the next frame, and the
-// completion callback -- running on an OpenVINO thread, not one of ours --
+// the selected backend's start_async and moves straight to the next frame, and the
+// completion callback -- running on a runtime thread, not one of ours --
 // hands the slot to a different worker. A single worker that submitted and
 // then waited would block on collection and overlap nothing.
 //
 // In-flight depth is the number of infer requests, because one request runs
 // one inference at a time. Each request owns its input and output buffers, and
 // a slot is not reused until postprocess has read its output -- which is what
-// keeps the input buffer alive for as long as OpenVINO is reading it.
+// keeps the input buffer alive for as long as the runtime is reading it.
 
 #include <algorithm>
 #include <atomic>
@@ -29,13 +29,14 @@
 #include <cstdint>
 #include <cstring>
 #include <fstream>
+#include <filesystem>
 #include <memory>
 #include <string>
 #include <thread>
 #include <vector>
 
 #include "harness.hpp"
-#include "ov_backend.hpp"
+#include "runtime_backend.hpp"
 #include "pipeline.hpp"
 #include "postprocess.hpp"
 #include "reorder.hpp"
@@ -57,7 +58,8 @@ struct Args {
     long long frames = 40000;
     double duration_s = 10.0, warmup_s = 2.0, cooldown = 0.0;
     int warmup = 0, top_k = 5, inflight = 4, queue_size = 4, repeat = 1;
-    int reorder_cap = 0, stall_every = 0, post_workers = 1;
+    int reorder_cap = 0, stall_every = 0, post_workers = 1, intra_threads = 4;
+    std::string profile;
     double stall_ms = 40.0;
     std::string dump_topk;
     bool reorder = true, fused = false;
@@ -65,12 +67,12 @@ struct Args {
 
 [[noreturn]] void usage(const char* argv0) {
     std::fprintf(stderr,
-        "usage: %s --model M.onnx [--device CPU|GPU|NPU] [--source clip.mp4]\n"
+        "usage: %s --model M.onnx [--device CPU|CUDA (ORT) or CPU|GPU|NPU (OpenVINO)] [--source clip.mp4]\n"
         "          [--inflight N] [--queue-size N] [--reorder on|off]\n"
         "          [--reorder-cap N] [--frames N] [--duration-s S]\n"
         "          [--warmup-s S] [--top-k K] [--repeat N] [--cooldown S]\n"
         "          [--post-workers N] [--stall-every N] [--stall-ms M]\n"
-        "          [--dump-topk FILE] [--fused] [--tag T] [--out-dir D]\n", argv0);
+        "          [--dump-topk FILE] [--fused] [--tag T] [--out-dir D] [--intra-threads N] [--profile PREFIX]\n", argv0);
     std::exit(2);
 }
 
@@ -83,7 +85,10 @@ Args parse(int argc, char** argv) {
             return argv[++i];
         };
         if (k == "--model") a.model = val();
-        else if (k == "--device") a.device = val();
+        else if (k == "--device" || k == "--backend") { a.device = val();
+            std::transform(a.device.begin(), a.device.end(), a.device.begin(), [](unsigned char c) { return static_cast<char>(std::toupper(c)); }); }
+        else if (k == "--intra-threads") a.intra_threads = std::stoi(val());
+        else if (k == "--profile") a.profile = val();
         else if (k == "--source") a.source = val();
         else if (k == "--inflight") a.inflight = std::stoi(val());
         else if (k == "--queue-size") a.queue_size = std::stoi(val());
@@ -106,6 +111,8 @@ Args parse(int argc, char** argv) {
         else usage(argv[0]);
     }
     if (a.model.empty()) usage(argv[0]);
+    if (a.inflight < 1 || a.queue_size < 1 || a.post_workers < 1)
+        throw std::invalid_argument("inflight, queue-size and post-workers must be positive");
     return a;
 }
 
@@ -141,12 +148,12 @@ struct Slot {
     // ov_infer_request_set_callback takes a pointer; passing the address of a
     // stack local left it dangling as soon as the constructor loop advanced,
     // which worked by accident with one slot and hung with two.
-    ov_callback_t cb{};
+    CompletionCallback cb{};
 };
 
 class AsyncPipeline {
 public:
-    AsyncPipeline(const OvBackend& backend, const Args& args)
+    AsyncPipeline(const RuntimeBackend& backend, const Args& args)
         : backend_(backend), args_(args),
           read_q_(static_cast<size_t>(args.queue_size)),
           free_q_(static_cast<size_t>(args.inflight)),
@@ -170,12 +177,10 @@ public:
             s.output.assign(backend.output_elements(), 0.0f);
             s.input_tensor = backend.wrap_input(s.input.data());
             s.owner = this;
-            check(ov_infer_request_set_input_tensor(s.req.get(), s.input_tensor.get()),
-                  "ov_infer_request_set_input_tensor");
+            bind_input(s.req.get(), s.input_tensor.get());
             s.cb.callback_func = &AsyncPipeline::on_complete;
             s.cb.args = &s;
-            check(ov_infer_request_set_callback(s.req.get(), &s.cb),
-                  "ov_infer_request_set_callback");
+            set_callback(s.req.get(), &s.cb);
             free_q_.push(i);
         }
     }
@@ -185,7 +190,7 @@ public:
 
 private:
     /// Runs on an OpenVINO thread. Does the least possible and never blocks.
-    static void OPENVINO_C_API_CALLBACK on_complete(void* args) {
+    static void EIRL_CALLBACK on_complete(void* args) {
         Slot* s = static_cast<Slot*>(args);
         const double now = now_s();
         s->inference = now - s->t_submit;
@@ -197,7 +202,7 @@ private:
     void preprocess_worker();
     void postprocess_worker();
 
-    const OvBackend& backend_;
+    const RuntimeBackend& backend_;
     const Args& args_;
     SafeQueue<Slot*> read_q_;   // carries a slot already holding a frame
     SafeQueue<int> free_q_;
@@ -207,6 +212,11 @@ private:
     std::atomic<long long> submitted_{0};
     std::atomic<int> posts_running_{0};
     std::string error_;
+    std::mutex error_mutex_;
+    void fail(const std::string& error) {
+        { std::lock_guard<std::mutex> lock(error_mutex_); if (error_.empty()) error_ = error; }
+        free_q_.close(); read_q_.close(); output_q_.close(); result_q_.close();
+    }
 };
 
 void AsyncPipeline::read_worker(Source& source) {
@@ -246,7 +256,7 @@ void AsyncPipeline::read_worker(Source& source) {
             if (!read_q_.push(&s)) break;
         }
     } catch (const std::exception& e) {
-        error_ = std::string("read_worker: ") + e.what();
+        fail(std::string("read_worker: ") + e.what());
     }
     read_q_.close();
 }
@@ -274,11 +284,10 @@ void AsyncPipeline::preprocess_worker() {
             // is actually reserved.
             s->t_submit = now_s();
             submitted_.fetch_add(1);
-            check(ov_infer_request_start_async(s->req.get()),
-                  "ov_infer_request_start_async");
+            backend_.start_async(s->req.get());
         }
     } catch (const std::exception& e) {
-        error_ = std::string("preprocess_worker: ") + e.what();
+        fail(std::string("preprocess_worker: ") + e.what());
     }
     // Wait for every outstanding completion before closing: submission returns
     // immediately, so at this point several frames are still inside the
@@ -287,7 +296,8 @@ void AsyncPipeline::preprocess_worker() {
     // lost 4 frames of 200 to exactly that, with the count almost right and
     // nothing looking wrong.
     for (auto& s : slots_) {
-        ov_infer_request_wait(s.req.get());
+        try { wait_request(s.req.get()); }
+        catch (const std::exception& e) { fail(std::string("wait: ") + e.what()); }
     }
     output_q_.close();
 }
@@ -301,21 +311,15 @@ void AsyncPipeline::postprocess_worker() {
             s->q_output = now_s() - s->t_enq_output;
 
             const double t = now_s();
-            // The completion callback runs before the request leaves its
+            // On OpenVINO the completion callback runs before the request leaves its
             // running state, so reading the output straight from it returns
             // REQUEST_BUSY (-8). `wait` returns immediately here -- the work is
             // already done -- and transitions the request to idle. It is the
             // collect half of the submit/collect split made explicit by the
-            // API rather than by our structure.
-            check(ov_infer_request_wait(s->req.get()), "ov_infer_request_wait");
-            ov_tensor_t* raw = nullptr;
-            check(ov_infer_request_get_output_tensor(s->req.get(), &raw),
-                  "ov_infer_request_get_output_tensor");
-            TensorHandle out(raw);
-            void* data = nullptr;
-            check(ov_tensor_data(out.get(), &data), "ov_tensor_data");
-            s->topk = postprocess(static_cast<const float*>(data),
-                                  s->output.size(), args_.top_k);
+            // API rather than by our structure. ORT's wait ensures its callback
+            // has published the preallocated output before it is read here.
+            wait_request(s->req.get());
+            s->topk = request_topk(s->req.get(), s->output.size(), args_.top_k);
             if (args_.stall_every > 0 &&
                 s->index % static_cast<uint64_t>(args_.stall_every) == 0) {
                 // Make one frame deliberately heavier so a lighter successor
@@ -330,7 +334,7 @@ void AsyncPipeline::postprocess_worker() {
             if (!result_q_.push(s)) break;
         }
     } catch (const std::exception& e) {
-        error_ = std::string("postprocess_worker: ") + e.what();
+        fail(std::string("postprocess_worker: ") + e.what());
     }
     // Several of these may be running; the queue closes when the last leaves,
     // or the consumer would stop while another worker still has frames.
@@ -409,9 +413,10 @@ json AsyncPipeline::run(Source& source, Recorder& rec, json& order_out,
 }  // namespace
 
 int main(int argc, char** argv) {
-    const Args a = parse(argc, argv);
     try {
-        OvBackend backend(a.model, a.device);
+        const Args a = parse(argc, argv);
+        std::filesystem::create_directories(a.out_dir);
+        RuntimeBackend backend(a.model, a.device, a.intra_threads, a.profile);
         std::printf("model input %dx%d  device=%s  inflight=%d queue=%d "
                     "post-workers=%d reorder=%s\n",
                     backend.height(), backend.width(), a.device.c_str(),
@@ -437,8 +442,8 @@ int main(int argc, char** argv) {
 
             char title[256];
             std::snprintf(title, sizeof(title),
-                          "%s | openvino/%s | ASYNC inflight=%d | run %d/%d",
-                          stem(a.model).c_str(), a.device.c_str(), a.inflight,
+                          "%s | %s/%s | ASYNC inflight=%d | run %d/%d",
+                          stem(a.model).c_str(), runtime_name(), a.device.c_str(), a.inflight,
                           i + 1, repeats);
             rec.print_summary(title);
             std::printf(" order         emitted %llu  violations %llu  %s\n",
@@ -473,8 +478,8 @@ int main(int argc, char** argv) {
 
         json meta = {
             {"tag", a.tag}, {"mode", "async"}, {"impl", "cpp"},
-            {"args", {{"model", a.model}, {"backend", "openvino"},
-                      {"ov_device", a.device}, {"source", a.source},
+            {"args", {{"model", a.model}, {"backend", runtime_backend_arg(a.device)},
+                      {"device", a.device}, {"ov_device", backend.describe()["openvino_device"]}, {"source", a.source},
                       {"frames", a.frames}, {"duration_s", a.duration_s},
                       {"warmup", a.warmup}, {"warmup_s", a.warmup_s},
                       {"top_k", a.top_k}, {"inflight", a.inflight},
@@ -484,23 +489,27 @@ int main(int argc, char** argv) {
                       {"stall_every", a.stall_every},
                       {"stall_ms", a.stall_ms},
                       {"tag", a.tag}, {"out_dir", a.out_dir},
-                      {"intra_threads", nullptr}}},
+                      {"intra_threads", runtime_intra_threads(a.intra_threads)}}},
             {"backend", backend.describe()},
             {"sources", sources},
             {"model_input_hw", json::array({backend.height(), backend.width()})},
             {"idle_gate", {{"checked", false}, {"reason", "not implemented in cpp"}}},
-            {"env", {{"impl", "cpp"}}},
+            {"env", {{"impl", "cpp"}, {"opencv_version", CV_VERSION}}},
         };
 
         const std::string src_slug = a.source.empty() ? "synthetic" : stem(a.source);
         const std::string path = a.out_dir + "/" + a.tag + "__cppasync" +
-                                 std::to_string(a.inflight) + "__openvino-" +
-                                 lower(a.device) + "__" + stem(a.model) + "__" +
+                                 std::to_string(a.inflight) + "__" +
+                                 runtime_slug(a.device) + "__" + stem(a.model) + "__" +
                                  src_slug + ".json";
         std::ofstream f(path);
         if (!f) { std::fprintf(stderr, "cannot write %s\n", path.c_str()); return 1; }
         f << json{{"meta", meta}, {"runs", runs}}.dump(2) << "\n";
         std::printf("\nsaved -> %s\n", path.c_str());
+        for (const auto& run : runs) {
+            if (!run["errors"].empty() || run["order"]["order_violations"].get<uint64_t>() ||
+                run["submitted"].get<long long>() != run["order"]["emitted"].get<long long>()) return 1;
+        }
         return 0;
     } catch (const std::exception& e) {
         std::fprintf(stderr, "error: %s\n", e.what());

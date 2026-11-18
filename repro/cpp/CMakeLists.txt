@@ -17,6 +17,7 @@ target_include_directories(eirl_repro INTERFACE
 find_package(Threads REQUIRED)
 
 # --- need OpenVINO and a model -------------------------------------------
+if(TARGET eirl_base)
 foreach(name 01_dangling_callback 02_callback_blocks_queue 03_request_busy)
   add_executable(repro_${name} ${name}.cpp)
   target_link_libraries(repro_${name} PRIVATE eirl_base eirl_repro Threads::Threads)
@@ -26,6 +27,8 @@ foreach(name 01_dangling_callback 02_callback_blocks_queue 03_request_busy)
     target_compile_options(repro_${name} PRIVATE -Wall -Wextra)
   endif()
 endforeach()
+
+endif()
 
 # --- need nothing ---------------------------------------------------------
 foreach(name 04_sentinel_overtakes 05_reorder_off 06_inflight_overcount
@@ -42,12 +45,15 @@ endforeach()
 # The OpenVINO-linked ones need the runtime beside them, for the same reason
 # the runners do: the DLLs are not on PATH and the Windows loader names only
 # the first library it cannot find.
+if(TARGET eirl_base)
 foreach(name 01_dangling_callback 02_callback_blocks_queue 03_request_busy)
   add_custom_command(TARGET repro_${name} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
             "${OV_ROOT}/libs" "$<TARGET_FILE_DIR:repro_${name}>"
     COMMENT "copying the OpenVINO runtime next to repro_${name}")
 endforeach()
+
+endif()
 
 # --- needs the scheduler, but still no accelerator -------------------------
 # Links cpp/src/scheduler.cpp rather than restating the pipeline, so the

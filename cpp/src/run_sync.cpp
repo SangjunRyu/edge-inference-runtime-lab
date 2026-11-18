@@ -16,13 +16,14 @@
 #include <chrono>
 #include <cstdio>
 #include <fstream>
+#include <filesystem>
 #include <memory>
 #include <string>
 #include <thread>
 #include <vector>
 
 #include "harness.hpp"
-#include "ov_backend.hpp"
+#include "runtime_backend.hpp"
 #include "pipeline.hpp"
 #include "sources.hpp"
 
@@ -35,17 +36,18 @@ struct Args {
     std::string model, device = "CPU", source, tag = "cpp", out_dir = "results";
     long long frames = 300;
     double duration_s = 0.0, warmup_s = 0.0, cooldown = 0.0;
-    int warmup = 20, top_k = 5, repeat = 1;
+    int warmup = 20, top_k = 5, repeat = 1, intra_threads = 4;
+    std::string profile;
     std::string dump_topk;
     bool fused = false, reuse_tensor = false;
 };
 
 [[noreturn]] void usage(const char* argv0) {
     std::fprintf(stderr,
-        "usage: %s --model M.onnx [--device CPU|GPU|NPU] [--source clip.mp4]\n"
+        "usage: %s --model M.onnx [--device CPU|CUDA (ORT) or CPU|GPU|NPU (OpenVINO)] [--source clip.mp4]\n"
         "          [--frames N] [--duration-s S] [--warmup N] [--warmup-s S]\n"
         "          [--top-k K] [--repeat N] [--cooldown S] [--fused]\n"
-        "          [--tag T] [--out-dir D]\n", argv0);
+        "          [--tag T] [--out-dir D] [--intra-threads N] [--profile PREFIX]\n", argv0);
     std::exit(2);
 }
 
@@ -58,7 +60,10 @@ Args parse(int argc, char** argv) {
             return argv[++i];
         };
         if (k == "--model") a.model = val();
-        else if (k == "--device") a.device = val();
+        else if (k == "--device" || k == "--backend") { a.device = val();
+            std::transform(a.device.begin(), a.device.end(), a.device.begin(), [](unsigned char c) { return static_cast<char>(std::toupper(c)); }); }
+        else if (k == "--intra-threads") a.intra_threads = std::stoi(val());
+        else if (k == "--profile") a.profile = val();
         else if (k == "--source") a.source = val();
         else if (k == "--frames") a.frames = std::stoll(val());
         else if (k == "--duration-s") a.duration_s = std::stod(val());
@@ -98,7 +103,7 @@ struct RunOut {
     int emitted = 0;
 };
 
-RunOut measure_once(const OvBackend& backend, const Args& a,
+RunOut measure_once(const RuntimeBackend& backend, const Args& a,
                     std::ofstream* dump) {
     auto source = make_source(a.source, a.frames);
     auto rec = std::make_unique<Recorder>(
@@ -115,8 +120,7 @@ RunOut measure_once(const OvBackend& backend, const Args& a,
     TensorHandle bound;
     if (a.reuse_tensor) {
         bound = backend.wrap_input(input.data());
-        check(ov_infer_request_set_input_tensor(req.get(), bound.get()),
-              "ov_infer_request_set_input_tensor");
+        bind_input(req.get(), bound.get());
     }
     std::vector<float> logits(backend.output_elements());
     cv::Mat frame;
@@ -173,17 +177,17 @@ RunOut measure_once(const OvBackend& backend, const Args& a,
 }  // namespace
 
 int main(int argc, char** argv) {
-    const Args a = parse(argc, argv);
-
     try {
-        const auto devices = available_devices();
+        const Args a = parse(argc, argv);
+        std::filesystem::create_directories(a.out_dir);
+        const auto devices = available_runtime_devices();
         std::printf("available devices:");
         for (const auto& d : devices) std::printf(" %s", d.c_str());
         std::printf("\n");
 
-        OvBackend backend(a.model, a.device);
-        std::printf("model input %dx%d  device=%s  engine=openvino-c-api\n",
-                    backend.height(), backend.width(), a.device.c_str());
+        RuntimeBackend backend(a.model, a.device, a.intra_threads, a.profile);
+        std::printf("model input %dx%d  device=%s  engine=%s\n",
+                    backend.height(), backend.width(), a.device.c_str(), runtime_name());
 
         json runs = json::array(), sources = json::array();
         const int repeats = std::max(1, a.repeat);
@@ -201,8 +205,8 @@ int main(int argc, char** argv) {
 
             char title[256];
             std::snprintf(title, sizeof(title),
-                          "%s | openvino/%s | source=%s | run %d/%d",
-                          stem(a.model).c_str(), a.device.c_str(),
+                          "%s | %s/%s | source=%s | run %d/%d",
+                          stem(a.model).c_str(), runtime_name(), a.device.c_str(),
                           r.source["kind"].get<std::string>().c_str(),
                           i + 1, repeats);
             r.rec->print_summary(title);
@@ -226,25 +230,25 @@ int main(int argc, char** argv) {
 
         json meta = {
             {"tag", a.tag}, {"mode", "sync"}, {"impl", "cpp"},
-            {"args", {{"model", a.model}, {"backend", "openvino"},
-                      {"ov_device", a.device}, {"source", a.source},
+            {"args", {{"model", a.model}, {"backend", runtime_backend_arg(a.device)},
+                      {"device", a.device}, {"ov_device", backend.describe()["openvino_device"]}, {"source", a.source},
                       {"frames", a.frames}, {"duration_s", a.duration_s},
                       {"warmup", a.warmup}, {"warmup_s", a.warmup_s},
                       {"top_k", a.top_k}, {"repeat", a.repeat},
                       {"cooldown", a.cooldown}, {"fused", a.fused},
                       {"reuse_tensor", a.reuse_tensor},
                       {"tag", a.tag}, {"out_dir", a.out_dir},
-                      {"intra_threads", nullptr}}},
+                      {"intra_threads", runtime_intra_threads(a.intra_threads)}}},
             {"backend", backend.describe()},
             {"sources", sources},
             {"model_input_hw", json::array({backend.height(), backend.width()})},
             {"idle_gate", {{"checked", false}, {"reason", "not implemented in cpp"}}},
-            {"env", {{"impl", "cpp"}, {"openvino_devices", devices}}},
+            {"env", {{"impl", "cpp"}, {"available_runtime_devices", devices}, {"opencv_version", CV_VERSION}}},
         };
 
         const std::string src_slug = a.source.empty() ? "synthetic" : stem(a.source);
-        const std::string path = a.out_dir + "/" + a.tag + "__cppsync__openvino-"
-                                 + lower(a.device) + "__" + stem(a.model) + "__"
+        const std::string path = a.out_dir + "/" + a.tag + "__cppsync__"
+                                 + runtime_slug(a.device) + "__" + stem(a.model) + "__"
                                  + src_slug + ".json";
         std::ofstream f(path);
         if (!f) { std::fprintf(stderr, "cannot write %s\n", path.c_str()); return 1; }

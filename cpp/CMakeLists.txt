@@ -21,18 +21,18 @@ endif()
 # have similar version numbers.
 set(OV_ROOT "${CMAKE_SOURCE_DIR}/../.venv/Lib/site-packages/openvino"
     CACHE PATH "OpenVINO runtime root (the pip package ships the C SDK)")
-if(NOT EXISTS "${OV_ROOT}/include/openvino/c/openvino.h")
-  message(FATAL_ERROR
-    "OpenVINO C headers not found under OV_ROOT=${OV_ROOT}\n"
-    "Point -DOV_ROOT at the directory holding include/ and libs/, e.g. the\n"
-    "openvino package inside the venv used for the Python results.")
+option(EIRL_BUILD_OPENVINO "Build the original OpenVINO targets" ON)
+option(EIRL_BUILD_ORT "Build ONNX Runtime CPU/CUDA targets" OFF)
+if(EIRL_BUILD_OPENVINO)
+  if(NOT EXISTS "${OV_ROOT}/include/openvino/c/openvino.h")
+    message(FATAL_ERROR "OpenVINO headers missing. Set OV_ROOT, or configure -DEIRL_BUILD_OPENVINO=OFF -DEIRL_BUILD_ORT=ON")
+  endif()
+  add_library(openvino_c SHARED IMPORTED)
+  set_target_properties(openvino_c PROPERTIES
+    IMPORTED_LOCATION "${OV_ROOT}/libs/openvino_c.dll"
+    IMPORTED_IMPLIB "${OV_ROOT}/libs/openvino_c.lib"
+    INTERFACE_INCLUDE_DIRECTORIES "${OV_ROOT}/include")
 endif()
-
-add_library(openvino_c SHARED IMPORTED)
-set_target_properties(openvino_c PROPERTIES
-  IMPORTED_LOCATION "${OV_ROOT}/libs/openvino_c.dll"
-  IMPORTED_IMPLIB   "${OV_ROOT}/libs/openvino_c.lib"
-  INTERFACE_INCLUDE_DIRECTORIES "${OV_ROOT}/include")
 
 # --- nlohmann/json --------------------------------------------------------
 # Vendored as a single header so the build has one less thing to install, and
@@ -44,6 +44,7 @@ target_include_directories(eirl_json INTERFACE third_party)
 # Kept separate on purpose: it lets the phase 0 probe exercise the backend,
 # the harness and the top-k path before OpenCV is installed, which is what
 # makes "fail fast on the toolchain" real rather than aspirational.
+if(EIRL_BUILD_OPENVINO)
 add_library(eirl_base STATIC
   src/harness.cpp
   src/ov_backend.cpp
@@ -59,6 +60,7 @@ endif()
 
 add_executable(probe src/probe.cpp)
 target_link_libraries(probe PRIVATE eirl_base)
+endif()
 
 # --- W5-1: ownership, with nothing else linked ---------------------------
 #
@@ -122,7 +124,7 @@ endif()
 
 # --- The part that needs OpenCV ------------------------------------------
 find_package(OpenCV QUIET COMPONENTS core imgproc videoio)
-if(OpenCV_FOUND)
+if(OpenCV_FOUND AND EIRL_BUILD_OPENVINO)
   add_library(eirl_core STATIC src/pipeline.cpp src/sources.cpp)
   target_link_libraries(eirl_core PUBLIC eirl_base ${OpenCV_LIBS})
   target_include_directories(eirl_core PUBLIC ${OpenCV_INCLUDE_DIRS})
@@ -139,10 +141,61 @@ if(OpenCV_FOUND)
   target_link_libraries(run_async_cpp PRIVATE eirl_core)
   find_package(Threads REQUIRED)
   target_link_libraries(run_async_cpp PRIVATE Threads::Threads)
-else()
+elseif(NOT OpenCV_FOUND AND EIRL_BUILD_OPENVINO)
   message(WARNING
     "OpenCV not found -- building 'probe' only.\n"
     "  MSYS2: pacman -S mingw-w64-ucrt-x86_64-opencv")
+endif()
+
+# ONNX Runtime uses the same source/harness/preprocessing as the OV targets.
+if(EIRL_BUILD_ORT)
+  if(NOT WIN32)
+    message(FATAL_ERROR "ORT SDK/runtime deployment currently targets Windows x64")
+  endif()
+  if(NOT OpenCV_FOUND)
+    message(FATAL_ERROR "ORT video runners require the OpenCV C++ SDK; set OpenCV_DIR")
+  endif()
+  set(ORT_ROOT "${CMAKE_SOURCE_DIR}/build/deps/onnxruntime-win-x64-1.26.0" CACHE PATH "ONNX Runtime C/C++ SDK")
+  set(ORT_RUNTIME_DIR "${CMAKE_SOURCE_DIR}/../.venv-cuda/Lib/site-packages/onnxruntime/capi" CACHE PATH "Matching CPU or CUDA ORT DLL directory")
+  set(NVIDIA_ROOT "${CMAKE_SOURCE_DIR}/../.venv-cuda/Lib/site-packages/nvidia" CACHE PATH "Optional pip CUDA/cuDNN packages")
+  if(NOT EXISTS "${ORT_ROOT}/include/onnxruntime_cxx_api.h" OR NOT EXISTS "${ORT_RUNTIME_DIR}/onnxruntime.dll")
+    message(FATAL_ERROR "Set ORT_ROOT to the SDK and ORT_RUNTIME_DIR to matching runtime DLLs")
+  endif()
+  add_library(onnxruntime SHARED IMPORTED)
+  set_target_properties(onnxruntime PROPERTIES
+    IMPORTED_LOCATION "${ORT_RUNTIME_DIR}/onnxruntime.dll"
+    IMPORTED_IMPLIB "${ORT_ROOT}/lib/onnxruntime.lib"
+    INTERFACE_INCLUDE_DIRECTORIES "${ORT_ROOT}/include")
+  add_library(eirl_ort STATIC src/ort_backend.cpp src/harness.cpp src/postprocess.cpp src/pipeline.cpp src/sources.cpp)
+  target_include_directories(eirl_ort PUBLIC include ${OpenCV_INCLUDE_DIRS})
+  target_compile_definitions(eirl_ort PUBLIC EIRL_USE_ORT PRIVATE EIRL_NVIDIA_ROOT="${NVIDIA_ROOT}")
+  target_link_libraries(eirl_ort PUBLIC onnxruntime eirl_json Threads::Threads ${OpenCV_LIBS})
+  if(MSVC)
+    target_compile_options(eirl_ort PRIVATE /W4 /utf-8)
+  else()
+    target_compile_options(eirl_ort PRIVATE -Wall -Wextra)
+  endif()
+  add_executable(run_sync_ort src/run_sync.cpp)
+  add_executable(run_async_ort src/run_async.cpp)
+  target_link_libraries(run_sync_ort PRIVATE eirl_ort)
+  target_link_libraries(run_async_ort PRIVATE eirl_ort)
+  file(GLOB ORT_DLLS "${ORT_RUNTIME_DIR}/*.dll")
+  foreach(tgt run_sync_ort run_async_ort)
+    foreach(dll IN LISTS ORT_DLLS)
+      add_custom_command(TARGET ${tgt} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${dll}" "$<TARGET_FILE_DIR:${tgt}>")
+    endforeach()
+    # Copy imported OpenCV DLLs plus its dynamically loaded FFmpeg plugin.
+    foreach(cvtarget IN LISTS OpenCV_LIBS)
+      if(TARGET ${cvtarget})
+        add_custom_command(TARGET ${tgt} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<TARGET_FILE:${cvtarget}>" "$<TARGET_FILE_DIR:${tgt}>")
+      endif()
+    endforeach()
+    get_filename_component(OPENCV_LIB_PARENT "${OpenCV_DIR}" DIRECTORY)
+    file(GLOB_RECURSE OPENCV_FFMPEG "${OpenCV_DIR}/bin/opencv_videoio_ffmpeg*.dll" "${OPENCV_LIB_PARENT}/bin/opencv_videoio_ffmpeg*.dll")
+    foreach(dll IN LISTS OPENCV_FFMPEG)
+      add_custom_command(TARGET ${tgt} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${dll}" "$<TARGET_FILE_DIR:${tgt}>")
+    endforeach()
+  endforeach()
 endif()
 
 # The OpenVINO DLLs are not on PATH; put them beside the executables so a build
