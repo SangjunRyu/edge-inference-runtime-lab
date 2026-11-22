@@ -1,0 +1,87 @@
+{
+  "model_sha256": "973ec14cb821e743cac8f1d351cfbdd4dec30244e608438b17de5a01a110ac07",
+  "source": {
+    "kind": "image_list",
+    "path": "C:\\Windows\\System32\\edge-inference-runtime-lab\\data\\imagenette-320-subset\\manifest.json",
+    "mode": "files",
+    "count": 500,
+    "manifest_sha256": "f0f8809bcd26f482c64a228ca453c496e214ea3a9469aa809d97fe5c2b53b29a",
+    "input_order_sha256": "6488a145f72c2e6d74dae6dbad50db9c24142739748ed442c6e6f1a1b900f718",
+    "restarts": 0,
+    "read_boundary": "file_read_and_decode",
+    "preload_s_excluded": 6.000000212225132e-07,
+    "preloaded_bytes": 0,
+    "file_cache": "OS-managed; checksum validation reads files before timing"
+  },
+  "order": {
+    "emitted": 500,
+    "order_violations": 0,
+    "first_violation_at_frame": null,
+    "in_submission_order": true
+  },
+  "backend": {
+    "requested_backend": "cuda",
+    "openvino_device": null,
+    "actual_providers": [
+      "CUDAExecutionProvider",
+      "CPUExecutionProvider"
+    ],
+    "fell_back_to_cpu": false,
+    "input_shape": [
+      "1",
+      "3",
+      "224",
+      "224"
+    ],
+    "provider_options": {
+      "CUDAExecutionProvider": {
+        "device_id": "0",
+        "has_user_compute_stream": "0",
+        "cudnn_conv1d_pad_to_nc1d": "0",
+        "user_compute_stream": "0",
+        "gpu_external_alloc": "0",
+        "gpu_mem_limit": "18446744073709551615",
+        "enable_cuda_graph": "0",
+        "gpu_external_free": "0",
+        "gpu_external_empty_cache": "0",
+        "arena_extend_strategy": "kNextPowerOfTwo",
+        "cudnn_conv_algo_search": "EXHAUSTIVE",
+        "do_copy_in_default_stream": "1",
+        "enable_cudnn": "1",
+        "cudnn_conv_use_max_workspace": "1",
+        "external_data_loader_chunk_bytes": "2097152",
+        "min_num_runs_before_cuda_graph_capture": "2",
+        "tunable_op_enable": "0",
+        "tunable_op_tuning_enable": "0",
+        "tunable_op_max_tuning_duration_ms": "0",
+        "prefer_nhwc": "0",
+        "use_ep_level_unified_stream": "0",
+        "use_tf32": "1",
+        "sdpa_kernel": "0",
+        "fuse_conv_bias": "0",
+        "external_data_loader_reading_threads": "4",
+        "external_data_loader_pinned_memory_bytes": "33554432"
+      },
+      "CPUExecutionProvider": {}
+    }
+  },
+  "env": {
+    "timestamp_utc": "2026-11-22T12:20:07+00:00",
+    "platform": "Windows-10-10.0.19044-SP0",
+    "python": "3.14.10",
+    "cpu_name": "Intel(R) Core(TM) i5-14400F",
+    "cpu_count_logical": 16,
+    "gpus_nvidia_smi": [
+      "NVIDIA GeForce RTX 4060 Ti, 8188 MiB, 610.88"
+    ],
+    "ram_total_gb": 31.8,
+    "cpu_freq_mhz_at_start": 2500.0,
+    "onnxruntime_version": "1.32.0",
+    "onnxruntime_available_providers": [
+      "TensorrtExecutionProvider",
+      "CUDAExecutionProvider",
+      "CPUExecutionProvider"
+    ],
+    "opencv_version": "5.1.0"
+  }
+}

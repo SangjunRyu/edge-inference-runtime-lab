@@ -433,6 +433,9 @@ image order and preprocessing in sync and async execution. See the
 & .\.venv-cuda\Scripts\python.exe -m bench.classification.compare_images
 ```
 
+See the [RTX 4060 Ti classification and in-flight report](docs-ko/rtx4060ti-inflight-results.md)
+for the real-image depth sweep, raw NVML evidence and comparison with the MX150 runs.
+
 ## Licence note
 
 No DEEPX source is vendored or redistributed here. `dx_rt` is licensed to
