@@ -127,37 +127,47 @@ class AsyncPipeline:
         self.stalls: list[str] = []
 
     # -- workers ---------------------------------------------------------
+    def _read_records(self, source):
+        frames = source.frames()
+        idx = 0
+        deadline = (time.perf_counter() + self.args.duration_s
+                    if getattr(self.args, "duration_s", 0) else None)
+        while True:
+            # A fixed frame count measures for a different length of time
+            # at every throughput, so the fast points get less thermal
+            # exposure than the slow ones and the comparison is unfair.
+            # A deadline equalises that. (MLPerf's loadgen does the same:
+            # replay the samples, but require a minimum duration.)
+            if deadline is not None and time.perf_counter() >= deadline:
+                break
+            # Time the pull, not the loop body: the generator decodes
+            # lazily, so timing anything after the frame is in hand
+            # measures nothing and reports read as 0.00 ms.
+            t0 = time.perf_counter()
+            try:
+                frame = next(frames)
+            except StopIteration:
+                break
+            t1 = time.perf_counter()
+            rec = {"idx": idx, "t_start": t0, "read": t1 - t0,
+                   "frame": frame, "t_enq_read": t1}
+            idx += 1
+            yield rec
+
     def _read_worker(self, source) -> None:
         try:
-            frames = source.frames()
-            idx = 0
-            deadline = (time.perf_counter() + self.args.duration_s
-                        if getattr(self.args, "duration_s", 0) else None)
-            while True:
-                # A fixed frame count measures for a different length of time
-                # at every throughput, so the fast points get less thermal
-                # exposure than the slow ones and the comparison is unfair.
-                # A deadline equalises that. (MLPerf's loadgen does the same:
-                # replay the samples, but require a minimum duration.)
-                if deadline is not None and time.perf_counter() >= deadline:
-                    break
-                # Time the pull, not the loop body: the generator decodes
-                # lazily, so timing anything after the frame is in hand
-                # measures nothing and reports read as 0.00 ms.
-                t0 = time.perf_counter()
-                try:
-                    frame = next(frames)
-                except StopIteration:
-                    break
-                t1 = time.perf_counter()
-                rec = {"idx": idx, "t_start": t0, "read": t1 - t0,
-                       "frame": frame, "t_enq_read": t1}
-                idx += 1
+            for rec in self._read_records(source):
                 self.read_q.put(rec)
         except Exception as exc:                         # noqa: BLE001
             self.error.append(("read_worker", repr(exc)))
         finally:
             self.read_q.put(_SENTINEL)
+
+    def _stage_input(self, rec, tensor):
+        return tensor
+
+    def _release_input(self, rec) -> None:
+        pass
 
     def _preprocess_worker(self) -> None:
         try:
@@ -176,12 +186,20 @@ class AsyncPipeline:
                 self.slots.acquire()
                 rec["q_inflight"] = time.perf_counter() - t
 
-                rec["t_submit"] = time.perf_counter()
-                self.submitted += 1
-                self.backend.session.run_async(
-                    [self.backend.output_name],
-                    {self.backend.input_name: tensor},
-                    self._on_complete, rec)
+                try:
+                    tensor = self._stage_input(rec, tensor)
+                    rec["t_submit"] = time.perf_counter()
+                    self.submitted += 1
+                    self.backend.session.run_async(
+                        [self.backend.output_name],
+                        {self.backend.input_name: tensor},
+                        self._on_complete, rec)
+                except Exception:
+                    try:
+                        self._release_input(rec)
+                    finally:
+                        self.slots.release()
+                    raise
         except Exception as exc:                         # noqa: BLE001
             self.error.append(("preprocess_worker", repr(exc)))
         finally:
@@ -222,7 +240,12 @@ class AsyncPipeline:
             rec["t_enq_output"] = now
             self.output_q.put(rec)
         finally:
-            self.slots.release()
+            try:
+                self._release_input(rec)
+            except Exception as exc:  # noqa: BLE001
+                self.error.append(("release_input", repr(exc)))
+            finally:
+                self.slots.release()
 
     def _postprocess_worker(self) -> None:
         try:

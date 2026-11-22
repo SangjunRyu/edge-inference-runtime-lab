@@ -154,6 +154,11 @@ class ImageListSource:
             raise RuntimeError(f'Cannot decode image: {path}')
         return frame
 
+    def read_at(self, index: int):
+        if self.mode == 'predecoded':
+            return self.decoded[index]
+        return self._decode(self.paths[index])
+
     def frames(self):
         if self.mode == 'predecoded':
             yield from self.decoded

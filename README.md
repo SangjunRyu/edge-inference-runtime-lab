@@ -436,6 +436,9 @@ image order and preprocessing in sync and async execution. See the
 See the [RTX 4060 Ti classification and in-flight report](docs-ko/rtx4060ti-inflight-results.md)
 for the real-image depth sweep, raw NVML evidence and comparison with the MX150 runs.
 
+The [Imagenette runtime validation](results/image-runtime-validation/20261122-rtx4060ti/README.md) reports output ordering,
+CPU input-buffer lifetime and Block/Drop ingress behavior using actual ResNet50 CUDA inference.
+
 ## Licence note
 
 No DEEPX source is vendored or redistributed here. `dx_rt` is licensed to
