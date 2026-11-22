@@ -9,6 +9,8 @@
 
 ## 읽는 순서
 
+실제 이미지 분류를 다른 환경에서 실행하려면 [이미지 실험 재현 가이드](cross-machine-images.md)부터 확인합니다. [입력·실행 구조](imagenette-pipeline.md), [요청 수·메모리 결과](inflight-memory.md), [온도·클럭 조사](inflight-investigation.md)를 함께 정리했습니다.
+
 | 문서 | 내용 |
 |---|---|
 | [00 개요](00-overview.md) | 프로젝트가 무엇이고 무엇을 알아냈는지. **여기부터 읽으면 된다** |

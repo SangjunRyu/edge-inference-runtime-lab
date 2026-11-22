@@ -65,6 +65,8 @@ def parse_args():
     p.add_argument("--backend", default="cpu", help="cpu | cuda | openvino")
     p.add_argument("--ov-device", default=None)
     p.add_argument("--source", default=None)
+    p.add_argument('--image-read-mode', choices=('files', 'predecoded'), default='files',
+                   help='image manifest: file+decode or references to predecoded images')
     p.add_argument("--frames", type=int, default=300)
     p.add_argument("--duration-s", type=float, default=0.0,
                    help="measure for this long instead of for a frame count; "
@@ -323,7 +325,7 @@ class AsyncPipeline:
 
 def measure_once(backend: OnnxBackend, args, height: int, width: int,
                  collector: list | None = None):
-    source = make_source(args.source, args.frames)
+    source = make_source(args.source, args.frames, getattr(args, 'image_read_mode', 'files'))
     rec = Recorder(warmup=args.warmup,
                    warmup_s=getattr(args, 'warmup_s', 0.0),
                    stages=SERVICE, wait_stages=WAITS, pipelined=True)
@@ -399,6 +401,8 @@ def main() -> int:
     }
     dev_slug = f"-{backend.ov_device.lower()}" if backend.ov_device else ""
     src_slug = Path(args.source).stem if args.source else "synthetic"
+    if args.source and Path(args.source).suffix.lower() == '.json':
+        src_slug += '-' + args.image_read_mode
     out = (Path(args.out_dir) /
            f"{args.tag}__async{args.inflight}__{args.backend}{dev_slug}"
            f"__{Path(args.model).stem}__{src_slug}.json")

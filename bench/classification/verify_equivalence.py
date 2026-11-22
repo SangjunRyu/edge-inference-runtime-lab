@@ -53,6 +53,7 @@ def parse_args():
     p.add_argument("--backend", default="cpu")
     p.add_argument("--ov-device", default=None)
     p.add_argument("--source", default=None)
+    p.add_argument('--image-read-mode', choices=('files', 'predecoded'), default='files')
     p.add_argument("--frames", type=int, default=300)
     p.add_argument("--top-k", type=int, default=5)
     p.add_argument("--intra-threads", type=int, default=None)
@@ -83,6 +84,7 @@ def _args_for(args, inflight: int) -> Namespace:
     # so every frame must be collected and both sides must see the same ones.
     return Namespace(
         source=args.source, frames=args.frames, warmup=0, warmup_s=0.0,
+        image_read_mode=getattr(args, 'image_read_mode', 'files'),
         duration_s=0.0, top_k=args.top_k, queue_size=args.queue_size,
         inflight=inflight, reorder="on", reorder_cap=None,
         stall_every=0, stall_ms=0.0, stall_timeout_s=30.0,
@@ -340,6 +342,8 @@ def main() -> int:
             "backend": backend.describe(), "env": env_fingerprint.collect()}
     dev_slug = f"-{backend.ov_device.lower()}" if backend.ov_device else ""
     src_slug = Path(args.source).stem if args.source else "synthetic"
+    if args.source and Path(args.source).suffix.lower() == '.json':
+        src_slug += '-' + args.image_read_mode
     out = (Path(args.out_dir) /
            f"{args.tag}__verify__{args.backend}{dev_slug}"
            f"__{Path(args.model).stem}__{src_slug}.json")

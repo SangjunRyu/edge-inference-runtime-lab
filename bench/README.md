@@ -8,7 +8,7 @@ the repository use the new paths.
 |---|---|---|
 | `runtime/` | Shared inference and frame processing | `backends`, `pipeline`, `sources`, `reorder` |
 | `measurement/` | Environment, noise control and metrics | `env_fingerprint`, `noise`, `harness`, `statistics` |
-| `classification/` | ResNet sync/async baselines and value checks | `run_sync`, `run_async`, `verify_equivalence` |
+| `classification/` | ResNet sync/async baselines, image manifests and inflight diagnostics | `run_sync`, `run_async`, `verify_equivalence`, `compare_images`, `make_reference`, `sweep_inflight`, `investigate_inflight` |
 | `detection/` | Actual-video YOLO execution and verification | `run_video`, `verify`, `yolo` |
 | `experiments/` | Paired comparisons, matrix and depth sweeps | `run_ab`, `run_matrix`, `run_sweep`, `compare_*` |
 | `analysis/` | Saved-result summaries and decode diagnostics | `summarize`, `read_rate` |
@@ -16,6 +16,8 @@ the repository use the new paths.
 | `workloads/` | Reusable source-clock/admission protocol | `clocked` (library; no synthetic image generator) |
 
 Start with [the actual-video guide](../docs-ko/11-real-video.md).
+For the actual-image ResNet experiment on another machine, use the
+[image setup and reproduction guide](../docs-ko/cross-machine-images.md).
 The executable synthetic-bus scenario and its asset preparation/rendering tools
 have been removed. Its published measurements remain historical evidence;
 they are not real-footage validation results.

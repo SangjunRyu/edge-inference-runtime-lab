@@ -1,0 +1,2648 @@
+{
+  "args": {
+    "model": "models/resnet50_224.onnx",
+    "source": "data/imagenette-320-subset/manifest.json",
+    "backend": "cuda",
+    "frames": 500,
+    "warmup": 50,
+    "repeat": 3,
+    "depths": [
+      1,
+      2
+    ],
+    "modes": [
+      "files",
+      "predecoded"
+    ],
+    "intra_threads": 4,
+    "queue_size": 4,
+    "cooldown": 2.0,
+    "out_dir": "results/image-classification/20261122-imagenette500"
+  },
+  "created_utc": "2026-11-22T08:27:30.597748+00:00",
+  "model_sha256": "2ec1c6007b64f29b9e9920f6d104b3d3438fc38586d6f3629d3fc543ac48dcbe",
+  "source": {
+    "kind": "image_list",
+    "path": "C:\\Users\\ysjun5656\\deepX\\edge-inference-runtime-lab\\data\\imagenette-320-subset\\manifest.json",
+    "mode": "files",
+    "count": 500,
+    "manifest_sha256": "f0f8809bcd26f482c64a228ca453c496e214ea3a9469aa809d97fe5c2b53b29a",
+    "input_order_sha256": "6488a145f72c2e6d74dae6dbad50db9c24142739748ed442c6e6f1a1b900f718",
+    "restarts": 0,
+    "read_boundary": "file_read_and_decode",
+    "preload_s_excluded": 1.700012944638729e-06,
+    "preloaded_bytes": 0,
+    "file_cache": "OS-managed; checksum validation reads files before timing"
+  },
+  "pixel_parity_all_images": true,
+  "predecoded_bytes": 212549760,
+  "backend": {
+    "requested_backend": "cuda",
+    "openvino_device": null,
+    "actual_providers": [
+      "CUDAExecutionProvider",
+      "CPUExecutionProvider"
+    ],
+    "fell_back_to_cpu": false,
+    "input_shape": [
+      "1",
+      "3",
+      "224",
+      "224"
+    ]
+  },
+  "env": {
+    "timestamp_utc": "2026-11-22T08:27:31+00:00",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.8",
+    "cpu_name": "Intel(R) Core(TM) i7-8565U CPU @ 1.80GHz",
+    "cpu_count_logical": 8,
+    "gpus_nvidia_smi": [
+      "NVIDIA GeForce MX150, 2048 MiB, 582.66"
+    ],
+    "ram_total_gb": 23.9,
+    "cpu_freq_mhz_at_start": 1792.0,
+    "onnxruntime_version": "1.26.0",
+    "onnxruntime_available_providers": [
+      "TensorrtExecutionProvider",
+      "CUDAExecutionProvider",
+      "CPUExecutionProvider"
+    ],
+    "opencv_version": "5.0.0"
+  },
+  "source_sha256": {
+    "compare_images.py": "2388755e3778f91e0fdf108e29218267ef319d0149f1c37df7831a1e75325b96",
+    "sources.py": "18d84a031e00f381ea6d28b2025538899873d4b2de56cb5da3ecaba902007ead",
+    "pipeline.py": "fc48967c65d336d7089487395813af096c08ef7a92a9ef6cba54d1df89d48065",
+    "run_sync.py": "0765ea0fed030addd816e86804e386138fa47294d224cbf447dc275fbcbd724d",
+    "run_async.py": "610b457d03b614af82738647a1f07013973ea1812921df68a51586e7956d0863",
+    "backends.py": "7414328dcba444e3b8e77caa322ae86a8cec1efff4f0b8fdb5e7635d4891fc86"
+  },
+  "schedule": [
+    [
+      0,
+      "files",
+      0
+    ],
+    [
+      0,
+      "predecoded",
+      0
+    ],
+    [
+      0,
+      "files",
+      2
+    ],
+    [
+      0,
+      "files",
+      1
+    ],
+    [
+      0,
+      "predecoded",
+      2
+    ],
+    [
+      0,
+      "predecoded",
+      1
+    ],
+    [
+      1,
+      "predecoded",
+      2
+    ],
+    [
+      1,
+      "files",
+      2
+    ],
+    [
+      1,
+      "files",
+      0
+    ],
+    [
+      1,
+      "files",
+      1
+    ],
+    [
+      1,
+      "predecoded",
+      0
+    ],
+    [
+      1,
+      "predecoded",
+      1
+    ],
+    [
+      2,
+      "predecoded",
+      2
+    ],
+    [
+      2,
+      "predecoded",
+      0
+    ],
+    [
+      2,
+      "files",
+      2
+    ],
+    [
+      2,
+      "predecoded",
+      1
+    ],
+    [
+      2,
+      "files",
+      0
+    ],
+    [
+      2,
+      "files",
+      1
+    ]
+  ],
+  "runs": [
+    {
+      "repeat": 1,
+      "mode": "files",
+      "runner": "sync",
+      "source": {
+        "kind": "image_list",
+        "path": "C:\\Users\\ysjun5656\\deepX\\edge-inference-runtime-lab\\data\\imagenette-320-subset\\manifest.json",
+        "mode": "files",
+        "count": 500,
+        "manifest_sha256": "f0f8809bcd26f482c64a228ca453c496e214ea3a9469aa809d97fe5c2b53b29a",
+        "input_order_sha256": "6488a145f72c2e6d74dae6dbad50db9c24142739748ed442c6e6f1a1b900f718",
+        "restarts": 0,
+        "read_boundary": "file_read_and_decode",
+        "preload_s_excluded": 5.00003807246685e-07,
+        "preloaded_bytes": 0,
+        "file_cache": "OS-managed; checksum validation reads files before timing"
+      },
+      "metrics": {
+        "frames_counted": 450,
+        "frames_warmup_discarded": 50,
+        "warmup_seconds": 0.0,
+        "stages_ms": {
+          "read": {
+            "mean": 1.2729995547690325,
+            "mean_trim10": 1.2398450491295223,
+            "p50": 1.208100002259016,
+            "p95": 1.8563049845397472,
+            "max": 4.4374000281095505
+          },
+          "preprocess": {
+            "mean": 1.319274000513057,
+            "mean_trim10": 1.2634071785988894,
+            "p50": 1.1992999352514744,
+            "p95": 1.9918449164833874,
+            "max": 5.051699932664633
+          },
+          "inference": {
+            "mean": 27.550933111407275,
+            "mean_trim10": 27.36053118766931,
+            "p50": 27.16884994879365,
+            "p95": 30.061745032435283,
+            "max": 37.722299923188984
+          },
+          "postprocess": {
+            "mean": 0.1453757754320072,
+            "mean_trim10": 0.13951505936774206,
+            "p50": 0.1327999634668231,
+            "p95": 0.22696998203173274,
+            "max": 0.4681000718846917
+          }
+        },
+        "e2e_ms": {
+          "mean": 30.300766668903332,
+          "mean_trim10": 30.114752230393506,
+          "p50": 30.316299991682172,
+          "p95": 33.36002500145696,
+          "max": 40.18239991273731
+        },
+        "stage_sum_mean_ms": 30.28858244212137,
+        "service_sum_mean_ms": 30.28858244212137,
+        "wait_sum_mean_ms": 0,
+        "wait_stages": [],
+        "unaccounted_mean_ms": 0.012184226781961627,
+        "throughput_fps": 32.982411251439906,
+        "throughput_implied_by_e2e_fps": 33.00246528172063,
+        "concurrency_littles_law": 0.9993923475076926,
+        "pipelined": false,
+        "bottleneck_stage": "inference",
+        "overlap_ceiling_x": 1.099366846111669,
+        "bottleneck_p95_over_p50": 1.1064783783301098,
+        "drift": {
+          "first_decile_ms": 27.64417331200093,
+          "last_decile_ms": 33.436968904506,
+          "ratio": 1.2095485195786373
+        }
+      },
+      "info": {
+        "emitted": 500,
+        "order_violations": 0,
+        "first_violation_at_frame": null,
+        "in_submission_order": true
+      },
+      "correctness": {
+        "frames_compared": 500,
+        "missing_from_candidate": [],
+        "missing_count": 0,
+        "unexpected_in_candidate": [],
+        "unexpected_count": 0,
+        "top1_mismatches": [],
+        "top1_mismatch_count": 0,
+        "topk_order_mismatches": [],
+        "topk_mismatch_count": 0,
+        "topk_order_ties": [],
+        "topk_tie_count": 0,
+        "max_prob_delta": 0.0,
+        "prob_within_tolerance": true,
+        "identical": true
+      },
+      "collected": 500,
+      "unique_ids": 500,
+      "healthy": true,
+      "cpu_clock_mhz": [
+        1792.0,
+        1792.0
+      ]
+    },
+    {
+      "repeat": 1,
+      "mode": "predecoded",
+      "runner": "sync",
+      "source": {
+        "kind": "image_list",
+        "path": "C:\\Users\\ysjun5656\\deepX\\edge-inference-runtime-lab\\data\\imagenette-320-subset\\manifest.json",
+        "mode": "predecoded",
+        "count": 500,
+        "manifest_sha256": "f0f8809bcd26f482c64a228ca453c496e214ea3a9469aa809d97fe5c2b53b29a",
+        "input_order_sha256": "6488a145f72c2e6d74dae6dbad50db9c24142739748ed442c6e6f1a1b900f718",
+        "restarts": 0,
+        "read_boundary": "predecoded_reference",
+        "preload_s_excluded": 0.6406193999573588,
+        "preloaded_bytes": 212549760,
+        "file_cache": "OS-managed; checksum validation reads files before timing"
+      },
+      "metrics": {
+        "frames_counted": 450,
+        "frames_warmup_discarded": 50,
+        "warmup_seconds": 0.0,
+        "stages_ms": {
+          "read": {
+            "mean": 0.002822002861648798,
+            "mean_trim10": 0.0026419461413476424,
+            "p50": 0.002500019036233425,
+            "p95": 0.003800028935074806,
+            "max": 0.025099958293139935
+          },
+          "preprocess": {
+            "mean": 1.5796855529252853,
+            "mean_trim10": 1.5189967888556881,
+            "p50": 1.4090000186115503,
+            "p95": 2.523535059299319,
+            "max": 4.435100010596216
+          },
+          "inference": {
+            "mean": 32.20191799906186,
+            "mean_trim10": 31.792592078892255,
+            "p50": 31.148749985732138,
+            "p95": 35.026154998922706,
+            "max": 112.12579999119043
+          },
+          "postprocess": {
+            "mean": 0.14989888528361917,
+            "mean_trim10": 0.1451051814113686,
+            "p50": 0.13719999697059393,
+            "p95": 0.22727998439222566,
+            "max": 0.43000001460313797
+          }
+        },
+        "e2e_ms": {
+          "mean": 33.94615466732325,
+          "mean_trim10": 33.54912103928331,
+          "p50": 32.957599963992834,
+          "p95": 37.29190001031384,
+          "max": 113.56860003434122
+        },
+        "stage_sum_mean_ms": 33.934324440132414,
+        "service_sum_mean_ms": 33.934324440132414,
+        "wait_sum_mean_ms": 0,
+        "wait_stages": [],
+        "unaccounted_mean_ms": 0.011830227190834819,
+        "throughput_fps": 29.440498794707175,
+        "throughput_implied_by_e2e_fps": 29.458417596930513,
+        "concurrency_littles_law": 0.9993917255682734,
+        "pipelined": false,
+        "bottleneck_stage": "inference",
+        "overlap_ceiling_x": 1.0537982377671113,
+        "bottleneck_p95_over_p50": 1.1244802765750355,
+        "drift": {
+          "first_decile_ms": 32.36289778206911,
+          "last_decile_ms": 35.81327777097209,
+          "ratio": 1.106615297929677
+        }
+      },
+      "info": {
+        "emitted": 500,
+        "order_violations": 0,
+        "first_violation_at_frame": null,
+        "in_submission_order": true
+      },
+      "correctness": {
+        "frames_compared": 500,
+        "missing_from_candidate": [],
+        "missing_count": 0,
+        "unexpected_in_candidate": [],
+        "unexpected_count": 0,
+        "top1_mismatches": [],
+        "top1_mismatch_count": 0,
+        "topk_order_mismatches": [],
+        "topk_mismatch_count": 0,
+        "topk_order_ties": [],
+        "topk_tie_count": 0,
+        "max_prob_delta": 0.0,
+        "prob_within_tolerance": true,
+        "identical": true
+      },
+      "collected": 500,
+      "unique_ids": 500,
+      "healthy": true,
+      "cpu_clock_mhz": [
+        1792.0,
+        1792.0
+      ]
+    },
+    {
+      "repeat": 1,
+      "mode": "files",
+      "runner": "async2",
+      "source": {
+        "kind": "image_list",
+        "path": "C:\\Users\\ysjun5656\\deepX\\edge-inference-runtime-lab\\data\\imagenette-320-subset\\manifest.json",
+        "mode": "files",
+        "count": 500,
+        "manifest_sha256": "f0f8809bcd26f482c64a228ca453c496e214ea3a9469aa809d97fe5c2b53b29a",
+        "input_order_sha256": "6488a145f72c2e6d74dae6dbad50db9c24142739748ed442c6e6f1a1b900f718",
+        "restarts": 0,
+        "read_boundary": "file_read_and_decode",
+        "preload_s_excluded": 6.00004568696022e-07,
+        "preloaded_bytes": 0,
+        "file_cache": "OS-managed; checksum validation reads files before timing"
+      },
+      "metrics": {
+        "frames_counted": 450,
+        "frames_warmup_discarded": 50,
+        "warmup_seconds": 0.0,
+        "stages_ms": {
+          "read": {
+            "mean": 1.9845677772536874,
+            "mean_trim10": 1.9473720299849968,
+            "p50": 1.9151499727740884,
+            "p95": 2.93954501976259,
+            "max": 4.855299950577319
+          },
+          "preprocess": {
+            "mean": 2.3440008856252663,
+            "mean_trim10": 2.3221037091830246,
+            "p50": 2.3091500042937696,
+            "p95": 2.9968549381010225,
+            "max": 6.049900082871318
+          },
+          "inference": {
+            "mean": 67.05956622000991,
+            "mean_trim10": 63.980172521672166,
+            "p50": 63.998800062108785,
+            "p95": 80.5579300795216,
+            "max": 242.05409991554916
+          },
+          "postprocess": {
+            "mean": 0.30519510929783183,
+            "mean_trim10": 0.29627752984747474,
+            "p50": 0.3063000040128827,
+            "p95": 0.440135027747601,
+            "max": 2.6008000131696463
+          },
+          "q_read": {
+            "mean": 166.8509384456815,
+            "mean_trim10": 159.9657237633491,
+            "p50": 162.44640003424138,
+            "p95": 214.4179500231983,
+            "max": 491.92129995208234
+          },
+          "q_inflight": {
+            "mean": 31.164300225209445,
+            "mean_trim10": 29.19622574498333,
+            "p50": 30.605099978856742,
+            "p95": 62.88070499431341,
+            "max": 234.68330001924187
+          },
+          "q_output": {
+            "mean": 0.17395666567608714,
+            "mean_trim10": 0.15461410765794317,
+            "p50": 0.13770000077784061,
+            "p95": 0.3693349543027572,
+            "max": 2.9003999661654234
+          },
+          "q_reorder": {
+            "mean": 0.23364266898069116,
+            "mean_trim10": 0.10422525015696514,
+            "p50": 0.07564999395981431,
+            "p95": 0.5258399818558241,
+            "max": 10.773999965749681
+          }
+        },
+        "e2e_ms": {
+          "mean": 270.12389222289335,
+          "mean_trim10": 259.922500744711,
+          "p50": 258.1255999975838,
+          "p95": 393.60758999246167,
+          "max": 567.9947999306023
+        },
+        "stage_sum_mean_ms": 270.1161679977344,
+        "service_sum_mean_ms": 71.6933299921867,
+        "wait_sum_mean_ms": 198.4228380055477,
+        "wait_stages": [
+          "q_read",
+          "q_inflight",
+          "q_output",
+          "q_reorder"
+        ],
+        "unaccounted_mean_ms": 0.007724225158938225,
+        "throughput_fps": 29.5776048599969,
+        "throughput_implied_by_e2e_fps": 3.702005001374879,
+        "concurrency_littles_law": 7.989617747413129,
+        "pipelined": true,
+        "bottleneck_stage": "inference",
+        "overlap_ceiling_x": 1.0690992207878929,
+        "bottleneck_p95_over_p50": 1.2587412576695611,
+        "drift": {
+          "first_decile_ms": 278.4473266659511,
+          "last_decile_ms": 322.6132999898659,
+          "ratio": 1.158615181739202
+        }
+      },
+      "info": {
+        "wall_s": 16.67315129993949,
+        "submitted": 500,
+        "reorder": {
+          "cap": 24,
+          "max_depth": 2,
+          "forced_flushes": 0,
+          "out_of_order_arrivals": 40,
+          "max_displacement": 1,
+          "arrivals": 500
+        },
+        "order": {
+          "emitted": 500,
+          "order_violations": 0,
+          "first_violation_at_frame": null,
+          "in_submission_order": true
+        },
+        "errors": [],
+        "stalls": []
+      },
+      "correctness": {
+        "frames_compared": 500,
+        "missing_from_candidate": [],
+        "missing_count": 0,
+        "unexpected_in_candidate": [],
+        "unexpected_count": 0,
+        "top1_mismatches": [],
+        "top1_mismatch_count": 0,
+        "topk_order_mismatches": [],
+        "topk_mismatch_count": 0,
+        "topk_order_ties": [],
+        "topk_tie_count": 0,
+        "max_prob_delta": 0.0,
+        "prob_within_tolerance": true,
+        "identical": true
+      },
+      "collected": 500,
+      "unique_ids": 500,
+      "healthy": true,
+      "cpu_clock_mhz": [
+        1792.0,
+        1792.0
+      ]
+    },
+    {
+      "repeat": 1,
+      "mode": "files",
+      "runner": "async1",
+      "source": {
+        "kind": "image_list",
+        "path": "C:\\Users\\ysjun5656\\deepX\\edge-inference-runtime-lab\\data\\imagenette-320-subset\\manifest.json",
+        "mode": "files",
+        "count": 500,
+        "manifest_sha256": "f0f8809bcd26f482c64a228ca453c496e214ea3a9469aa809d97fe5c2b53b29a",
+        "input_order_sha256": "6488a145f72c2e6d74dae6dbad50db9c24142739748ed442c6e6f1a1b900f718",
+        "restarts": 0,
+        "read_boundary": "file_read_and_decode",
+        "preload_s_excluded": 6.00004568696022e-07,
+        "preloaded_bytes": 0,
+        "file_cache": "OS-managed; checksum validation reads files before timing"
+      },
+      "metrics": {
+        "frames_counted": 450,
+        "frames_warmup_discarded": 50,
+        "warmup_seconds": 0.0,
+        "stages_ms": {
+          "read": {
+            "mean": 2.150906890682462,
+            "mean_trim10": 2.12529876544878,
+            "p50": 2.0898000220768154,
+            "p95": 3.0678749608341604,
+            "max": 5.2915000123903155
+          },
+          "preprocess": {
+            "mean": 2.542427334572292,
+            "mean_trim10": 2.4869806945236346,
+            "p50": 2.492050000000745,
+            "p95": 3.4554200014099474,
+            "max": 9.187000105157495
+          },
+          "inference": {
+            "mean": 39.35727733239118,
+            "mean_trim10": 37.475776236785556,
+            "p50": 35.67134996410459,
+            "p95": 45.51566495210863,
+            "max": 187.406099983491
+          },
+          "postprocess": {
+            "mean": 0.3357375573573841,
+            "mean_trim10": 0.3322524760301123,
+            "p50": 0.3312000771984458,
+            "p95": 0.42951501091010863,
+            "max": 1.005499972961843
+          },
+          "q_read": {
+            "mean": 195.3552328872805,
+            "mean_trim10": 187.41239108678903,
+            "p50": 177.57614998845384,
+            "p95": 262.10124998469803,
+            "max": 531.2943999888375
+          },
+          "q_inflight": {
+            "mean": 36.607342223998984,
+            "mean_trim10": 34.68703094202481,
+            "p50": 33.22405001381412,
+            "p95": 43.04365498828701,
+            "max": 184.57310006488115
+          },
+          "q_output": {
+            "mean": 0.14603755436837673,
+            "mean_trim10": 0.14054158208015752,
+            "p50": 0.13654999202117324,
+            "p95": 0.21422500140033657,
+            "max": 0.6858999840915203
+          },
+          "q_reorder": {
+            "mean": 0.17563399832902682,
+            "mean_trim10": 0.09132271437089384,
+            "p50": 0.07830001413822174,
+            "p95": 0.2639450307469814,
+            "max": 16.897400026209652
+          }
+        },
+        "e2e_ms": {
+          "mean": 276.6798991107175,
+          "mean_trim10": 266.8949591582595,
+          "p50": 251.4715999714099,
+          "p95": 377.95708501362174,
+          "max": 616.0356999607757
+        },
+        "stage_sum_mean_ms": 276.6705957789802,
+        "service_sum_mean_ms": 44.38634911500331,
+        "wait_sum_mean_ms": 232.2842466639769,
+        "wait_stages": [
+          "q_read",
+          "q_inflight",
+          "q_output",
+          "q_reorder"
+        ],
+        "unaccounted_mean_ms": 0.009303331737271492,
+        "throughput_fps": 25.22529687383815,
+        "throughput_implied_by_e2e_fps": 3.6142849669026207,
+        "concurrency_littles_law": 6.979332594091437,
+        "pipelined": true,
+        "bottleneck_stage": "inference",
+        "overlap_ceiling_x": 1.1277799716718004,
+        "bottleneck_p95_over_p50": 1.2759725941942255,
+        "drift": {
+          "first_decile_ms": 273.46420000152045,
+          "last_decile_ms": 307.10880222161194,
+          "ratio": 1.123031103229982
+        }
+      },
+      "info": {
+        "wall_s": 19.757025100057945,
+        "submitted": 500,
+        "reorder": {
+          "cap": 20,
+          "max_depth": 1,
+          "forced_flushes": 0,
+          "out_of_order_arrivals": 0,
+          "max_displacement": 0,
+          "arrivals": 500
+        },
+        "order": {
+          "emitted": 500,
+          "order_violations": 0,
+          "first_violation_at_frame": null,
+          "in_submission_order": true
+        },
+        "errors": [],
+        "stalls": []
+      },
+      "correctness": {
+        "frames_compared": 500,
+        "missing_from_candidate": [],
+        "missing_count": 0,
+        "unexpected_in_candidate": [],
+        "unexpected_count": 0,
+        "top1_mismatches": [],
+        "top1_mismatch_count": 0,
+        "topk_order_mismatches": [],
+        "topk_mismatch_count": 0,
+        "topk_order_ties": [],
+        "topk_tie_count": 0,
+        "max_prob_delta": 0.0,
+        "prob_within_tolerance": true,
+        "identical": true
+      },
+      "collected": 500,
+      "unique_ids": 500,
+      "healthy": true,
+      "cpu_clock_mhz": [
+        1792.0,
+        1792.0
+      ]
+    },
+    {
+      "repeat": 1,
+      "mode": "predecoded",
+      "runner": "async2",
+      "source": {
+        "kind": "image_list",
+        "path": "C:\\Users\\ysjun5656\\deepX\\edge-inference-runtime-lab\\data\\imagenette-320-subset\\manifest.json",
+        "mode": "predecoded",
+        "count": 500,
+        "manifest_sha256": "f0f8809bcd26f482c64a228ca453c496e214ea3a9469aa809d97fe5c2b53b29a",
+        "input_order_sha256": "6488a145f72c2e6d74dae6dbad50db9c24142739748ed442c6e6f1a1b900f718",
+        "restarts": 0,
+        "read_boundary": "predecoded_reference",
+        "preload_s_excluded": 0.665845499956049,
+        "preloaded_bytes": 212549760,
+        "file_cache": "OS-managed; checksum validation reads files before timing"
+      },
+      "metrics": {
+        "frames_counted": 450,
+        "frames_warmup_discarded": 50,
+        "warmup_seconds": 0.0,
+        "stages_ms": {
+          "read": {
+            "mean": 0.0036753320859538186,
+            "mean_trim10": 0.0035987635154599027,
+            "p50": 0.003500026650726795,
+            "p95": 0.0055549782700836615,
+            "max": 0.013399985618889332
+          },
+          "preprocess": {
+            "mean": 2.658485334056119,
+            "mean_trim10": 2.6121581688472575,
+            "p50": 2.59205000475049,
+            "p95": 3.946005011675879,
+            "max": 6.452100002206862
+          },
+          "inference": {
+            "mean": 75.66002688732826,
+            "mean_trim10": 70.9967960377044,
+            "p50": 65.14884997159243,
+            "p95": 132.14462999021623,
+            "max": 330.40159998927265
+          },
+          "postprocess": {
+            "mean": 0.3436715556826029,
+            "mean_trim10": 0.3291324255319478,
+            "p50": 0.34425006015226245,
+            "p95": 0.5860350385773925,
+            "max": 2.0459999796003103
+          },
+          "q_read": {
+            "mean": 190.65924133381083,
+            "mean_trim10": 181.9585398523054,
+            "p50": 177.88009997457266,
+            "p95": 325.2564150374383,
+            "max": 560.1131999865174
+          },
+          "q_inflight": {
+            "mean": 35.165997779824664,
+            "mean_trim10": 31.480195546536567,
+            "p50": 35.04794999025762,
+            "p95": 79.45827995426949,
+            "max": 317.6265999209136
+          },
+          "q_output": {
+            "mean": 0.20769200003188518,
+            "mean_trim10": 0.18777970269571362,
+            "p50": 0.1698499545454979,
+            "p95": 0.45950494240969314,
+            "max": 2.0995999220758677
+          },
+          "q_reorder": {
+            "mean": 0.13362511087002027,
+            "mean_trim10": 0.10638415789240879,
+            "p50": 0.08064997382462025,
+            "p95": 0.3397249616682529,
+            "max": 1.8426000606268644
+          }
+        },
+        "e2e_ms": {
+          "mean": 304.84297644295214,
+          "mean_trim10": 294.32905618692655,
+          "p50": 264.25400003790855,
+          "p95": 504.5139949885193,
+          "max": 636.3992000697181
+        },
+        "stage_sum_mean_ms": 304.83241533369034,
+        "service_sum_mean_ms": 78.66585910915293,
+        "wait_sum_mean_ms": 226.1665562245374,
+        "wait_stages": [
+          "q_read",
+          "q_inflight",
+          "q_output",
+          "q_reorder"
+        ],
+        "unaccounted_mean_ms": 0.010561109261800539,
+        "throughput_fps": 26.16976030913388,
+        "throughput_implied_by_e2e_fps": 3.2803773656472566,
+        "concurrency_littles_law": 7.977667625435003,
+        "pipelined": true,
+        "bottleneck_stage": "inference",
+        "overlap_ceiling_x": 1.0397281410737655,
+        "bottleneck_p95_over_p50": 2.0283493883289836,
+        "drift": {
+          "first_decile_ms": 339.58192000217326,
+          "last_decile_ms": 310.1273466677715,
+          "ratio": 0.9132622451330352
+        }
+      },
+      "info": {
+        "wall_s": 19.30665239994414,
+        "submitted": 500,
+        "reorder": {
+          "cap": 24,
+          "max_depth": 2,
+          "forced_flushes": 0,
+          "out_of_order_arrivals": 16,
+          "max_displacement": 1,
+          "arrivals": 500
+        },
+        "order": {
+          "emitted": 500,
+          "order_violations": 0,
+          "first_violation_at_frame": null,
+          "in_submission_order": true
+        },
+        "errors": [],
+        "stalls": []
+      },
+      "correctness": {
+        "frames_compared": 500,
+        "missing_from_candidate": [],
+        "missing_count": 0,
+        "unexpected_in_candidate": [],
+        "unexpected_count": 0,
+        "top1_mismatches": [],
+        "top1_mismatch_count": 0,
+        "topk_order_mismatches": [],
+        "topk_mismatch_count": 0,
+        "topk_order_ties": [],
+        "topk_tie_count": 0,
+        "max_prob_delta": 0.0,
+        "prob_within_tolerance": true,
+        "identical": true
+      },
+      "collected": 500,
+      "unique_ids": 500,
+      "healthy": true,
+      "cpu_clock_mhz": [
+        1792.0,
+        1792.0
+      ]
+    },
+    {
+      "repeat": 1,
+      "mode": "predecoded",
+      "runner": "async1",
+      "source": {
+        "kind": "image_list",
+        "path": "C:\\Users\\ysjun5656\\deepX\\edge-inference-runtime-lab\\data\\imagenette-320-subset\\manifest.json",
+        "mode": "predecoded",
+        "count": 500,
+        "manifest_sha256": "f0f8809bcd26f482c64a228ca453c496e214ea3a9469aa809d97fe5c2b53b29a",
+        "input_order_sha256": "6488a145f72c2e6d74dae6dbad50db9c24142739748ed442c6e6f1a1b900f718",
+        "restarts": 0,
+        "read_boundary": "predecoded_reference",
+        "preload_s_excluded": 0.8750226999400184,
+        "preloaded_bytes": 212549760,
+        "file_cache": "OS-managed; checksum validation reads files before timing"
+      },
+      "metrics": {
+        "frames_counted": 450,
+        "frames_warmup_discarded": 50,
+        "warmup_seconds": 0.0,
+        "stages_ms": {
+          "read": {
+            "mean": 0.004841779462165303,
+            "mean_trim10": 0.004429558264504512,
+            "p50": 0.004300032742321491,
+            "p95": 0.006800051778554916,
+            "max": 0.052299932576715946
+          },
+          "preprocess": {
+            "mean": 3.604749553681662,
+            "mean_trim10": 3.518898761312542,
+            "p50": 3.445100039243698,
+            "p95": 5.405430030077691,
+            "max": 13.229699921794236
+          },
+          "inference": {
+            "mean": 36.86061778054055,
+            "mean_trim10": 34.4815512388336,
+            "p50": 33.417450031265616,
+            "p95": 53.96987001295191,
+            "max": 130.7553999358788
+          },
+          "postprocess": {
+            "mean": 0.6196397809415228,
+            "mean_trim10": 0.5089334188614705,
+            "p50": 0.4961000522598624,
+            "p95": 0.9257800003979347,
+            "max": 11.203999980352819
+          },
+          "q_read": {
+            "mean": 186.00942644394107,
+            "mean_trim10": 177.15733366387914,
+            "p50": 170.34604999935254,
+            "p95": 295.3457450144923,
+            "max": 482.1351000573486
+          },
+          "q_inflight": {
+            "mean": 33.03528044424537,
+            "mean_trim10": 30.7141297020244,
+            "p50": 29.934999998658895,
+            "p95": 50.789095042273374,
+            "max": 128.58989997766912
+          },
+          "q_output": {
+            "mean": 0.5888759973458946,
+            "mean_trim10": 0.3074118772424794,
+            "p50": 0.24530000519007444,
+            "p95": 1.8719050160143487,
+            "max": 30.177899985574186
+          },
+          "q_reorder": {
+            "mean": 0.33718399703502655,
+            "mean_trim10": 0.18459456472623129,
+            "p50": 0.11645001359283924,
+            "p95": 0.6000550289172676,
+            "max": 20.925099961459637
+          }
+        },
+        "e2e_ms": {
+          "mean": 261.07719911003693,
+          "mean_trim10": 249.85447796931868,
+          "p50": 239.31135004386306,
+          "p95": 410.73462000349537,
+          "max": 643.0439999094233
+        },
+        "stage_sum_mean_ms": 261.0606157771933,
+        "service_sum_mean_ms": 41.0898488946259,
+        "wait_sum_mean_ms": 219.97076688256737,
+        "wait_stages": [
+          "q_read",
+          "q_inflight",
+          "q_output",
+          "q_reorder"
+        ],
+        "unaccounted_mean_ms": 0.016583332843651988,
+        "throughput_fps": 26.807302672150183,
+        "throughput_implied_by_e2e_fps": 3.830284695135431,
+        "concurrency_littles_law": 6.998775497339978,
+        "pipelined": true,
+        "bottleneck_stage": "inference",
+        "overlap_ceiling_x": 1.1147357632274424,
+        "bottleneck_p95_over_p50": 1.615020594403741,
+        "drift": {
+          "first_decile_ms": 238.44492666475062,
+          "last_decile_ms": 245.8823622178493,
+          "ratio": 1.031191418736099
+        }
+      },
+      "info": {
+        "wall_s": 18.88400120008737,
+        "submitted": 500,
+        "reorder": {
+          "cap": 20,
+          "max_depth": 1,
+          "forced_flushes": 0,
+          "out_of_order_arrivals": 0,
+          "max_displacement": 0,
+          "arrivals": 500
+        },
+        "order": {
+          "emitted": 500,
+          "order_violations": 0,
+          "first_violation_at_frame": null,
+          "in_submission_order": true
+        },
+        "errors": [],
+        "stalls": []
+      },
+      "correctness": {
+        "frames_compared": 500,
+        "missing_from_candidate": [],
+        "missing_count": 0,
+        "unexpected_in_candidate": [],
+        "unexpected_count": 0,
+        "top1_mismatches": [],
+        "top1_mismatch_count": 0,
+        "topk_order_mismatches": [],
+        "topk_mismatch_count": 0,
+        "topk_order_ties": [],
+        "topk_tie_count": 0,
+        "max_prob_delta": 0.0,
+        "prob_within_tolerance": true,
+        "identical": true
+      },
+      "collected": 500,
+      "unique_ids": 500,
+      "healthy": true,
+      "cpu_clock_mhz": [
+        1792.0,
+        1792.0
+      ]
+    },
+    {
+      "repeat": 2,
+      "mode": "predecoded",
+      "runner": "async2",
+      "source": {
+        "kind": "image_list",
+        "path": "C:\\Users\\ysjun5656\\deepX\\edge-inference-runtime-lab\\data\\imagenette-320-subset\\manifest.json",
+        "mode": "predecoded",
+        "count": 500,
+        "manifest_sha256": "f0f8809bcd26f482c64a228ca453c496e214ea3a9469aa809d97fe5c2b53b29a",
+        "input_order_sha256": "6488a145f72c2e6d74dae6dbad50db9c24142739748ed442c6e6f1a1b900f718",
+        "restarts": 0,
+        "read_boundary": "predecoded_reference",
+        "preload_s_excluded": 1.1971612001070753,
+        "preloaded_bytes": 212549760,
+        "file_cache": "OS-managed; checksum validation reads files before timing"
+      },
+      "metrics": {
+        "frames_counted": 450,
+        "frames_warmup_discarded": 50,
+        "warmup_seconds": 0.0,
+        "stages_ms": {
+          "read": {
+            "mean": 0.005100440854827563,
+            "mean_trim10": 0.004380737017426226,
+            "p50": 0.004399917088449001,
+            "p95": 0.006199994822964072,
+            "max": 0.18700002692639828
+          },
+          "preprocess": {
+            "mean": 3.57575421842436,
+            "mean_trim10": 3.52661880851253,
+            "p50": 3.4980999771505594,
+            "p95": 4.9239849846344415,
+            "max": 6.953899981454015
+          },
+          "inference": {
+            "mean": 60.62182777561247,
+            "mean_trim10": 59.26236311592724,
+            "p50": 58.720449975226074,
+            "p95": 77.69686497049405,
+            "max": 161.02969995699823
+          },
+          "postprocess": {
+            "mean": 0.44070288616543013,
+            "mean_trim10": 0.42632672996813487,
+            "p50": 0.4401999758556485,
+            "p95": 0.6675050244666636,
+            "max": 3.519300022162497
+          },
+          "q_read": {
+            "mean": 153.9414477816576,
+            "mean_trim10": 151.5451297060227,
+            "p50": 154.0497500100173,
+            "p95": 195.04479500465095,
+            "max": 330.3223999682814
+          },
+          "q_inflight": {
+            "mean": 26.705208664966953,
+            "mean_trim10": 25.660968145620032,
+            "p50": 25.76305001275614,
+            "p95": 56.011610024143,
+            "max": 151.4726000605151
+          },
+          "q_output": {
+            "mean": 0.28487555993100006,
+            "mean_trim10": 0.26251733191265253,
+            "p50": 0.2332000294700265,
+            "p95": 0.6605499598663298,
+            "max": 1.6540000215172768
+          },
+          "q_reorder": {
+            "mean": 0.49969155755307937,
+            "mean_trim10": 0.19902401283328044,
+            "p50": 0.11425005504861474,
+            "p95": 1.006160007091236,
+            "max": 54.73169998731464
+          }
+        },
+        "e2e_ms": {
+          "mean": 246.08719400104343,
+          "mean_trim10": 242.01444084214342,
+          "p50": 239.48644998017699,
+          "p95": 300.8762800192924,
+          "max": 418.43079996760935
+        },
+        "stage_sum_mean_ms": 246.0746088851657,
+        "service_sum_mean_ms": 64.6433853210571,
+        "wait_sum_mean_ms": 181.43122356410862,
+        "wait_stages": [
+          "q_read",
+          "q_inflight",
+          "q_output",
+          "q_reorder"
+        ],
+        "unaccounted_mean_ms": 0.012585115877726594,
+        "throughput_fps": 32.43554794747007,
+        "throughput_implied_by_e2e_fps": 4.063600318819353,
+        "concurrency_littles_law": 7.981972980279213,
+        "pipelined": true,
+        "bottleneck_stage": "inference",
+        "overlap_ceiling_x": 1.066338441003959,
+        "bottleneck_p95_over_p50": 1.3231653538635015,
+        "drift": {
+          "first_decile_ms": 237.13969555683434,
+          "last_decile_ms": 240.59725333160412,
+          "ratio": 1.014580257289489
+        }
+      },
+      "info": {
+        "wall_s": 15.417555800057016,
+        "submitted": 500,
+        "reorder": {
+          "cap": 24,
+          "max_depth": 3,
+          "forced_flushes": 0,
+          "out_of_order_arrivals": 49,
+          "max_displacement": 2,
+          "arrivals": 500
+        },
+        "order": {
+          "emitted": 500,
+          "order_violations": 0,
+          "first_violation_at_frame": null,
+          "in_submission_order": true
+        },
+        "errors": [],
+        "stalls": []
+      },
+      "correctness": {
+        "frames_compared": 500,
+        "missing_from_candidate": [],
+        "missing_count": 0,
+        "unexpected_in_candidate": [],
+        "unexpected_count": 0,
+        "top1_mismatches": [],
+        "top1_mismatch_count": 0,
+        "topk_order_mismatches": [],
+        "topk_mismatch_count": 0,
+        "topk_order_ties": [],
+        "topk_tie_count": 0,
+        "max_prob_delta": 0.0,
+        "prob_within_tolerance": true,
+        "identical": true
+      },
+      "collected": 500,
+      "unique_ids": 500,
+      "healthy": true,
+      "cpu_clock_mhz": [
+        1792.0,
+        1792.0
+      ]
+    },
+    {
+      "repeat": 2,
+      "mode": "files",
+      "runner": "async2",
+      "source": {
+        "kind": "image_list",
+        "path": "C:\\Users\\ysjun5656\\deepX\\edge-inference-runtime-lab\\data\\imagenette-320-subset\\manifest.json",
+        "mode": "files",
+        "count": 500,
+        "manifest_sha256": "f0f8809bcd26f482c64a228ca453c496e214ea3a9469aa809d97fe5c2b53b29a",
+        "input_order_sha256": "6488a145f72c2e6d74dae6dbad50db9c24142739748ed442c6e6f1a1b900f718",
+        "restarts": 0,
+        "read_boundary": "file_read_and_decode",
+        "preload_s_excluded": 9.00006853044033e-07,
+        "preloaded_bytes": 0,
+        "file_cache": "OS-managed; checksum validation reads files before timing"
+      },
+      "metrics": {
+        "frames_counted": 450,
+        "frames_warmup_discarded": 50,
+        "warmup_seconds": 0.0,
+        "stages_ms": {
+          "read": {
+            "mean": 3.300004887342867,
+            "mean_trim10": 3.2335207898441776,
+            "p50": 3.104450006503612,
+            "p95": 5.127075029304249,
+            "max": 6.84489996638149
+          },
+          "preprocess": {
+            "mean": 3.8531708919132748,
+            "mean_trim10": 3.761299261373772,
+            "p50": 3.6174000124447048,
+            "p95": 5.720864975592116,
+            "max": 8.829599944874644
+          },
+          "inference": {
+            "mean": 60.386064669841694,
+            "mean_trim10": 58.68743242849227,
+            "p50": 57.754350011236966,
+            "p95": 73.0587800208013,
+            "max": 179.90559991449118
+          },
+          "postprocess": {
+            "mean": 0.44004866672265863,
+            "mean_trim10": 0.42917846591387054,
+            "p50": 0.4396000294946134,
+            "p95": 0.702114991145208,
+            "max": 1.3061000499874353
+          },
+          "q_read": {
+            "mean": 150.3606540011242,
+            "mean_trim10": 146.76178737726792,
+            "p50": 151.8658499699086,
+            "p95": 195.2025050180963,
+            "max": 422.8544000070542
+          },
+          "q_inflight": {
+            "mean": 26.318803995899444,
+            "mean_trim10": 24.978545788297485,
+            "p50": 27.96325000235811,
+            "p95": 57.17322500422597,
+            "max": 167.38979995716363
+          },
+          "q_output": {
+            "mean": 0.25560555462208057,
+            "mean_trim10": 0.23184603801697934,
+            "p50": 0.20504998974502087,
+            "p95": 0.5693200277164575,
+            "max": 2.0129999611526728
+          },
+          "q_reorder": {
+            "mean": 0.2872486697095964,
+            "mean_trim10": 0.1868577800507163,
+            "p50": 0.11725001968443394,
+            "p95": 0.9574849449563763,
+            "max": 11.749900062568486
+          }
+        },
+        "e2e_ms": {
+          "mean": 245.2142344459167,
+          "mean_trim10": 239.4741240114845,
+          "p50": 233.4563999902457,
+          "p95": 293.82104001124384,
+          "max": 495.6895000068471
+        },
+        "stage_sum_mean_ms": 245.20160133717582,
+        "service_sum_mean_ms": 67.97928911582049,
+        "wait_sum_mean_ms": 177.2223122213553,
+        "wait_stages": [
+          "q_read",
+          "q_inflight",
+          "q_output",
+          "q_reorder"
+        ],
+        "unaccounted_mean_ms": 0.012633108740885746,
+        "throughput_fps": 32.43271886639088,
+        "throughput_implied_by_e2e_fps": 4.078066684259128,
+        "concurrency_littles_law": 7.952964327821679,
+        "pipelined": true,
+        "bottleneck_stage": "inference",
+        "overlap_ceiling_x": 1.125744647999409,
+        "bottleneck_p95_over_p50": 1.2649918145834318,
+        "drift": {
+          "first_decile_ms": 236.0648644570675,
+          "last_decile_ms": 252.9854888924294,
+          "ratio": 1.0716778605502268
+        }
+      },
+      "info": {
+        "wall_s": 15.666690099984407,
+        "submitted": 500,
+        "reorder": {
+          "cap": 24,
+          "max_depth": 2,
+          "forced_flushes": 0,
+          "out_of_order_arrivals": 28,
+          "max_displacement": 1,
+          "arrivals": 500
+        },
+        "order": {
+          "emitted": 500,
+          "order_violations": 0,
+          "first_violation_at_frame": null,
+          "in_submission_order": true
+        },
+        "errors": [],
+        "stalls": []
+      },
+      "correctness": {
+        "frames_compared": 500,
+        "missing_from_candidate": [],
+        "missing_count": 0,
+        "unexpected_in_candidate": [],
+        "unexpected_count": 0,
+        "top1_mismatches": [],
+        "top1_mismatch_count": 0,
+        "topk_order_mismatches": [],
+        "topk_mismatch_count": 0,
+        "topk_order_ties": [],
+        "topk_tie_count": 0,
+        "max_prob_delta": 0.0,
+        "prob_within_tolerance": true,
+        "identical": true
+      },
+      "collected": 500,
+      "unique_ids": 500,
+      "healthy": true,
+      "cpu_clock_mhz": [
+        1792.0,
+        1792.0
+      ]
+    },
+    {
+      "repeat": 2,
+      "mode": "files",
+      "runner": "sync",
+      "source": {
+        "kind": "image_list",
+        "path": "C:\\Users\\ysjun5656\\deepX\\edge-inference-runtime-lab\\data\\imagenette-320-subset\\manifest.json",
+        "mode": "files",
+        "count": 500,
+        "manifest_sha256": "f0f8809bcd26f482c64a228ca453c496e214ea3a9469aa809d97fe5c2b53b29a",
+        "input_order_sha256": "6488a145f72c2e6d74dae6dbad50db9c24142739748ed442c6e6f1a1b900f718",
+        "restarts": 0,
+        "read_boundary": "file_read_and_decode",
+        "preload_s_excluded": 9.00006853044033e-07,
+        "preloaded_bytes": 0,
+        "file_cache": "OS-managed; checksum validation reads files before timing"
+      },
+      "metrics": {
+        "frames_counted": 450,
+        "frames_warmup_discarded": 50,
+        "warmup_seconds": 0.0,
+        "stages_ms": {
+          "read": {
+            "mean": 1.8527171095936663,
+            "mean_trim10": 1.8271054435143304,
+            "p50": 1.7927499720826745,
+            "p95": 2.5689099507872015,
+            "max": 3.9145000046119094
+          },
+          "preprocess": {
+            "mean": 1.9636293332506385,
+            "mean_trim10": 1.9144752471463404,
+            "p50": 1.838150026742369,
+            "p95": 2.768130006734282,
+            "max": 3.837800002656877
+          },
+          "inference": {
+            "mean": 30.79622111309113,
+            "mean_trim10": 30.846325248954724,
+            "p50": 30.822300002910197,
+            "p95": 31.447634927462786,
+            "max": 34.296800033189356
+          },
+          "postprocess": {
+            "mean": 0.1937002220398022,
+            "mean_trim10": 0.186809406346079,
+            "p50": 0.17659994773566723,
+            "p95": 0.2884250367060303,
+            "max": 0.5157999694347382
+          }
+        },
+        "e2e_ms": {
+          "mean": 34.823272447619175,
+          "mean_trim10": 34.81908292321737,
+          "p50": 34.71430001081899,
+          "p95": 36.41118000377901,
+          "max": 39.694500039331615
+        },
+        "stage_sum_mean_ms": 34.806267777975236,
+        "service_sum_mean_ms": 34.806267777975236,
+        "wait_sum_mean_ms": 0,
+        "wait_stages": [],
+        "unaccounted_mean_ms": 0.01700466964393854,
+        "throughput_fps": 28.706647934763133,
+        "throughput_implied_by_e2e_fps": 28.71642811582944,
+        "concurrency_littles_law": 0.9996594220901409,
+        "pipelined": false,
+        "bottleneck_stage": "inference",
+        "overlap_ceiling_x": 1.130212296182647,
+        "bottleneck_p95_over_p50": 1.020288392640833,
+        "drift": {
+          "first_decile_ms": 34.2851444457968,
+          "last_decile_ms": 35.473453344052864,
+          "ratio": 1.0346595855862506
+        }
+      },
+      "info": {
+        "emitted": 500,
+        "order_violations": 0,
+        "first_violation_at_frame": null,
+        "in_submission_order": true
+      },
+      "correctness": {
+        "frames_compared": 500,
+        "missing_from_candidate": [],
+        "missing_count": 0,
+        "unexpected_in_candidate": [],
+        "unexpected_count": 0,
+        "top1_mismatches": [],
+        "top1_mismatch_count": 0,
+        "topk_order_mismatches": [],
+        "topk_mismatch_count": 0,
+        "topk_order_ties": [],
+        "topk_tie_count": 0,
+        "max_prob_delta": 0.0,
+        "prob_within_tolerance": true,
+        "identical": true
+      },
+      "collected": 500,
+      "unique_ids": 500,
+      "healthy": true,
+      "cpu_clock_mhz": [
+        1792.0,
+        1792.0
+      ]
+    },
+    {
+      "repeat": 2,
+      "mode": "files",
+      "runner": "async1",
+      "source": {
+        "kind": "image_list",
+        "path": "C:\\Users\\ysjun5656\\deepX\\edge-inference-runtime-lab\\data\\imagenette-320-subset\\manifest.json",
+        "mode": "files",
+        "count": 500,
+        "manifest_sha256": "f0f8809bcd26f482c64a228ca453c496e214ea3a9469aa809d97fe5c2b53b29a",
+        "input_order_sha256": "6488a145f72c2e6d74dae6dbad50db9c24142739748ed442c6e6f1a1b900f718",
+        "restarts": 0,
+        "read_boundary": "file_read_and_decode",
+        "preload_s_excluded": 3.300025127828121e-06,
+        "preloaded_bytes": 0,
+        "file_cache": "OS-managed; checksum validation reads files before timing"
+      },
+      "metrics": {
+        "frames_counted": 450,
+        "frames_warmup_discarded": 50,
+        "warmup_seconds": 0.0,
+        "stages_ms": {
+          "read": {
+            "mean": 3.548107331411706,
+            "mean_trim10": 3.491904947902122,
+            "p50": 3.4293500357307494,
+            "p95": 4.8742099781520665,
+            "max": 7.008399930782616
+          },
+          "preprocess": {
+            "mean": 5.880137775093317,
+            "mean_trim10": 5.705634897083764,
+            "p50": 5.318800045643002,
+            "p95": 9.0447099704761,
+            "max": 25.400000042282045
+          },
+          "inference": {
+            "mean": 32.22676911132617,
+            "mean_trim10": 31.809611881375407,
+            "p50": 31.709550006780773,
+            "p95": 37.26196003262884,
+            "max": 54.309200029820204
+          },
+          "postprocess": {
+            "mean": 0.6812988896854222,
+            "mean_trim10": 0.6406262391915379,
+            "p50": 0.6022000452503562,
+            "p95": 1.1945100559387336,
+            "max": 4.246099968440831
+          },
+          "q_read": {
+            "mean": 160.6380893326261,
+            "mean_trim10": 159.20341039557093,
+            "p50": 159.1469999984838,
+            "p95": 186.34269998874512,
+            "max": 246.71820004004985
+          },
+          "q_inflight": {
+            "mean": 26.142108891573216,
+            "mean_trim10": 25.866527231652196,
+            "p50": 25.89604997774586,
+            "p95": 31.183830043300983,
+            "max": 55.243599927052855
+          },
+          "q_output": {
+            "mean": 0.4345473295284642,
+            "mean_trim10": 0.2866430662798299,
+            "p50": 0.25304994778707623,
+            "p95": 0.7701900321990237,
+            "max": 35.465899971313775
+          },
+          "q_reorder": {
+            "mean": 0.34894577770804364,
+            "mean_trim10": 0.2254745049867779,
+            "p50": 0.14465005369856954,
+            "p95": 0.8414949406869701,
+            "max": 19.748000078834593
+          }
+        },
+        "e2e_ms": {
+          "mean": 229.9192735560549,
+          "mean_trim10": 228.09361683154054,
+          "p50": 227.19160001724958,
+          "p95": 263.2650849991478,
+          "max": 321.26029999926686
+        },
+        "stage_sum_mean_ms": 229.90000443895244,
+        "service_sum_mean_ms": 42.33631310751662,
+        "wait_sum_mean_ms": 187.56369133143582,
+        "wait_stages": [
+          "q_read",
+          "q_inflight",
+          "q_output",
+          "q_reorder"
+        ],
+        "unaccounted_mean_ms": 0.019269117102453492,
+        "throughput_fps": 30.42343767414754,
+        "throughput_implied_by_e2e_fps": 4.349352642488223,
+        "concurrency_littles_law": 6.9949346891179145,
+        "pipelined": true,
+        "bottleneck_stage": "inference",
+        "overlap_ceiling_x": 1.3137002025014486,
+        "bottleneck_p95_over_p50": 1.1751021387771425,
+        "drift": {
+          "first_decile_ms": 220.93037333753372,
+          "last_decile_ms": 229.04357332477554,
+          "ratio": 1.0367228818051495
+        }
+      },
+      "info": {
+        "wall_s": 16.377838799962774,
+        "submitted": 500,
+        "reorder": {
+          "cap": 20,
+          "max_depth": 1,
+          "forced_flushes": 0,
+          "out_of_order_arrivals": 0,
+          "max_displacement": 0,
+          "arrivals": 500
+        },
+        "order": {
+          "emitted": 500,
+          "order_violations": 0,
+          "first_violation_at_frame": null,
+          "in_submission_order": true
+        },
+        "errors": [],
+        "stalls": []
+      },
+      "correctness": {
+        "frames_compared": 500,
+        "missing_from_candidate": [],
+        "missing_count": 0,
+        "unexpected_in_candidate": [],
+        "unexpected_count": 0,
+        "top1_mismatches": [],
+        "top1_mismatch_count": 0,
+        "topk_order_mismatches": [],
+        "topk_mismatch_count": 0,
+        "topk_order_ties": [],
+        "topk_tie_count": 0,
+        "max_prob_delta": 0.0,
+        "prob_within_tolerance": true,
+        "identical": true
+      },
+      "collected": 500,
+      "unique_ids": 500,
+      "healthy": true,
+      "cpu_clock_mhz": [
+        1792.0,
+        1792.0
+      ]
+    },
+    {
+      "repeat": 2,
+      "mode": "predecoded",
+      "runner": "sync",
+      "source": {
+        "kind": "image_list",
+        "path": "C:\\Users\\ysjun5656\\deepX\\edge-inference-runtime-lab\\data\\imagenette-320-subset\\manifest.json",
+        "mode": "predecoded",
+        "count": 500,
+        "manifest_sha256": "f0f8809bcd26f482c64a228ca453c496e214ea3a9469aa809d97fe5c2b53b29a",
+        "input_order_sha256": "6488a145f72c2e6d74dae6dbad50db9c24142739748ed442c6e6f1a1b900f718",
+        "restarts": 0,
+        "read_boundary": "predecoded_reference",
+        "preload_s_excluded": 1.868605799973011,
+        "preloaded_bytes": 212549760,
+        "file_cache": "OS-managed; checksum validation reads files before timing"
+      },
+      "metrics": {
+        "frames_counted": 450,
+        "frames_warmup_discarded": 50,
+        "warmup_seconds": 0.0,
+        "stages_ms": {
+          "read": {
+            "mean": 0.006650887533194489,
+            "mean_trim10": 0.005095577295366171,
+            "p50": 0.00509992241859436,
+            "p95": 0.007454992737621065,
+            "max": 0.4821999464184046
+          },
+          "preprocess": {
+            "mean": 4.169105780569629,
+            "mean_trim10": 3.9097103981836008,
+            "p50": 3.637799934949726,
+            "p95": 7.718845037743435,
+            "max": 19.913599942810833
+          },
+          "inference": {
+            "mean": 31.409434888563638,
+            "mean_trim10": 31.00567945396749,
+            "p50": 30.84045002469793,
+            "p95": 36.062815022887655,
+            "max": 57.654300006106496
+          },
+          "postprocess": {
+            "mean": 0.33008666760805583,
+            "mean_trim10": 0.3034022289770886,
+            "p50": 0.2895499928854406,
+            "p95": 0.631839974084869,
+            "max": 2.489200094714761
+          }
+        },
+        "e2e_ms": {
+          "mean": 35.940810887970855,
+          "mean_trim10": 35.41728564207258,
+          "p50": 34.92700000060722,
+          "p95": 42.354239971609786,
+          "max": 66.27499999012798
+        },
+        "stage_sum_mean_ms": 35.915278224274516,
+        "service_sum_mean_ms": 35.915278224274516,
+        "wait_sum_mean_ms": 0,
+        "wait_stages": [],
+        "unaccounted_mean_ms": 0.025532663696338886,
+        "throughput_fps": 27.805540140485398,
+        "throughput_implied_by_e2e_fps": 27.823523601541588,
+        "concurrency_littles_law": 0.9993536598270683,
+        "pipelined": false,
+        "bottleneck_stage": "inference",
+        "overlap_ceiling_x": 1.1434550908571577,
+        "bottleneck_p95_over_p50": 1.1693349154765091,
+        "drift": {
+          "first_decile_ms": 39.759460008806656,
+          "last_decile_ms": 35.44385554786358,
+          "ratio": 0.8914571661690783
+        }
+      },
+      "info": {
+        "emitted": 500,
+        "order_violations": 0,
+        "first_violation_at_frame": null,
+        "in_submission_order": true
+      },
+      "correctness": {
+        "frames_compared": 500,
+        "missing_from_candidate": [],
+        "missing_count": 0,
+        "unexpected_in_candidate": [],
+        "unexpected_count": 0,
+        "top1_mismatches": [],
+        "top1_mismatch_count": 0,
+        "topk_order_mismatches": [],
+        "topk_mismatch_count": 0,
+        "topk_order_ties": [],
+        "topk_tie_count": 0,
+        "max_prob_delta": 0.0,
+        "prob_within_tolerance": true,
+        "identical": true
+      },
+      "collected": 500,
+      "unique_ids": 500,
+      "healthy": true,
+      "cpu_clock_mhz": [
+        1792.0,
+        1792.0
+      ]
+    },
+    {
+      "repeat": 2,
+      "mode": "predecoded",
+      "runner": "async1",
+      "source": {
+        "kind": "image_list",
+        "path": "C:\\Users\\ysjun5656\\deepX\\edge-inference-runtime-lab\\data\\imagenette-320-subset\\manifest.json",
+        "mode": "predecoded",
+        "count": 500,
+        "manifest_sha256": "f0f8809bcd26f482c64a228ca453c496e214ea3a9469aa809d97fe5c2b53b29a",
+        "input_order_sha256": "6488a145f72c2e6d74dae6dbad50db9c24142739748ed442c6e6f1a1b900f718",
+        "restarts": 0,
+        "read_boundary": "predecoded_reference",
+        "preload_s_excluded": 1.324134900001809,
+        "preloaded_bytes": 212549760,
+        "file_cache": "OS-managed; checksum validation reads files before timing"
+      },
+      "metrics": {
+        "frames_counted": 450,
+        "frames_warmup_discarded": 50,
+        "warmup_seconds": 0.0,
+        "stages_ms": {
+          "read": {
+            "mean": 0.005985106755461957,
+            "mean_trim10": 0.005519799182241587,
+            "p50": 0.005400041118264198,
+            "p95": 0.007154990453273054,
+            "max": 0.0906999921426177
+          },
+          "preprocess": {
+            "mean": 5.282674444735878,
+            "mean_trim10": 5.055893812211009,
+            "p50": 4.868349991738796,
+            "p95": 7.5862000579945645,
+            "max": 19.43300000857562
+          },
+          "inference": {
+            "mean": 33.16131088882685,
+            "mean_trim10": 32.213746040130474,
+            "p50": 31.786250008735806,
+            "p95": 40.11607500142415,
+            "max": 98.01690001040697
+          },
+          "postprocess": {
+            "mean": 0.8186671114526689,
+            "mean_trim10": 0.7199004948332832,
+            "p50": 0.6746500148437917,
+            "p95": 1.7050949973054224,
+            "max": 6.452800007537007
+          },
+          "q_read": {
+            "mean": 168.36734088939718,
+            "mean_trim10": 165.59834604089306,
+            "p50": 163.98195002693683,
+            "p95": 205.53521001711468,
+            "max": 284.1198000824079
+          },
+          "q_inflight": {
+            "mean": 27.56360244833761,
+            "mean_trim10": 26.704919557052545,
+            "p50": 26.509099930990487,
+            "p95": 34.07882506726308,
+            "max": 92.64829999301583
+          },
+          "q_output": {
+            "mean": 0.5665308868305551,
+            "mean_trim10": 0.4267027220656487,
+            "p50": 0.34535001032054424,
+            "p95": 1.3530749944038678,
+            "max": 10.320000001229346
+          },
+          "q_reorder": {
+            "mean": 0.3180346676769356,
+            "mean_trim10": 0.23973712929303176,
+            "p50": 0.15240005450323224,
+            "p95": 0.8078149810899048,
+            "max": 12.305099982768297
+          }
+        },
+        "e2e_ms": {
+          "mean": 236.10699244257478,
+          "mean_trim10": 232.7625782169646,
+          "p50": 230.02610000548884,
+          "p95": 284.67521005659364,
+          "max": 362.5198999652639
+        },
+        "stage_sum_mean_ms": 236.08414644401313,
+        "service_sum_mean_ms": 39.26863755177086,
+        "wait_sum_mean_ms": 196.8155088922423,
+        "wait_stages": [
+          "q_read",
+          "q_inflight",
+          "q_output",
+          "q_reorder"
+        ],
+        "unaccounted_mean_ms": 0.022845998561649594,
+        "throughput_fps": 29.64001554189155,
+        "throughput_implied_by_e2e_fps": 4.2353679984434045,
+        "concurrency_littles_law": 6.998214925547186,
+        "pipelined": true,
+        "bottleneck_stage": "inference",
+        "overlap_ceiling_x": 1.1841702423471376,
+        "bottleneck_p95_over_p50": 1.2620574931109854,
+        "drift": {
+          "first_decile_ms": 218.82001556093908,
+          "last_decile_ms": 235.9422644496792,
+          "ratio": 1.0782480928211604
+        }
+      },
+      "info": {
+        "wall_s": 16.673700700048357,
+        "submitted": 500,
+        "reorder": {
+          "cap": 20,
+          "max_depth": 1,
+          "forced_flushes": 0,
+          "out_of_order_arrivals": 0,
+          "max_displacement": 0,
+          "arrivals": 500
+        },
+        "order": {
+          "emitted": 500,
+          "order_violations": 0,
+          "first_violation_at_frame": null,
+          "in_submission_order": true
+        },
+        "errors": [],
+        "stalls": []
+      },
+      "correctness": {
+        "frames_compared": 500,
+        "missing_from_candidate": [],
+        "missing_count": 0,
+        "unexpected_in_candidate": [],
+        "unexpected_count": 0,
+        "top1_mismatches": [],
+        "top1_mismatch_count": 0,
+        "topk_order_mismatches": [],
+        "topk_mismatch_count": 0,
+        "topk_order_ties": [],
+        "topk_tie_count": 0,
+        "max_prob_delta": 0.0,
+        "prob_within_tolerance": true,
+        "identical": true
+      },
+      "collected": 500,
+      "unique_ids": 500,
+      "healthy": true,
+      "cpu_clock_mhz": [
+        1792.0,
+        1792.0
+      ]
+    },
+    {
+      "repeat": 3,
+      "mode": "predecoded",
+      "runner": "async2",
+      "source": {
+        "kind": "image_list",
+        "path": "C:\\Users\\ysjun5656\\deepX\\edge-inference-runtime-lab\\data\\imagenette-320-subset\\manifest.json",
+        "mode": "predecoded",
+        "count": 500,
+        "manifest_sha256": "f0f8809bcd26f482c64a228ca453c496e214ea3a9469aa809d97fe5c2b53b29a",
+        "input_order_sha256": "6488a145f72c2e6d74dae6dbad50db9c24142739748ed442c6e6f1a1b900f718",
+        "restarts": 0,
+        "read_boundary": "predecoded_reference",
+        "preload_s_excluded": 1.565773900016211,
+        "preloaded_bytes": 212549760,
+        "file_cache": "OS-managed; checksum validation reads files before timing"
+      },
+      "metrics": {
+        "frames_counted": 450,
+        "frames_warmup_discarded": 50,
+        "warmup_seconds": 0.0,
+        "stages_ms": {
+          "read": {
+            "mean": 0.006218670039541191,
+            "mean_trim10": 0.0047899304410895785,
+            "p50": 0.004799920134246349,
+            "p95": 0.006455049151554699,
+            "max": 0.5761999636888504
+          },
+          "preprocess": {
+            "mean": 4.6031015560341375,
+            "mean_trim10": 4.486215595066049,
+            "p50": 4.360300023108721,
+            "p95": 6.596574978902934,
+            "max": 11.27629994880408
+          },
+          "inference": {
+            "mean": 58.56343733560708,
+            "mean_trim10": 58.37676881542798,
+            "p50": 58.19205002626404,
+            "p95": 69.30980498436837,
+            "max": 90.3676999732852
+          },
+          "postprocess": {
+            "mean": 0.5325899987171093,
+            "mean_trim10": 0.5172064350940988,
+            "p50": 0.5376000190153718,
+            "p95": 0.8310350938700133,
+            "max": 2.0685000345110893
+          },
+          "q_read": {
+            "mean": 149.61006266530603,
+            "mean_trim10": 149.46744282036042,
+            "p50": 150.44440003111959,
+            "p95": 180.36762998090126,
+            "max": 232.4692999245599
+          },
+          "q_inflight": {
+            "mean": 24.65495733026829,
+            "mean_trim10": 24.219280938700873,
+            "p50": 23.921950021758676,
+            "p95": 53.93117999774404,
+            "max": 74.04560002032667
+          },
+          "q_output": {
+            "mean": 0.35374022244165343,
+            "mean_trim10": 0.32476188198866157,
+            "p50": 0.28015003772452474,
+            "p95": 0.7396949280519035,
+            "max": 2.0542999263852835
+          },
+          "q_reorder": {
+            "mean": 0.2885002244470848,
+            "mean_trim10": 0.2042722800691234,
+            "p50": 0.1342499745078385,
+            "p95": 0.9186449984554189,
+            "max": 17.121099983341992
+          }
+        },
+        "e2e_ms": {
+          "mean": 238.6278033357424,
+          "mean_trim10": 238.3811059419416,
+          "p50": 239.16145000839606,
+          "p95": 268.1063199765049,
+          "max": 308.0052000004798
+        },
+        "stage_sum_mean_ms": 238.61260800286092,
+        "service_sum_mean_ms": 63.70534756039787,
+        "wait_sum_mean_ms": 174.90726044246307,
+        "wait_stages": [
+          "q_read",
+          "q_inflight",
+          "q_output",
+          "q_reorder"
+        ],
+        "unaccounted_mean_ms": 0.015195332881489776,
+        "throughput_fps": 33.37886314343132,
+        "throughput_implied_by_e2e_fps": 4.190626515523964,
+        "concurrency_littles_law": 7.965124789761389,
+        "pipelined": true,
+        "bottleneck_stage": "inference",
+        "overlap_ceiling_x": 1.0878006903065518,
+        "bottleneck_p95_over_p50": 1.1910528148275668,
+        "drift": {
+          "first_decile_ms": 226.04743333843845,
+          "last_decile_ms": 245.36756223533303,
+          "ratio": 1.085469357521828
+        }
+      },
+      "info": {
+        "wall_s": 14.862415399984457,
+        "submitted": 500,
+        "reorder": {
+          "cap": 24,
+          "max_depth": 2,
+          "forced_flushes": 0,
+          "out_of_order_arrivals": 52,
+          "max_displacement": 1,
+          "arrivals": 500
+        },
+        "order": {
+          "emitted": 500,
+          "order_violations": 0,
+          "first_violation_at_frame": null,
+          "in_submission_order": true
+        },
+        "errors": [],
+        "stalls": []
+      },
+      "correctness": {
+        "frames_compared": 500,
+        "missing_from_candidate": [],
+        "missing_count": 0,
+        "unexpected_in_candidate": [],
+        "unexpected_count": 0,
+        "top1_mismatches": [],
+        "top1_mismatch_count": 0,
+        "topk_order_mismatches": [],
+        "topk_mismatch_count": 0,
+        "topk_order_ties": [],
+        "topk_tie_count": 0,
+        "max_prob_delta": 0.0,
+        "prob_within_tolerance": true,
+        "identical": true
+      },
+      "collected": 500,
+      "unique_ids": 500,
+      "healthy": true,
+      "cpu_clock_mhz": [
+        1792.0,
+        1792.0
+      ]
+    },
+    {
+      "repeat": 3,
+      "mode": "predecoded",
+      "runner": "sync",
+      "source": {
+        "kind": "image_list",
+        "path": "C:\\Users\\ysjun5656\\deepX\\edge-inference-runtime-lab\\data\\imagenette-320-subset\\manifest.json",
+        "mode": "predecoded",
+        "count": 500,
+        "manifest_sha256": "f0f8809bcd26f482c64a228ca453c496e214ea3a9469aa809d97fe5c2b53b29a",
+        "input_order_sha256": "6488a145f72c2e6d74dae6dbad50db9c24142739748ed442c6e6f1a1b900f718",
+        "restarts": 0,
+        "read_boundary": "predecoded_reference",
+        "preload_s_excluded": 1.4606285999761894,
+        "preloaded_bytes": 212549760,
+        "file_cache": "OS-managed; checksum validation reads files before timing"
+      },
+      "metrics": {
+        "frames_counted": 450,
+        "frames_warmup_discarded": 50,
+        "warmup_seconds": 0.0,
+        "stages_ms": {
+          "read": {
+            "mean": 0.004174668704056078,
+            "mean_trim10": 0.003999514661620568,
+            "p50": 0.0039000296965241432,
+            "p95": 0.005500041879713535,
+            "max": 0.04039995837956667
+          },
+          "preprocess": {
+            "mean": 2.570671111397031,
+            "mean_trim10": 2.4818532185578293,
+            "p50": 2.203649957664311,
+            "p95": 4.060404951451346,
+            "max": 15.637699980288744
+          },
+          "inference": {
+            "mean": 32.22967355589693,
+            "mean_trim10": 31.85017524854197,
+            "p50": 32.0134999928996,
+            "p95": 35.163869964890175,
+            "max": 76.0590999852866
+          },
+          "postprocess": {
+            "mean": 0.23050088952812883,
+            "mean_trim10": 0.21508811900419839,
+            "p50": 0.19749999046325684,
+            "p95": 0.3290849970653652,
+            "max": 1.9537999760359526
+          }
+        },
+        "e2e_ms": {
+          "mean": 35.052710669115186,
+          "mean_trim10": 34.5711066862476,
+          "p50": 34.57930003060028,
+          "p95": 38.16108004539272,
+          "max": 83.78470002207905
+        },
+        "stage_sum_mean_ms": 35.03502022552615,
+        "service_sum_mean_ms": 35.03502022552615,
+        "wait_sum_mean_ms": 0,
+        "wait_stages": [],
+        "unaccounted_mean_ms": 0.017690443589039262,
+        "throughput_fps": 28.513549241650686,
+        "throughput_implied_by_e2e_fps": 28.52846415901,
+        "concurrency_littles_law": 0.9994771917171503,
+        "pipelined": false,
+        "bottleneck_stage": "inference",
+        "overlap_ceiling_x": 1.087042354455245,
+        "bottleneck_p95_over_p50": 1.0984075459630878,
+        "drift": {
+          "first_decile_ms": 37.61714000720531,
+          "last_decile_ms": 34.80061333264327,
+          "ratio": 0.9251265068523937
+        }
+      },
+      "info": {
+        "emitted": 500,
+        "order_violations": 0,
+        "first_violation_at_frame": null,
+        "in_submission_order": true
+      },
+      "correctness": {
+        "frames_compared": 500,
+        "missing_from_candidate": [],
+        "missing_count": 0,
+        "unexpected_in_candidate": [],
+        "unexpected_count": 0,
+        "top1_mismatches": [],
+        "top1_mismatch_count": 0,
+        "topk_order_mismatches": [],
+        "topk_mismatch_count": 0,
+        "topk_order_ties": [],
+        "topk_tie_count": 0,
+        "max_prob_delta": 0.0,
+        "prob_within_tolerance": true,
+        "identical": true
+      },
+      "collected": 500,
+      "unique_ids": 500,
+      "healthy": true,
+      "cpu_clock_mhz": [
+        1792.0,
+        1792.0
+      ]
+    },
+    {
+      "repeat": 3,
+      "mode": "files",
+      "runner": "async2",
+      "source": {
+        "kind": "image_list",
+        "path": "C:\\Users\\ysjun5656\\deepX\\edge-inference-runtime-lab\\data\\imagenette-320-subset\\manifest.json",
+        "mode": "files",
+        "count": 500,
+        "manifest_sha256": "f0f8809bcd26f482c64a228ca453c496e214ea3a9469aa809d97fe5c2b53b29a",
+        "input_order_sha256": "6488a145f72c2e6d74dae6dbad50db9c24142739748ed442c6e6f1a1b900f718",
+        "restarts": 0,
+        "read_boundary": "file_read_and_decode",
+        "preload_s_excluded": 1.200009137392044e-06,
+        "preloaded_bytes": 0,
+        "file_cache": "OS-managed; checksum validation reads files before timing"
+      },
+      "metrics": {
+        "frames_counted": 450,
+        "frames_warmup_discarded": 50,
+        "warmup_seconds": 0.0,
+        "stages_ms": {
+          "read": {
+            "mean": 3.4098597745307617,
+            "mean_trim10": 3.3225918282053923,
+            "p50": 3.1705999863334,
+            "p95": 5.357354984153061,
+            "max": 9.895200026221573
+          },
+          "preprocess": {
+            "mean": 4.023187558891045,
+            "mean_trim10": 3.912746786119158,
+            "p50": 3.7105000228621066,
+            "p95": 6.001724989619103,
+            "max": 9.573200019076467
+          },
+          "inference": {
+            "mean": 59.2736106673773,
+            "mean_trim10": 58.61606386214688,
+            "p50": 58.572049951180816,
+            "p95": 70.2311000204645,
+            "max": 160.17250006552786
+          },
+          "postprocess": {
+            "mean": 0.4717893344867561,
+            "mean_trim10": 0.4480405941739273,
+            "p50": 0.4487999831326306,
+            "p95": 0.7185249996837227,
+            "max": 4.8952000215649605
+          },
+          "q_read": {
+            "mean": 147.5925513343989,
+            "mean_trim10": 146.24686584269656,
+            "p50": 147.72944996366277,
+            "p95": 178.6549399548676,
+            "max": 296.2244999362156
+          },
+          "q_inflight": {
+            "mean": 25.553668443268787,
+            "mean_trim10": 24.76584359405911,
+            "p50": 24.54345003934577,
+            "p95": 54.50084499898365,
+            "max": 140.90460003353655
+          },
+          "q_output": {
+            "mean": 0.27673889029150206,
+            "mean_trim10": 0.242970792788754,
+            "p50": 0.2132499939762056,
+            "p95": 0.5507750029209998,
+            "max": 3.2033000607043505
+          },
+          "q_reorder": {
+            "mean": 0.2879133352285458,
+            "mean_trim10": 0.19454505233472158,
+            "p50": 0.12010004138574004,
+            "p95": 0.9122650022618454,
+            "max": 8.075500023551285
+          }
+        },
+        "e2e_ms": {
+          "mean": 240.90267155215972,
+          "mean_trim10": 238.82412128461672,
+          "p50": 239.9176000035368,
+          "p95": 272.51081498106936,
+          "max": 369.31799992453307
+        },
+        "stage_sum_mean_ms": 240.8893193384736,
+        "service_sum_mean_ms": 67.17844733528587,
+        "wait_sum_mean_ms": 173.71087200318775,
+        "wait_stages": [
+          "q_read",
+          "q_inflight",
+          "q_output",
+          "q_reorder"
+        ],
+        "unaccounted_mean_ms": 0.01335221368611883,
+        "throughput_fps": 33.01860110618788,
+        "throughput_implied_by_e2e_fps": 4.151054006819025,
+        "concurrency_littles_law": 7.9542692173957565,
+        "pipelined": true,
+        "bottleneck_stage": "inference",
+        "overlap_ceiling_x": 1.1333618212034988,
+        "bottleneck_p95_over_p50": 1.1990548406450068,
+        "drift": {
+          "first_decile_ms": 239.73853999179684,
+          "last_decile_ms": 246.1598355555907,
+          "ratio": 1.026784577748799
+        }
+      },
+      "info": {
+        "wall_s": 14.991005899966694,
+        "submitted": 500,
+        "reorder": {
+          "cap": 24,
+          "max_depth": 2,
+          "forced_flushes": 0,
+          "out_of_order_arrivals": 38,
+          "max_displacement": 1,
+          "arrivals": 500
+        },
+        "order": {
+          "emitted": 500,
+          "order_violations": 0,
+          "first_violation_at_frame": null,
+          "in_submission_order": true
+        },
+        "errors": [],
+        "stalls": []
+      },
+      "correctness": {
+        "frames_compared": 500,
+        "missing_from_candidate": [],
+        "missing_count": 0,
+        "unexpected_in_candidate": [],
+        "unexpected_count": 0,
+        "top1_mismatches": [],
+        "top1_mismatch_count": 0,
+        "topk_order_mismatches": [],
+        "topk_mismatch_count": 0,
+        "topk_order_ties": [],
+        "topk_tie_count": 0,
+        "max_prob_delta": 0.0,
+        "prob_within_tolerance": true,
+        "identical": true
+      },
+      "collected": 500,
+      "unique_ids": 500,
+      "healthy": true,
+      "cpu_clock_mhz": [
+        1792.0,
+        1792.0
+      ]
+    },
+    {
+      "repeat": 3,
+      "mode": "predecoded",
+      "runner": "async1",
+      "source": {
+        "kind": "image_list",
+        "path": "C:\\Users\\ysjun5656\\deepX\\edge-inference-runtime-lab\\data\\imagenette-320-subset\\manifest.json",
+        "mode": "predecoded",
+        "count": 500,
+        "manifest_sha256": "f0f8809bcd26f482c64a228ca453c496e214ea3a9469aa809d97fe5c2b53b29a",
+        "input_order_sha256": "6488a145f72c2e6d74dae6dbad50db9c24142739748ed442c6e6f1a1b900f718",
+        "restarts": 0,
+        "read_boundary": "predecoded_reference",
+        "preload_s_excluded": 1.1632137999404222,
+        "preloaded_bytes": 212549760,
+        "file_cache": "OS-managed; checksum validation reads files before timing"
+      },
+      "metrics": {
+        "frames_counted": 450,
+        "frames_warmup_discarded": 50,
+        "warmup_seconds": 0.0,
+        "stages_ms": {
+          "read": {
+            "mean": 0.005717558217131429,
+            "mean_trim10": 0.0050570034932262775,
+            "p50": 0.004999921657145023,
+            "p95": 0.0071999384090304375,
+            "max": 0.1580999232828617
+          },
+          "preprocess": {
+            "mean": 3.9355479998307095,
+            "mean_trim10": 3.8987324246906185,
+            "p50": 3.872699977364391,
+            "p95": 5.302574968663975,
+            "max": 8.081699954345822
+          },
+          "inference": {
+            "mean": 33.25486844017481,
+            "mean_trim10": 32.63487870946739,
+            "p50": 32.3376499582082,
+            "p95": 40.72651496971952,
+            "max": 68.88109992723912
+          },
+          "postprocess": {
+            "mean": 0.5575613341190748,
+            "mean_trim10": 0.5503502474996345,
+            "p50": 0.547699979506433,
+            "p95": 0.762274983571842,
+            "max": 1.6178000951185822
+          },
+          "q_read": {
+            "mean": 168.45717488710457,
+            "mean_trim10": 166.40297277100927,
+            "p50": 164.42530002677813,
+            "p95": 204.088764975313,
+            "max": 243.25130006764084
+          },
+          "q_inflight": {
+            "mean": 29.091317110125804,
+            "mean_trim10": 28.53322895918051,
+            "p50": 28.336299990769476,
+            "p95": 35.822885006200515,
+            "max": 67.72059993818402
+          },
+          "q_output": {
+            "mean": 0.3252048868065079,
+            "mean_trim10": 0.2742695517257077,
+            "p50": 0.26049994630739093,
+            "p95": 0.54346005199477,
+            "max": 6.493500084616244
+          },
+          "q_reorder": {
+            "mean": 0.32945933467191124,
+            "mean_trim10": 0.1883257435759216,
+            "p50": 0.13084994861856103,
+            "p95": 0.6344799941871307,
+            "max": 12.743699946440756
+          }
+        },
+        "e2e_ms": {
+          "mean": 235.97103400440471,
+          "mean_trim10": 233.4751116370063,
+          "p50": 230.0489000044763,
+          "p95": 290.9441549854818,
+          "max": 329.5812000287697
+        },
+        "stage_sum_mean_ms": 235.95685155105053,
+        "service_sum_mean_ms": 37.75369533234173,
+        "wait_sum_mean_ms": 198.20315621870878,
+        "wait_stages": [
+          "q_read",
+          "q_inflight",
+          "q_output",
+          "q_reorder"
+        ],
+        "unaccounted_mean_ms": 0.01418245335418078,
+        "throughput_fps": 29.644319596672215,
+        "throughput_implied_by_e2e_fps": 4.237808272609144,
+        "concurrency_littles_law": 6.99520074758378,
+        "pipelined": true,
+        "bottleneck_stage": "inference",
+        "overlap_ceiling_x": 1.1352832563526831,
+        "bottleneck_p95_over_p50": 1.25941480046796,
+        "drift": {
+          "first_decile_ms": 225.3133911303141,
+          "last_decile_ms": 230.9478422264672,
+          "ratio": 1.0250071736432849
+        }
+      },
+      "info": {
+        "wall_s": 16.812120999908075,
+        "submitted": 500,
+        "reorder": {
+          "cap": 20,
+          "max_depth": 1,
+          "forced_flushes": 0,
+          "out_of_order_arrivals": 0,
+          "max_displacement": 0,
+          "arrivals": 500
+        },
+        "order": {
+          "emitted": 500,
+          "order_violations": 0,
+          "first_violation_at_frame": null,
+          "in_submission_order": true
+        },
+        "errors": [],
+        "stalls": []
+      },
+      "correctness": {
+        "frames_compared": 500,
+        "missing_from_candidate": [],
+        "missing_count": 0,
+        "unexpected_in_candidate": [],
+        "unexpected_count": 0,
+        "top1_mismatches": [],
+        "top1_mismatch_count": 0,
+        "topk_order_mismatches": [],
+        "topk_mismatch_count": 0,
+        "topk_order_ties": [],
+        "topk_tie_count": 0,
+        "max_prob_delta": 0.0,
+        "prob_within_tolerance": true,
+        "identical": true
+      },
+      "collected": 500,
+      "unique_ids": 500,
+      "healthy": true,
+      "cpu_clock_mhz": [
+        1792.0,
+        1792.0
+      ]
+    },
+    {
+      "repeat": 3,
+      "mode": "files",
+      "runner": "sync",
+      "source": {
+        "kind": "image_list",
+        "path": "C:\\Users\\ysjun5656\\deepX\\edge-inference-runtime-lab\\data\\imagenette-320-subset\\manifest.json",
+        "mode": "files",
+        "count": 500,
+        "manifest_sha256": "f0f8809bcd26f482c64a228ca453c496e214ea3a9469aa809d97fe5c2b53b29a",
+        "input_order_sha256": "6488a145f72c2e6d74dae6dbad50db9c24142739748ed442c6e6f1a1b900f718",
+        "restarts": 0,
+        "read_boundary": "file_read_and_decode",
+        "preload_s_excluded": 1.00000761449337e-06,
+        "preloaded_bytes": 0,
+        "file_cache": "OS-managed; checksum validation reads files before timing"
+      },
+      "metrics": {
+        "frames_counted": 450,
+        "frames_warmup_discarded": 50,
+        "warmup_seconds": 0.0,
+        "stages_ms": {
+          "read": {
+            "mean": 2.2236151124040284,
+            "mean_trim10": 2.138331933016197,
+            "p50": 2.0366499666124582,
+            "p95": 3.6547050345689023,
+            "max": 8.736500050872564
+          },
+          "preprocess": {
+            "mean": 2.4230217791369393,
+            "mean_trim10": 2.3033183179265535,
+            "p50": 2.054650045465678,
+            "p95": 4.068250011187046,
+            "max": 15.164399985224009
+          },
+          "inference": {
+            "mean": 31.292627999145125,
+            "mean_trim10": 30.85552796889742,
+            "p50": 30.93419998185709,
+            "p95": 36.01920999935826,
+            "max": 84.38310003839433
+          },
+          "postprocess": {
+            "mean": 0.22719999852900705,
+            "mean_trim10": 0.21298564301969686,
+            "p50": 0.19525003153830767,
+            "p95": 0.3901499963831153,
+            "max": 1.320999930612743
+          }
+        },
+        "e2e_ms": {
+          "mean": 36.18739067111164,
+          "mean_trim10": 35.63661782542419,
+          "p50": 35.067300021182746,
+          "p95": 41.84067500755191,
+          "max": 90.0914000812918
+        },
+        "stage_sum_mean_ms": 36.1664648892151,
+        "service_sum_mean_ms": 36.1664648892151,
+        "wait_sum_mean_ms": 0,
+        "wait_stages": [],
+        "unaccounted_mean_ms": 0.020925781896544038,
+        "throughput_fps": 27.615477733615947,
+        "throughput_implied_by_e2e_fps": 27.633934955091938,
+        "concurrency_littles_law": 0.999332081315745,
+        "pipelined": false,
+        "bottleneck_stage": "inference",
+        "overlap_ceiling_x": 1.1557503220951313,
+        "bottleneck_p95_over_p50": 1.1643814942841104,
+        "drift": {
+          "first_decile_ms": 35.683511122543784,
+          "last_decile_ms": 35.29582000596242,
+          "ratio": 0.9891352867364996
+        }
+      },
+      "info": {
+        "emitted": 500,
+        "order_violations": 0,
+        "first_violation_at_frame": null,
+        "in_submission_order": true
+      },
+      "correctness": {
+        "frames_compared": 500,
+        "missing_from_candidate": [],
+        "missing_count": 0,
+        "unexpected_in_candidate": [],
+        "unexpected_count": 0,
+        "top1_mismatches": [],
+        "top1_mismatch_count": 0,
+        "topk_order_mismatches": [],
+        "topk_mismatch_count": 0,
+        "topk_order_ties": [],
+        "topk_tie_count": 0,
+        "max_prob_delta": 0.0,
+        "prob_within_tolerance": true,
+        "identical": true
+      },
+      "collected": 500,
+      "unique_ids": 500,
+      "healthy": true,
+      "cpu_clock_mhz": [
+        1792.0,
+        1792.0
+      ]
+    },
+    {
+      "repeat": 3,
+      "mode": "files",
+      "runner": "async1",
+      "source": {
+        "kind": "image_list",
+        "path": "C:\\Users\\ysjun5656\\deepX\\edge-inference-runtime-lab\\data\\imagenette-320-subset\\manifest.json",
+        "mode": "files",
+        "count": 500,
+        "manifest_sha256": "f0f8809bcd26f482c64a228ca453c496e214ea3a9469aa809d97fe5c2b53b29a",
+        "input_order_sha256": "6488a145f72c2e6d74dae6dbad50db9c24142739748ed442c6e6f1a1b900f718",
+        "restarts": 0,
+        "read_boundary": "file_read_and_decode",
+        "preload_s_excluded": 8.00006091594696e-07,
+        "preloaded_bytes": 0,
+        "file_cache": "OS-managed; checksum validation reads files before timing"
+      },
+      "metrics": {
+        "frames_counted": 450,
+        "frames_warmup_discarded": 50,
+        "warmup_seconds": 0.0,
+        "stages_ms": {
+          "read": {
+            "mean": 3.660967110449241,
+            "mean_trim10": 3.5766188097347755,
+            "p50": 3.397250024136156,
+            "p95": 5.763170047430322,
+            "max": 10.291500017046928
+          },
+          "preprocess": {
+            "mean": 4.320598665055716,
+            "mean_trim10": 4.223193810782441,
+            "p50": 4.043549939524382,
+            "p95": 6.509945006109771,
+            "max": 10.39179996587336
+          },
+          "inference": {
+            "mean": 32.53012488854842,
+            "mean_trim10": 32.03656064348738,
+            "p50": 31.491550034843385,
+            "p95": 35.303805005969465,
+            "max": 96.52689995709807
+          },
+          "postprocess": {
+            "mean": 0.5183124420646992,
+            "mean_trim10": 0.5051787100653948,
+            "p50": 0.5004500271752477,
+            "p95": 0.6900050153490153,
+            "max": 2.1994999842718244
+          },
+          "q_read": {
+            "mean": 160.9158208904167,
+            "mean_trim10": 158.90317475411692,
+            "p50": 156.1780000338331,
+            "p95": 179.16157006984574,
+            "max": 295.09969998616725
+          },
+          "q_inflight": {
+            "mean": 27.961112664650297,
+            "mean_trim10": 27.52620197796853,
+            "p50": 27.43575000204146,
+            "p95": 30.98111497238278,
+            "max": 91.70019999146461
+          },
+          "q_output": {
+            "mean": 0.24123310913435286,
+            "mean_trim10": 0.22853143331087608,
+            "p50": 0.21965004270896316,
+            "p95": 0.3672100021503863,
+            "max": 2.0449000876396894
+          },
+          "q_reorder": {
+            "mean": 0.329032888273812,
+            "mean_trim10": 0.16741580186112795,
+            "p50": 0.12075004633516073,
+            "p95": 0.8234050124883612,
+            "max": 19.301500055007637
+          }
+        },
+        "e2e_ms": {
+          "mean": 230.4926208851652,
+          "mean_trim10": 227.64665667961194,
+          "p50": 223.9238999900408,
+          "p95": 251.93688995786943,
+          "max": 384.217599988915
+        },
+        "stage_sum_mean_ms": 230.47720265859326,
+        "service_sum_mean_ms": 41.03000310611808,
+        "wait_sum_mean_ms": 189.44719955247518,
+        "wait_stages": [
+          "q_read",
+          "q_inflight",
+          "q_output",
+          "q_reorder"
+        ],
+        "unaccounted_mean_ms": 0.015418226571938476,
+        "throughput_fps": 30.297835278253878,
+        "throughput_implied_by_e2e_fps": 4.338533685632456,
+        "concurrency_littles_law": 6.983427460431754,
+        "pipelined": true,
+        "bottleneck_stage": "inference",
+        "overlap_ceiling_x": 1.2612925172187663,
+        "bottleneck_p95_over_p50": 1.1210564410741315,
+        "drift": {
+          "first_decile_ms": 224.56409999738548,
+          "last_decile_ms": 238.79849777246514,
+          "ratio": 1.0633867914561828
+        }
+      },
+      "info": {
+        "wall_s": 16.595699599944055,
+        "submitted": 500,
+        "reorder": {
+          "cap": 20,
+          "max_depth": 1,
+          "forced_flushes": 0,
+          "out_of_order_arrivals": 0,
+          "max_displacement": 0,
+          "arrivals": 500
+        },
+        "order": {
+          "emitted": 500,
+          "order_violations": 0,
+          "first_violation_at_frame": null,
+          "in_submission_order": true
+        },
+        "errors": [],
+        "stalls": []
+      },
+      "correctness": {
+        "frames_compared": 500,
+        "missing_from_candidate": [],
+        "missing_count": 0,
+        "unexpected_in_candidate": [],
+        "unexpected_count": 0,
+        "top1_mismatches": [],
+        "top1_mismatch_count": 0,
+        "topk_order_mismatches": [],
+        "topk_mismatch_count": 0,
+        "topk_order_ties": [],
+        "topk_tie_count": 0,
+        "max_prob_delta": 0.0,
+        "prob_within_tolerance": true,
+        "identical": true
+      },
+      "collected": 500,
+      "unique_ids": 500,
+      "healthy": true,
+      "cpu_clock_mhz": [
+        1792.0,
+        1792.0
+      ]
+    }
+  ],
+  "passed": true
+}

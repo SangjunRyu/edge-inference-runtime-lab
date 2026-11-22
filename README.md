@@ -419,6 +419,20 @@ All four C++ builds — sync, reuse-tensor, fused, and async at 8 in flight with
 See [`docs/dxapp-callgraph.md`](docs/dxapp-callgraph.md) and
 [`docs/dxapp-sync-async.md`](docs/dxapp-sync-async.md).
 
+## Actual-image classification pipeline
+
+For a fresh machine, start with the [cross-machine setup and execution guide](docs-ko/cross-machine-images.md).
+
+The Python runners also accept a fixed Imagenette image manifest. Compare
+file+decode input with predecoded images while keeping the same ResNet50 model,
+image order and preprocessing in sync and async execution. See the
+[dataset preparation and experiment guide](docs-ko/imagenette-pipeline.md).
+
+```powershell
+& .\.venv-cuda\Scripts\python.exe tools/prepare_imagenette.py
+& .\.venv-cuda\Scripts\python.exe -m bench.classification.compare_images
+```
+
 ## Licence note
 
 No DEEPX source is vendored or redistributed here. `dx_rt` is licensed to

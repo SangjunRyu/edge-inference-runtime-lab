@@ -1,0 +1,7 @@
+# Python inference tools only. Install in a fresh venv, not alongside CPU ORT.
+numpy
+opencv-python
+psutil
+onnxruntime-gpu==1.26.0
+# CUDA/cuDNN libraries and driver must match the target GPU/OS.
+# See docs-ko/cross-machine-images.md and official CUDA EP installation docs.

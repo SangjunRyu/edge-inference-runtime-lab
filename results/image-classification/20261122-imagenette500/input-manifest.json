@@ -1,0 +1,4014 @@
+{
+  "schema": "image-classification-list/v1",
+  "dataset": "Imagenette",
+  "variant": "320px",
+  "split": "val",
+  "seed": 20261122,
+  "images_per_class": 50,
+  "count": 500,
+  "source_url": "https://s3.amazonaws.com/fast-ai-imageclas/imagenette2-320.tgz",
+  "source_archive_sha256": "569b4497c98db6dd29f335d1f109cf315fe127053cedf69010d047f0188e158c",
+  "homepage": "https://github.com/fastai/imagenette",
+  "images": [
+    {
+      "path": "images/n03028079/n03028079_2842.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "31d1df1b1b66d7f5c7b09e0c4058510a4de5571c0d8968b45d81203ff0e61e07",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_2842.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_6292.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "a5bfa3cffa458aac5a50c9346e5bdd1c66d9d6ce07704f9d30717e160b1ca9a4",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_6292.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_10520.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "e9739f907056f22bff397d38669a9b671a106511fd929e5e29de8e4382d85e25",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_10520.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_30671.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "0929021f9b2ad192a98ee7c19f711049901773fb2feac26bd701e54bf94488ca",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_30671.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_2760.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "5289e050b6872ca373df89931ceac585b661d0c38a52c0e80b95bb7a469ec807",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_2760.JPEG"
+    },
+    {
+      "path": "images/n02979186/ILSVRC2012_val_00043121.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "0c2731cc2f3ec26b15c731f95d858e6d0395b82ebb7ddfad4b26faf4f34d7498",
+      "archive_member": "imagenette2-320/val/n02979186/ILSVRC2012_val_00043121.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_28552.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "6a4b9b087c38936092cfb7afed355a9fc874663f054f075b8d1b4623e8c54b53",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_28552.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_31112.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "cb66fc2a33bdfe1ad63aa299657b766429302dc2971f58359411f926071d017d",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_31112.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_10902.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "3c30519749db279952f650d48b8df63aed7bae92a2e81227e6240a78a2301f40",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_10902.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_30231.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "5283a43e45be85a5e5481d41ce9ccfb73a4dca33a6bfe971ecac33b3bdf2ebcc",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_30231.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_8160.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "b04e3f915e05d4488891dc59bff0b809dfc5462db006ff805aba835f542f2e4a",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_8160.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_10491.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "d2848b7c88b2a96780d76924547e584fa5568c704c8402e956481312625d9b69",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_10491.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_7791.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "490b4df3e56a9c85f8e0c055b8e140bcdb7f22661e5052747bd2bc822efb416a",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_7791.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_2812.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "178e083a54f6982bf12f783251c1fe97c62c1b7525ee435b12057e557dcdf864",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_2812.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_7522.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "25cedf3f86047c2be5f8acb6d6ee3a2f6acd34afb11e9f29d88ad62479580b16",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_7522.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_7510.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "1bce291487628d087087dfbe594d18c7d7fb7a43df6fba05b726cdba9006c79b",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_7510.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_8550.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "357a10953538e061e4496fff31828d991c5cffd537fc9eb24a69631efaa3dd2b",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_8550.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_4262.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "af6256d1894ae3f27628bbd94f6fc1e83c4d5ab0d026dccaf608f76e3d317bc6",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_4262.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_2432.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "eb771c6ba33912d6a070199a58c5919432bbf568e4facc42cf76a894ad5f7a67",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_2432.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_43980.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "b32012f41aba1e7ec39ec3962967d6e67ab133f0598fecd40a3dbb506caca47a",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_43980.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_21591.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "3a3935f2989bc6767fab123c58b72524cc0339bb3b7f56293b646fcbc8a07b87",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_21591.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_5371.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "adc61b8f3c1524162a53f65f6f8a47e57d5ac44a06b339052ab50b8ccca9a7ab",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_5371.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_4411.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "44c4c0b119fc66cca9f5a6f7bcb7b59031870dae4620ee1fef0cc1ed78c35e89",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_4411.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_29712.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "fcbe01b236926b7c2deca14ad5b9ade733be48f11be4af15cbd01295f0299f99",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_29712.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_12752.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "e9b8da716f601d86bda62b02a72f25d24a8eb96143838817cfe3e0818f24ccd4",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_12752.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_46700.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "0b956d3f3c745931701e36ee9b0b3ecc7c3cd11cbf968b792143b547d7f41517",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_46700.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_19690.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "8f35126c600a111d74cf0a6568de163e2deeee568a66547efe9a42dfb0875ab3",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_19690.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_1210.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "1452bccce6229162715e28729f4adcc03cee0f6626267af5df4bf7b2e35a73ef",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_1210.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_28832.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "8070c4743192756bc222bbc6f6c958e78040657cd19ac68cd5e4791fe11b258c",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_28832.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_12.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "a87ee3a61271ac4cc1f619a3be8b91dbb15427837e253e920511dbe9c9de5cfd",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_12.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_27422.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "8e5aef00296a739567a25bfd0c9b37ba5bf6990f68236dad1ef0e03caaae0052",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_27422.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_3011.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "e318fca94539f4eedd02989ee486989aa57924f98cd9f00b703157e6695c81b3",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_3011.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_18491.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "518e9cf002bae7f8c1d10d0598feccda2bb3da1c18e8e96a21a3f34b60dc71cb",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_18491.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_7712.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "d2902952ba699be923368bf9e9403ded4805d09c0579c712118472b6e7d0986f",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_7712.JPEG"
+    },
+    {
+      "path": "images/n03000684/ILSVRC2012_val_00011170.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "005189a873b43429b340dc8026fed7da71f2212b4a49f7aeeda846d0294c07a8",
+      "archive_member": "imagenette2-320/val/n03000684/ILSVRC2012_val_00011170.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_10402.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "9f4c9ffcefce4f33302ff30a7889e866da84bf4326432d40486b176c9cdda6bf",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_10402.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_25462.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "baa67dc4d973786886468d1b6fc0e9d4c037bd67fa9258974519a5eb4e75e280",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_25462.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_19812.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "5292cfaaaa0117a3edc3b21186e7128b4a1b88f39370691a482d963fe32d2a7e",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_19812.JPEG"
+    },
+    {
+      "path": "images/n03888257/ILSVRC2012_val_00010460.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "9fa10e113b6fe15c2acfdb3c1d889084719f4f96b45ede72593316ef333856be",
+      "archive_member": "imagenette2-320/val/n03888257/ILSVRC2012_val_00010460.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_8060.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "0d97ddb5f55c5b850234f298d351e1a3ebac24bff9e6a74953d0bb61fe5ea739",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_8060.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_12672.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "9080d6855ae703658dad68a028d5dc3da2f0ae8507c8e9347281d75de863f216",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_12672.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_6990.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "8471b93883822fe0d8b45b0f39be7769091f7dee6689f25df338963ccdbcae85",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_6990.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_6971.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "3bce1c46d3d28585506a3b5c7e0cfcab4ea6ed42613cb0b471eef35d4dc19e24",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_6971.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_29900.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "efab82d6b11ffff0bf24b1cf3a387a9cb57a28e5ad36bdc338526475a8e00cb4",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_29900.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_10721.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "0847efb3664167014cd6a6b3eb2ab05860bd81ed2d3d9f0e6d28bc9a68b40ab3",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_10721.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_3070.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "4eee442966daa14aabb5751b9d45354e423394665b1defe6a73e02364ca2f92b",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_3070.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_6672.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "e0371f1e31c9c962a2c6b2011fc229fb6d1b7ce2df8880425e56c62dbe6dd571",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_6672.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_8421.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "f13a06dd30fbdc05ebe3fb47994eba2072555152f49c5c70aee691f89174ed2c",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_8421.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_8710.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "c50bafde1bbc132cf505facb68949efe0636a29be62b80de929eabd0e763ad60",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_8710.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_30930.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "04c24dc397348e055031f987c185637f44e4e762b219f07c85a879798e53cc2e",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_30930.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_3311.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "f1a29ddad86ea768aef224beb35ffa88b807290b07b1576449830f9fe5fb77d5",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_3311.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_10020.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "08b89f0e8812c87bcaddd2852f9593e6dde9fedc12bde25045b47b79dc4deca7",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_10020.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_9090.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "48a01fec231273daefdb725089bc7d0483e6ef458caf4c5d29bf3469ef42e432",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_9090.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_13770.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "3e9142d71274777e1b51d604cc5b5889db0c6dda15f7bc65cf73b3713840e446",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_13770.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_16781.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "c164167e0d46bbb85cbb5de0a23066360d7060359b4483da200ddcc75315ebfd",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_16781.JPEG"
+    },
+    {
+      "path": "images/n03888257/ILSVRC2012_val_00038942.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "27e3fe6b630aabd6e592b6098d47416f27b67ed69cdca321e6783fba1d9f2be8",
+      "archive_member": "imagenette2-320/val/n03888257/ILSVRC2012_val_00038942.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_17501.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "176efd92aed566fcdc0f2653633b79a976831b1574eff9390640c491b65a6426",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_17501.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_7132.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "99d071246de4fa4154c6dec072537865f3dcea3a467533f177a2dc591c9a3ad0",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_7132.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_4491.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "ce2254af8f1ae7e7905c62ad78480a95dc79f31d579442e3da7f4ab4a8e317c0",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_4491.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_19071.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "fa0679cba285ad4cec572985334ed3f43ca414552f83433892b4c56496d49f0a",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_19071.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_3182.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "f524e9b8243d38cc6305229ef3e4f06e8e2565f633214a2ff9dcd2f0bc60eb9e",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_3182.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_70632.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "c87e1cd77efa93e1e822e614dfb58774fb8621989fa59c83ca6cc975c00ca8c6",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_70632.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_1611.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "f9c0130faaf6c595acb2abe82c2f567c3e878f89c0616aadc5cf896bae685d4d",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_1611.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_6312.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "5b42b5e44584496b8914ddcb0377b5956a780d64f7ea1322b079c4c521c38b4c",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_6312.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_7160.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "a9579539dd5fbaf1c0217aba2cf93e3da0626647f8d83445ea71300a33b35dec",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_7160.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_622.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "22b818f503533f7bd8f52553b4de2bc00263c5ff6fe81b075768982c9c22f426",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_622.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_4401.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "930ebef7138b14142a2a76fddfe36c69b831f2af90df4f65f0444373092e8eb4",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_4401.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_29311.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "227418f715f49ba23210ef8b80195fdeea96842c0538a30ff89bc93cbf541064",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_29311.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_4401.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "0708f448b7edca3f82d8fdfcbc49909274c6b77249f9b79b65151b9d4cdda02a",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_4401.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_3252.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "e40dd0fe57fd70b799f6070fb3777f7fd187cb51852c907c6f759aeef8101c74",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_3252.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_34171.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "e90741183aec689199470919f8cfd11449062e383f0fb187b7ee0bc9cfae111a",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_34171.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_3260.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "e46b87572b7fce54d1979151463bdab012f4caf6336e2508f0ee84531335af55",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_3260.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_9920.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "31902157fb2be1e3548fecc6905c0dd9962034480413de09546b336d03500df7",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_9920.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_6050.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "48838da4cf51e83dd0104f99ba358dd6583dd8f14d7f65455c8c5c24d4ae1998",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_6050.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_1530.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "cde3f3d6118bfe7ec0ccde4f32344acc132fc2ef98835e5f834f0a1e11d429df",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_1530.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_130.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "39f6541112a8755bfc2046f88e9098de2db5a25f4d8861414d71f22124741eb6",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_130.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_16382.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "37be593dbabc403d7abcb8b4fa7c2100c623140f83468090bb80973742ba8abc",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_16382.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_11481.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "9ea093abe5f570186d616f89f6e64c22f98e56ca262523bca1247aafe277c546",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_11481.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_5060.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "3101f701bbdd2165c7080c218309452e71bb325e11c4df675a00f6a069391ce9",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_5060.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_7091.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "d28dc46585c3cfdffb20bcdbd659bfd27234026d5d49f0651244faa5bdd9157a",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_7091.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_26221.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "93501a4764846c487bd9f97d1778e7716215f05a54b45ac824dd0f14f6261cb5",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_26221.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_10760.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "ea348b54abc6716e16de52031b28d7c9fa0bad92314cf5aafc0884d9c258cd3e",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_10760.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_3952.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "b340fe23567818ec7794d4fd8f0bd3e2b4993250bc47ef0617751eb700d837cf",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_3952.JPEG"
+    },
+    {
+      "path": "images/n03445777/ILSVRC2012_val_00020502.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "e9674a14190fc5dc5770249d6459de288e1871bb1e8ef118241d75b01a61a8cc",
+      "archive_member": "imagenette2-320/val/n03445777/ILSVRC2012_val_00020502.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_3161.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "e38eade6ce6216eaab1661cc434c3f53f0e497495403d100654649525f27080a",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_3161.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_5301.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "120a63f57d2ad76accfc4460bd1351d80464b3637b275d1f51491dc35f46afd0",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_5301.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_7632.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "c8f7319fa83eb2d47de76b9af40a2863d8284b6f5859b6447b77a5fbd7aa94b8",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_7632.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_35962.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "30086e6960968e60a94793ad83f50e2b06ed624b969abf01120490af72a7e26e",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_35962.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_11782.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "ee6849dec0a52c3ad7b898e499939ce76cd94692551401aabff41ee21d0c224a",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_11782.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_15621.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "30db323bcbccd353156a955fd1e3e96e985ba0883435b27df93a216dd6f907f8",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_15621.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_7991.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "ebed44057a464a3c8d8fe44573653839ea9c81b9874a620422564e86e8755ae7",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_7991.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_82.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "dfdedcc353df704f17f71d8a868c86ded7687e4614423cf4ed3c989f1d1f21a5",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_82.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_15951.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "b6da9bc257bd9049c1e3b60aab6a35ca91cc5cafd782c4dbedc9589841408420",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_15951.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_4341.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "8444327b3be8fddbc526e16bfa04fa7eb1ed482e5888922fa08fb3b9399f3e79",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_4341.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_931.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "b96106bb0cbc0ab38e3d3508bf6a2a4bc5c4baf5c73818da8ecada53b19977ee",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_931.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_22892.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "bb56d27779310c929938a38446fc29736cb3d16dfa3fbb40d425cde630b05593",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_22892.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_4220.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "01e931b0cb699b1ab361a742395a8098ccf61eefa18e629de62cbe94ec4df1a4",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_4220.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_1342.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "172f98c1e47e9b1fbc2779b1db402f3b9ec5ba5d5daef444eb460b2636fde125",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_1342.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_2961.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "45f4e6d8989756836c1485365251f1bf5bee51d1fa435d36349dd12a037877ae",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_2961.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_1381.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "36a08ce9ae3706f22ae6de19529252f69ed940b002dba0a6797a1b4b6ef8ef6c",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_1381.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_20562.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "9664c46eb36eca6e930502cc961ca9de1ea7920c2618344c307d7c1e7c5802bd",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_20562.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_1621.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "06002db138e61bf20ae38cb1d8d3e51f2528bb31e29076dd4636b48b64f2aec6",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_1621.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_18750.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "a2611f90ceb058b8cccec1a54e06bf768c079668ae1c864e6123abf20105d694",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_18750.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_31010.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "d7b85a4da781153965648de86b452bba40456404bb54d3a5a7681b89926fd74e",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_31010.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_5411.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "9b89cda8320a4300d52febc0c322d6df4888b8a7197fc3e762ce213c122f7283",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_5411.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_38041.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "9fce5bc247e94a6e7e7f729257b55d8e39d42aafc385112d53892eac02bc89a4",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_38041.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_6031.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "9048a70b1ff75ee21c83fc807e6539210d91c5c0b3d56dd4fbffe7d53de4dddd",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_6031.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_652.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "9fa1a0b988cb8234616021c699a4702ea4dfbb591a167a3a9e8f826906a0fd41",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_652.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_2562.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "6f56bd391bf327b9d974777723908a62f29733c238dca37292f16d16b401f663",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_2562.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_18190.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "7d496571390d532f2bd66b075d9a4a50ea6f9357ea61bfd28a21e7bad969f5a0",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_18190.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_3192.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "309a81439ba03864fc91e403fb0e12732ab0adbfaf3a4ceed4803ac8be5109f2",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_3192.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_12732.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "9eb0dfc881347f663eda06d67e18b8a239d585195ba7c55c9587f071022e4663",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_12732.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_5790.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "6dc379660a05f04b4ec677ae0fde4f23735cf7fc46853107cc508699cfa5ca43",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_5790.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_60902.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "a7a38a9ab564ba8f21e9d8990758973e49ff5993cfd9bdfcec94a503d01ab9a0",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_60902.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_19472.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "b15fa84f6d225396dce77313b5f63893f68e5098e1dc3b78317d2d695e519035",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_19472.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_21180.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "7c96ee65b819baec1a67dbebd2180b6041c3cb5219e6ea8248a7fb8399b2a482",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_21180.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_5231.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "96bde2da94ec412c8007cb1942b61115dd05185e7f11f4e99211cd11938b836f",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_5231.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_15901.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "c6c199130457590b53a34497800407d5954e81db6ae25c965f08c56692fb433e",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_15901.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_13982.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "2bd3608d043eac2296f2402aa62ed27326a8c68024a9d070e900d371921744c0",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_13982.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_8541.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "55370fdb5118477105b9e01eea0885d2968c599de3f069d0d4c30cb83334f905",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_8541.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_6742.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "ceff5251d6cdd90dd2f0319f92c9a1fe67b45e80d2fca6d246e8c9f8069bc56b",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_6742.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_12701.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "6318eac82bbc8cfb037381e140070d535b2cc3e3188d93b547c509fb9ecf539e",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_12701.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_4562.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "08a1780a2f1f86f5ac62d9dae1eafb3e1246de5e9bbc233d7f4b63464e81b541",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_4562.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_16820.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "179bed17ceba016ab21073bf28ef445c0db38483dd8a03148f1831124135921e",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_16820.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_71550.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "e76c14846d108966c888c135bba6c4bb7e93168e90da3a2def6d78cd0534d922",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_71550.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_33001.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "40e5e9ea44311a8cae6206c6ffd820eef177995f2a3e7bbe4d222fc579a93abc",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_33001.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_482.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "5344351445f2e24ed885049c643d1b9afbe4d972ff3e1dc2e39c334331a23dca",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_482.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_7371.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "29c3164a45aebf20cb8006985fb91a88b83ffe9fddfcaa5ca9d01eff071a861f",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_7371.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_3180.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "964f58d0449dee45fcd1ea20f32741a9d88493bb15d6463c23d148b7e6ddbdef",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_3180.JPEG"
+    },
+    {
+      "path": "images/n03394916/ILSVRC2012_val_00025761.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "d9389a7c6c510a943966a5615ff3961b7965f90396ba486861e22c5c645e7b86",
+      "archive_member": "imagenette2-320/val/n03394916/ILSVRC2012_val_00025761.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_15291.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "37ca26aba98a53d0ffeb795024b0d47975863e0549c139a39d2c4ecf55d32470",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_15291.JPEG"
+    },
+    {
+      "path": "images/n03028079/ILSVRC2012_val_00016542.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "40fa7ca24ecb2c16e99d506c02cd5e82f25d10ca94db1e25a2ea49f43e102dbf",
+      "archive_member": "imagenette2-320/val/n03028079/ILSVRC2012_val_00016542.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_1000.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "9afd8e378c3537c7eda8cedcc5e8ea6a1ab382a756b90fffceae3dc270d7d9e8",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_1000.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_18450.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "e682e28e375173b5120dfa5c5a39224061d39aab45df825c4432c703a13022db",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_18450.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_45760.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "ba841b0bad6e97272d035bd3e7f206b3e942c0f7faba750d9b00dced2463911b",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_45760.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_27781.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "82683151df66e3291b1471eaf6b79eb25411dd95f997f1a105a0843c78c099de",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_27781.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_9450.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "be7b1c606b958342ddf656dfdac4bc35b1f04db5b11f60e546e16772ea7aa212",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_9450.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_10750.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "18f3564f8e7ab413e5e874a53a133a738dc8343760eee8806b8e6dbd69b9a44b",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_10750.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_15700.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "1f068c05cde15abe3dc2069274ac1648d3763821ba0b17a3420215d243ac99e2",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_15700.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_29331.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "d1a2339acd833ac17b006cb465fc8ac9c49e60992268de0fc84762c3c25c3cc2",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_29331.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_76121.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "087c1a649215e01a429a26a8f6bd8865d2246cd2a8726eba8747158d35a43d79",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_76121.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_38680.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "72eaae04d6bd1ad6c7565b55e60125f88ab5bd8e0c8c2582e1d7898f0ccc1733",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_38680.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_562.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "5506f2af92093438fb8fd1a44846a1cee4afe52ddb3c2fa562101995704f2829",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_562.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_4670.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "ceb0f50bdf62a672e784e9756fb51fa8959395f0c255af0ad3c28fabcd79bba9",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_4670.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_20012.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "6ef8a70d61275bfa45418537f29de7151cd381615dba30b4b051458f24c8fa36",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_20012.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_3410.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "1c6a91ff329ff83b997826414e2dd3dda193e4e3203c483065207951a413b392",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_3410.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_800.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "fcbc6d0db88923203980835bea3348179da314e84e18db9034c66df954f6a4c4",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_800.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_76461.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "76f9804524b75366ac6dca1ffaa95f8c811a9501db77b5bbf03176d0de44ce15",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_76461.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_4392.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "6056ca5edab34de68b9799645009e658651ef57072da4e85a05918eb92cb3d08",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_4392.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_4801.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "bee0e8daefea40445474c6cbf0ca8dfaf8a34359aac09daab8623e0791796136",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_4801.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_212.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "fbf4c591f8c3b17c4f48365a16c725d2d0de503eceabd8d834524801a2d342b2",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_212.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_15461.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "0b87fb2e8f66e9a209a4a566c2c08283511d3bd4926f75d3dfd449d5610b70fb",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_15461.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_14310.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "1f8b7e5f3834ecafc36ae13dee41b1a68bb55e24b89fd2fdf389e682f53e5e06",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_14310.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_13021.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "a83e6be118a782c7fd6915961fd44bd3d31fe8985b8660556db9c1e5c1443e1f",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_13021.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_8122.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "1d7102044c7e9b5a97a0121b3a5c82780fc6bd1110170e9a93b25a0d04d0285b",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_8122.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_1000.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "66f5f09f868be1be5a5ebe7c8793c098595df8fd224654ffc860648fdb48473a",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_1000.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_25542.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "fa856882177c251ef279c1dfd9e30ad2b5bff9e88346daa7f20430fed4894e71",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_25542.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_1740.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "c33ff63bb4f326c452cbdf0ac51269b138c622b8fc644e1a87812dc527e9481e",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_1740.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_13382.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "c7e4a27cf331053348b92faccea125aa1d51dc8eddf55f6f4babc33896b50791",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_13382.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_13960.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "d5eee76048f34e445a8f1216532d74ff4d01da0ff7a5ec6856a777b591df34c3",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_13960.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_14490.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "b25c32645aa996b10679c88dea8c3bdefa9c2c618878ab9eef5e11187ca763e7",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_14490.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_17851.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "782ca16d46a7a19eb445497828593f301cd447515a5e682396f9a8596ce07816",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_17851.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_43982.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "ef93aa537ca79827ca5ddaf70474d7d3e5ea8f8cd08b83e2afc7d61c446b2feb",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_43982.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_31180.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "2b926bbd7308e42a39376277802928a79a090d8a5b1688f0d65c3c91aca3e02d",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_31180.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_850.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "d3b8c60cc0bdade005ff1ec8a7ef18ff155e806da318052fbe47bf77222839c8",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_850.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_16542.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "90e038c7b86f40fe1b67e76612f1e713ce6339e99d12191fe9bc904a505ed875",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_16542.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_15531.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "aaa1324102b2a5af323bc44d280998e24033e1f1879a1f362d53e894e819ebcf",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_15531.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_43022.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "5e01abb67dffd9057833d775713729575d14360eadb30237b0601a0a74cac1b6",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_43022.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_38581.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "e1d5b1f0f5ca1b55e0bd0133ecff740bbf224dfceb5db8ed2d3b3270a63aef2b",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_38581.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_20450.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "1183c6923c4dc2d23814b07f3a7b8d0a285ebd0a85030c2d0763940255d2c2ea",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_20450.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_7860.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "ef460eb20b3e018b31ffdf1885ae4016ec5235b6ec38f7f5b96c93b3db76fdb8",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_7860.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_57010.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "07204c586adecae05ada748ecfe1bc7d0806ea67acfce6df55c3885ead33f29a",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_57010.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_13821.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "da7fd4d89846a836b50a78ca0663e01f55acc0cd84efd3ce8ed93689b2628194",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_13821.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_6082.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "abb370c1b78053ef6fa41d544cd16bfddf9e3219eb9837f9a664c9c9360a3039",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_6082.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_751.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "96736d0edaeabc01096e52e18a5ab702a3f9070d7795daad5980398d5ca1528f",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_751.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_35740.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "b90f73b7143967e771c43818b65b7950cb150c6af7d10049c97dfc471f92b8c1",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_35740.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_17641.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "ed6fc5a4a4ce90ca0dc34726379d2d64fa2920b6e15f3e0fd7f21ef0fdc103af",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_17641.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_10380.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "7492c2b80baa2235971ada9296b2794b0808d6f8c5fac7ea85c7c509875cb777",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_10380.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_17142.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "0b358dd7f4515b2a2135870b535903776815a3b0db3876ae6a6611bfe1f8aeed",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_17142.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_14600.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "6619c6e155ac1cdff30517013f9b6b163d865fa2ba5e4bc3a286ff4561e3c161",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_14600.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_17171.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "df2bc055d6f7050fdf1c94c27d50957fd0b7cbd407611e168cd51c8f1497041d",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_17171.JPEG"
+    },
+    {
+      "path": "images/n03417042/ILSVRC2012_val_00006922.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "2a02eacf27c6ffa3a1fb842680fbee98c11749f6422a72c0e0af4fe4f5a4fa38",
+      "archive_member": "imagenette2-320/val/n03417042/ILSVRC2012_val_00006922.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_41391.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "0dec023e58f9eaffa5a678cdb3a5e6f8cddc59b8f638f3310c058ad39a601a22",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_41391.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_27530.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "699c4f964cfbb25131cc75713171121aa16741c3d11075eb113f31bfb6cbd71f",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_27530.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_3350.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "8e17716abf4df07a8e49c04880bcbf1ae89aa4d3ab975e4d49974ed059848c01",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_3350.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_12681.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "f3d4db6f93ef0c0d87bc6c1fe5b83b0aec04c3658d9221878d0b98c306f356c7",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_12681.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_12111.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "101b05032d2266fb85d59ba19acea9d006491d5ad7fe5b2874014e5c1a67dbdb",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_12111.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_121.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "23aa63d9dd371e7c2b5127efb8d2282fbd907b5c2478fb6dc882cc415ee05998",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_121.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_6392.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "7e7123c2b39e0b6b3acc9284e6ac58227be542bab55b26883fc476b52064938e",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_6392.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_1561.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "982f84f942d84092ba1f85f7cf3d01535c108ef7c5141f77246491d3f6b29e5d",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_1561.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_6190.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "0b6cb1e8bffcb1c1bc4a22d4481f4d8cc0980182e876f90884298912108fc110",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_6190.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_4792.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "c5091e8556b481c28384096c005ac8e3075b26fe304138831766bfd1b3be0cff",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_4792.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_23541.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "32c23f333d2cecf34c98b9310e2053932c62a4797c370c1acb7f11eecbfafc03",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_23541.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_5180.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "7eecb3befcb0b85e6a3fc6581de388d3e6f9218831f6f65444a8fb5086cae6d1",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_5180.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_4070.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "8944cb5fde1831dd911ac3194855d3622112686bc0be42d4d58102a766cb4a24",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_4070.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_7061.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "6b9d2b719d832a9d0808fa0ba9f4a9f732fed1b65a680a96824f2551882ba57b",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_7061.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_10030.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "e17bad7fbe596902f9da7f7e44197b9a77c6aca89c18b48fc2e6050e8e131508",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_10030.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_3400.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "86e203fd505fefd5c148ca894af84be5e5116009fd20567fa1290b0d65990e04",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_3400.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_7950.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "633a350956812134646a7794ac0ad01bb5971c4db9e4c1e3ee0c78153697864a",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_7950.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_14362.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "11a5af1e7d84027d05fec86396bbcf4fba2f784239b2b804133cf691597481fb",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_14362.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_17192.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "5c4a538ccb5daba98ad9def1f4df19ac4590c7a48c2e872d97095955de784b31",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_17192.JPEG"
+    },
+    {
+      "path": "images/n03394916/ILSVRC2012_val_00037592.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "0dd1cb27e5621c9a91d861988c9c84b7ad36d86e97b6bbd1224afdb6ba4de7e0",
+      "archive_member": "imagenette2-320/val/n03394916/ILSVRC2012_val_00037592.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_11491.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "d42db13903de73cf929f6b4851893418de078b46c3f486da1ee2d6fc1ce88a5b",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_11491.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_26451.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "29e7999896e7a6b9a13192ee611815f4d622254ec01b221c492a97a73f27f8d6",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_26451.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_20711.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "6fe229cf98f9f3a7c147f05ce243e7e4035b7e44d929a8874b8fcd94bb1ac9e9",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_20711.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_10960.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "0fcc67dbfba83d793305607287288290591daf001c8a4bbf205c2792be9e3e35",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_10960.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_11410.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "360d429b6d72c36d56df2d140d5c802227f2203d96466ce06f012894380bbac8",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_11410.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_8712.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "b6106906ee1a51663ac1c781f9bd0b864952938e103bcad2ee850770ab83dd1c",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_8712.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_501.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "03896e24e5f6dbcd2618988c77e6d7a29c676e8ee05fd23a65bc1da5eec6ff6e",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_501.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_6232.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "6188fbfb515302a04fef7ae6f0f3e461c92938ced9b0ca00efee4a71e14503ee",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_6232.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_29622.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "da1efe43fb6a920d7ab6185dc654240e3104006fd01db4bd965b82dd773e75e7",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_29622.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_9301.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "075936e00cdd864ab054c1ae89f6e35449c48916c6c3ef84f43e05735bf232c8",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_9301.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_30451.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "2c4c18817109da4e7905057dce3ae51cd1909d8565cf7fe141d790acd486d160",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_30451.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_17980.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "cb34072aa559e1a74a35c9a41722371a36c176ba11798316a5b972b4d78c8d01",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_17980.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_5101.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "3c10b5f56238a38ddc7c35a0f31c72c41b9469a935bd657b28a3f2ce3efb226e",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_5101.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_19862.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "f9117cf574876df09d7e26896b869d2ee557e37f04bcb32b986016ea56354f3f",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_19862.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_7982.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "d1353524d736526405a2477e310e5ba3157792ecca78f785ef88a59c5dcdf69f",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_7982.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_2280.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "eeafa07e4bc78c5769bbe2edafd95121b492a68b8bfe1b292a74a6f45e1c3ae8",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_2280.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_8092.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "3888e67bf17fddf88106aa6b04c8f73838650fc2e001e41e421283c98e4db9f9",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_8092.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_18581.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "220189186a12dc41f1f4f6258cff4dc8e8e87203a76b1b74828e5b14cf59b074",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_18581.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_4552.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "82b144fd35e9dfe9f32bca86e8d8c51f6f450cbad7e97cf9f3ad3a377ab712e1",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_4552.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_20650.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "682c384158191ffb0c2fd4e4a55782e824ba169c1a200b56c78f7eae9186b00b",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_20650.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_1082.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "8db736ba4467eb68ce32502062f04ce628f449a341e6e8365fb2f73b168c0270",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_1082.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_5432.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "5214d83843f42a22383edca797ea2b40a07c14297c6f9e823c77397d941ef1c6",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_5432.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_42912.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "6555c38e60ae88954cd1d55e6ec20fdc0d3917496e476b02573bcb84b7eb8e83",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_42912.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_1282.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "ce88d092ba7210a526eaf49a624ffe86958d27d83ed35ebc52933173c29a6561",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_1282.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_4311.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "6eac23f1ab6fa8116ec8bcfa4cf2af35788f62aaf68a0da4ef727d1a8ee1ab4c",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_4311.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_2980.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "68853b6568727a8fe6c31f655459c9bb0712583f6950b7deb6ef9a1c547d2b22",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_2980.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_29842.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "a54bce62ca8ec8ca09d95e5e7bdcc1f91637f48a3ad206597912ab08840bdebf",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_29842.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_5621.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "5dba9090d46479f8994d9018cc85741b93c008f830351adc40ff4cfd24a02149",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_5621.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_11592.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "4a44a3d7da948fbe8e5fddf9954eef1b1a837c604523fd86e6e2929569f18b3a",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_11592.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_4290.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "606a4e611de3ba65227b4e0af71e80a930df2346407bcfb49a3fd96e156724f3",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_4290.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_2241.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "479e13b5d59bcc9f3c492fcf67586609126b0047132225305b018c5dca77da94",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_2241.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_1632.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "707c81cfc153faf3245b6147dfc1512e022ed2623da1bf6ad0608eb257076c9a",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_1632.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_18981.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "78e33560a338922ad78fa58438508938809e2e20b39429d754b115a4689c774f",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_18981.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_970.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "21d58cb69c584d6c0b6a523d309cecc6201198de2b12072c93d549479e7210d1",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_970.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_24072.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "7f6633edf885279743fec915443f749718a2cebf551cda2888a738bebc6aa327",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_24072.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_29512.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "84106642cb2ff49eed5d257e70aecf6ab89edfd3df214cb7739f921409815ca5",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_29512.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_9812.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "2c19c5d16e3924170d7fff1d1acba30dd6c7400efb67fb5a94fbdf01482e26f3",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_9812.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_1980.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "c6f84ea1bf2ec51d30b325a5858f96d9031c9162e0cfb5e54737a9c87eb6ea3c",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_1980.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_921.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "11e9e2e19921ce6346a60f7e35900456a91eaa9b654c9583348fba2ae9c294e0",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_921.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_25331.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "9e6865b94437b6d6a792b7fd844ddd08cda523e52440a03bfc8dc517131ef896",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_25331.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_2642.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "019a6a2e5b9a105368f8ea322801bbd3077d3244e8c50a80be95e7a5bbb64f0c",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_2642.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_17811.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "9a38e2b01672795cbd34ddad1ebb23f48bd7af4410136f4460b28f6200ebeaac",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_17811.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_671.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "d8d0a2949a95cc7e2652dbd304d9e6e57e320b9b978c65dec43c8c20a7974d12",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_671.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_9011.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "51ad89d46547bcd7c55a1f664bcd044edf1ce3ed0d40b90aa0b9d7c204462846",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_9011.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_24532.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "730ba284005d266b2670e45594870a04abeda5bdf5232a320d4304649d3a43be",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_24532.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_13290.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "5e2ed865148c74a347758222fe25a5eca0826dfe6da0ad76ea442418abdcd4f4",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_13290.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_9640.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "7c416808034b40c6ab7f9b97512431a17aae580fa0a98a88772166184bfe84d3",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_9640.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_51571.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "df85d00793751bc14028797ca9352b924d34dd18e4cd27cf70a600a737d72db5",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_51571.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_25781.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "f81e1d043d6bbeb0007cc8a1424a6adbb10f55f03f2fdc323be30f786af233b3",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_25781.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_7562.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "aebaa50e11eeec77860ae3f8f173b77a5524d64077016bc730181d6f38cbe927",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_7562.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_31790.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "b27b349627caab10e750dff7a660220b2f21bd3b24543634c5779ddd425cedf4",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_31790.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_3321.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "d468771da7976188ddf0562213c1329c2ef9d825336a258ff50a79a964c085f1",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_3321.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_15961.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "28b23a3bd2db8f27786b32120ddd6a7e266bffb1de27827093fdf480d96d2f94",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_15961.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_4271.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "5312b495f08d032ee45d789361a4c124b894fede9ef2af2e8edfa3a327d67008",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_4271.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_13860.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "552a509e4d858e63ba18617c76bfc9e7a6aafb19012c77fcd92280323c01f8c3",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_13860.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_3950.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "be42c5ec70ee84e92a47ce8edd07ec9e8bf320e05d0405c89718d44d71dc8b39",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_3950.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_72470.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "f0ce99178e94b0c54f6995c3fd5669d9a727a006118ba4d75bb307cca773dde7",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_72470.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_8861.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "747c06d5bcd5fc1b99948f50a24412d6194374a95d77920b0b5a1f302409f75d",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_8861.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_5240.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "fd4ee0262218bd1a157e3a08bd895d63e4289dcc412b5239f561ca0f049627dd",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_5240.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_2312.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "4d12993bcc74ddb2b7926071a75a569b3704d6e1b74ae69d4c0c123e81fb9c23",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_2312.JPEG"
+    },
+    {
+      "path": "images/n02102040/ILSVRC2012_val_00023440.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "6ea2a6305291e8bb3b981da0361a97b25be50c3695065446519f573c0bd7b535",
+      "archive_member": "imagenette2-320/val/n02102040/ILSVRC2012_val_00023440.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_3161.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "bc226e2382fb61d685890a8a299626f68321efad0e460e267748c326b33e7123",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_3161.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_18031.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "6bb0239cd7fc0be222974e98ee3c640ae1e229bcafc67ee9e63778d813cea64d",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_18031.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_3502.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "32ef9a16bb7906d1f44bd1633581cda2086fd5c3366d142137859b7616d97ef4",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_3502.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_20500.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "4a44521773b968d832e0821fa02121c13df96a84c7eda9e06bbcc9fe3b7518b7",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_20500.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_25370.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "b439b6c6b359d6ccd0308dc80a3a580aeb1ceada48d0621430da29a53e00cbe9",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_25370.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_20012.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "51e8c935487279d9486a8026d83852e12cfbd9c74fa1dc7babf3154a38b85415",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_20012.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_22791.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "7861fc372b4d40244821314790eaa0d3e14909ad83024bf4dc33451dc23849f8",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_22791.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_14672.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "5e59033871f080016a7718ffdb629baa52423cdf756be028195e2b1d22314ee7",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_14672.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_2572.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "e5d3cfabff2fc0ba8a7405d877606da0960258e308d2fa009373293b5bf1bced",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_2572.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_27071.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "7162be789cce06ee9f06c0a5b16b6811c6c6ac13c399b1b0c42c79fc5bbec728",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_27071.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_8570.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "842c95ccfc78519bceeac9617209425aa2d369562ee1246c396cdd605ff51233",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_8570.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_39511.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "7036f7edb530817b81db7fa7e2cad10db0b8a7642aecdd0cb0c82e51afd96b7f",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_39511.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_212.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "82be1dc6fb948065d795e3207eefc4c6c7819478e143a754dc63f2f410f67b98",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_212.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_522.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "6516cf3b097ed4a7e060d374db4329571ad9ce11234258fe6d8e7825c5e260f1",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_522.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_32411.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "42f031c0056ce75f0937a9bfb1d7ba6e1b3f6b70f7eef34cd2d77c682c80dedf",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_32411.JPEG"
+    },
+    {
+      "path": "images/n02979186/ILSVRC2012_val_00043731.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "dcd6094bb0f9507b04c752b13a38a41fbe546139943aa60b3fa4bd2479b966e1",
+      "archive_member": "imagenette2-320/val/n02979186/ILSVRC2012_val_00043731.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_16822.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "7688967a5c1228e0726c4d752bff04178dad66aa7a5cb4e030a9345d2de56fcc",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_16822.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_23911.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "d3e2a77871e82240a27052497ae515196b100db6befa0c12b0dec872a6c07786",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_23911.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_54391.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "1a0879eabe6ac95d2c30661c1fc54f8b44b3f1016c5cef82d02414c7c67aff3c",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_54391.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_540.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "1056751d046177f375f0c1de106a2e221a2d3c59cb716fddfa60762f882f1c48",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_540.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_101.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "7c28b0e74350121fcbb111211e955408d55d33aec274a96a5211356feb7220a1",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_101.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_5912.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "4970c8979ce49d73099dbeca184929a7ae4d286b20fb41a350c0758f10d8f7ee",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_5912.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_14530.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "b09018113b3d33eac5881439ae50ffe013ddec3891ef2e69cb956c4be01d8171",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_14530.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_8501.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "aff11e1cefffce47cbbe3c8248b873131f46c4db54e8fdb298abda4b1371055f",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_8501.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_14891.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "63f07c4c1700857240370e9d83d5763e056ee12ea1d9cc1f6dfc570f5d79a9e4",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_14891.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_13502.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "485a48ef76f646bc2b092db77f89e0b1caa4018c6e8e0a9ad38cdf8b91047ae0",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_13502.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_9381.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "17c9a842d8455299e708f0f968015b30bd0ddc1f58dee6fe33a03b7a50252f09",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_9381.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_11642.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "4648daed645ed78e7b30471d8556e0c0c311bee939f52529f226ad85d427a479",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_11642.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_20132.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "1b1f17de8d639fec3ef59ccb4fcf33b16f567e9d050fdd1822bf479bf084d1d4",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_20132.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_5320.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "af2945bccb3ebca04c2fb09229211c5efdf39b9cbc68e99ca41a79c7ef4fb8ca",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_5320.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_3061.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "38e3284083b54da255a4395f2e2d14e18f26650a669866b62356f697d2e30de1",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_3061.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_6340.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "9217d038baae3940f0deb41c1c2818b6fff403145f8bf9209eba4f76658342c2",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_6340.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_17782.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "34b9e7c348b7d0c7fe1d858e43f392915e5315d90dc22f522b0f67f46c91da8d",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_17782.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_39880.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "2ac17b5e7bd6dd1fa9a0e3a60dee478677b3d59ccc7a8f2d9075ce1ec5409222",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_39880.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_4012.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "960deb6d469f88546f342563a15a471f70cbabfdc974dac7baf173a92ec136b4",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_4012.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_1611.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "a214a5bca300c24534d28546b39d4b05bdd9a8a491fd3a504d83a76dad2b268c",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_1611.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_5841.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "e98f9189f5d209e16d9ab7cf15675f80c9d680a1dfb8a445475fbfbd1be80c58",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_5841.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_5731.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "42cd5fcd9d7ebdbb8c6169f5e5d455ba5414f1845fd277d2b39e9baa917470f1",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_5731.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_16731.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "678217c4a52c19cb117cd19880008f9e093382354c1579739301046c7084d5e1",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_16731.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_13442.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "f5dc6c7a882d14d370ad56251d2979de43d141be08628fc35d5e99959830326f",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_13442.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_44440.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "a7033f981775c6ffc1582a77a26f424d88edfdb3d76870039038757ceebd95e0",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_44440.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_2142.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "12000bbd8d8f8eba4c0d532fa0803d40259152b69cefc52e51707509a2747717",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_2142.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_9560.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "21311deeb40ed705305daf8870b288049c2dacc2e1ef27822007c7ac8af3526d",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_9560.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_3301.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "de77ae72f9321f1ac0ac88eb8b9b54823ceb96a852216a9b0931261a4b123d1b",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_3301.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_1172.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "629290eccfe2ad40c801a06ad54266050e894bd42feccf1888b1341d5fec2e64",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_1172.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_2031.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "8049a7b8ccd5cee5c12ed452e23e9eea791a43b252d1fd295ea8db93ac259474",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_2031.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_15622.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "e5741ae40deb9ce2fee02e8105bb4353e32a78de6f6b0bcd7c1b75cae2ce1c69",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_15622.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_22330.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "5793669812487a6c5b182469b23eeb9ba70991fe405916155f0a12c9ffd7b370",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_22330.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_21051.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "f317bba67057d5815039b071320ae040c23b0672d3f8ac280f44da530fea19eb",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_21051.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_30042.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "5283d976a6e487c851266a9f6b6745965f3cf0026feee0f49b946f8b6c1c8c1b",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_30042.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_4551.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "e2c6d0d80969570254ff7280b34a034ec981ad63a1dd47a0c97de9eea9841b70",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_4551.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_10531.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "1dc0b7e5cd8cd148d5ae1ba7592613492ad488c51983057112bc3286943540c2",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_10531.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_3202.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "0fd500f16ee9e6cda37a2633d8cfb8c42d8d4f261b694dd3a7dd252d8dbedc9f",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_3202.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_7792.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "fd8d509de86e6711786845c3f296606090de8e4ba749b820abe9b112b1030da4",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_7792.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_10212.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "63d3cea602dfd947dfcb09f8c77f7073c8f9976ebe2fcbca387375df25476485",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_10212.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_20631.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "b4609e63965c7cb7214bcea314270e70732bb3eb8e137c367a57bf4a8fbd80bd",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_20631.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_33182.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "18eb3e40516faa1cc1751e0bc780f426185a9a0e1bfd0d890fda3b15dc8ad0f6",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_33182.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_1351.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "5dd5dc793631c23d9f0c51eebc2aad8e5f69c5acc2feab94ed13aa643b10c786",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_1351.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_19271.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "9256a4f2b13c56d4afeb973ac1ea1e1bd1304e30f6b4b2b9ee84d68eb6011ba4",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_19271.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_29722.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "a7f985d067d46c7fa29ba887180dd9821f97708298099fb50496b12c7a0ad4ea",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_29722.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_1790.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "566c67d2a11ee6351c96e6a6695a60d01b9f88e3604ecde4f81cf0a4a585f60a",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_1790.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_7210.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "0b078d73aaab3eeeed59f6de1d145853092de0ae70e6eb3fa863fdd50e2716e8",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_7210.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_12732.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "4ef290822b434ed55470d15e0a2c05931796a29893aea1145e75b0ad13aff06d",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_12732.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_8012.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "e3cf226c17508e8e1b2aec7d3f860f758950c56cf14ff61e4a733d0c4d2b3548",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_8012.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_1272.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "3ac329b6f0558a4c3e91d71ed2df7cf3b50f6690955ee9e2c2af108176276faa",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_1272.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_51680.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "e1155e47cc273f4738a576dcfbc54c9f5c7ecbf3e577c9f125d7f46d60930bd3",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_51680.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_47300.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "09a04def17043555d0289d14eb953b832536ffec0a45000c7f6b1ba4ec208a4b",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_47300.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_2122.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "cef6d952e8faa055773509671d0af352ca1f9f0c9061646ad8aff0eccd947191",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_2122.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_3621.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "09287d022b09199064d6df084f1cd52a20d12dc2bf894cba535c4548f45a97e3",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_3621.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_28381.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "778afe984b64bc4d7a4138e7ada5f195e614b33d1938440e18aa082cbbe2a52f",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_28381.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_2141.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "00c31b237a237c2d66bd0c1e6c806526ee2c565103828e41668b4b327b520fa5",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_2141.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_3102.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "80c83a7317d79bb78051539d64ee6d9c9e3d7d749b3a70684623a2e1832c09e3",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_3102.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_1271.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "f9f996d70dc425fa530e78882ed3dc721d624e2a332bef5ececa58a034a038ca",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_1271.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_1421.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "d58ce8c77523d56c9a9112f1c349e3e1b58df86bd448a897f4dd51344a708ff1",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_1421.JPEG"
+    },
+    {
+      "path": "images/n03394916/ILSVRC2012_val_00041242.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "326dc85e7d61bfbd2f51a94c79280a7b327b3f2534d56d1ceb72d1a041e253d1",
+      "archive_member": "imagenette2-320/val/n03394916/ILSVRC2012_val_00041242.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_25411.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "830a0f81120c943b1bd4e9e682d0eaacbac0d8eca1d8ff2b71128f999256eec3",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_25411.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_5941.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "55b5903e0ac8b0bf6eaa0adce67aa481588d740ecd1c6a5b775d59a772dbc98f",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_5941.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_5962.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "f217e6b5cfeff415ad86e12d414fbfcb82a783b04dd128bbf511a9827f343a58",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_5962.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_4572.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "895e41c88cf7804c4c038246f6f9ce5b6350db76645f5c0160dc677256ca1e9e",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_4572.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_12262.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "dd333771a038f425c13ba826c5d09939ea9ed91446856bfc5e79932aa820b4ae",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_12262.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_14622.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "e9d708baa991327df638edbcf6bb5cf73e7fdf3eaa2074ede0aa2b4a296eeb67",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_14622.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_6882.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "f5ac574fb83cb73f4ac78c2cc7e03b09d6ad83f11ebc91d4ff11c8bd2f667fb7",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_6882.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_23680.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "670d716ba976c639c95d8ac7e2458abb51321ce23ef9084155a1e354c20d8ecf",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_23680.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_651.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "9c851bb520c0ce4472ee7a9352057b757685c4ccc41080307c671a331bf3ccf5",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_651.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_26960.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "884fee0aa45165f66ebef9d5e4ce0d432dc7185f6a654ca2992c941b14a3510c",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_26960.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_15050.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "1e3e24c8cfbe3335918992c54cb6d5abdb44bcd86f5f6001348964bdf1faff09",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_15050.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_590.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "b8d08d9bfbee3e2fa26a4da28c53544c35110c94877dcc02f6b5865b5011125a",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_590.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_3320.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "8982d6cd24fc58b596b57abe55449aa8cc5a059a84456e3f00afa02c838a5130",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_3320.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_16712.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "baff28bacd86c322c1e3b1cfb622b335850151a8f60fe346df06f375ba44fb52",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_16712.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_20312.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "d12a02dfe40d2b77747036ccac401c6373700085dc2720227ae664202839adef",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_20312.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_2702.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "e9fad667b28b45f05331a395669f74827f1bcd3b1b6749286d43aed8a8389e52",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_2702.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_1791.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "32c79e43614c43e791d614794a6338a479b5cb3aa97a421a9974b6998774b851",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_1791.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_7621.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "8d643f4a2783b9b36626d0a14241ab4f561842e860f3889cc66378bffd522a78",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_7621.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_1152.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "e9ca20e2b12cd4025a0860881b2df704dd9ed6e9201f37243db83e774065c8b6",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_1152.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_57010.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "b9537c3dc26d63df9bf05674e5430370560b8022cd7b02dd7143a6bf7879cf81",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_57010.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_3470.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "bbc9bed840fa15cd156d3bb9b7a896dbcf38908604379cf3657f563c7a8c155b",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_3470.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_7480.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "a67b9e96bae411a0b3eaa2c7f3afd6f795ec689bb243016133b1065c7daf14be",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_7480.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_6391.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "79e527e97e22fdba77d79420d8e9cdddc36e4e217f26e805213e18dacde31572",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_6391.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_25391.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "43f50d31bc3f9d6b2487d4f89956527d8e69eca809b8baf6225e4ec5cec12377",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_25391.JPEG"
+    },
+    {
+      "path": "images/n03888257/ILSVRC2012_val_00006561.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "118925872b49373d92ce788b777244b51a01e77e89bb7840b125611d250e3f38",
+      "archive_member": "imagenette2-320/val/n03888257/ILSVRC2012_val_00006561.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_5802.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "4723f71178a5ac28ba56bdd688d344b012c55c0bcb05de42f7cced3c4d1b2e59",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_5802.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_12811.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "6be0615b69c74b0bff272f8aeaae74cb01eb6a9c59dcea8755036d955ec16735",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_12811.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_19862.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "c79c14cd3682d9af98eb5bed1c647d8c676b9a4bbe34f1842cfcd35a87da7f8d",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_19862.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_77811.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "5bf76aff16e1a0cd372c501be8f9119b9551e475d62e915f3657159f7313f05e",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_77811.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_17902.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "7480d75c9acd6189bc763cc00f79170a256348dc5d7d25df0c1031e70ceae400",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_17902.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_22390.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "0234e426ae1a270bef8935d8c02d33762e94d5d59c6cb892105f246722eb27e4",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_22390.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_2350.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "b79410a8289490640e4b2b3c0fbd203c10b01c46850cf060b0c1a7071315ec59",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_2350.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_1841.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "0d7c9b750e3f08d417fa781e6064763668365cdb42a21e25b6edeff00b7ef727",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_1841.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_33291.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "b0e9b714a6c70bc1a31f736535e6ce845fe1cce3ddfdbb1acb7938c64fa2de34",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_33291.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_16392.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "5ff9dca021d281866bc62030da5748a80a3025c5b3953b4b8fee126b6ce9b12c",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_16392.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_3940.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "7a3d55464bbfd79754a9e2262a1ef46fda16274594096d05e07fd25d447dde58",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_3940.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_24620.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "28895164d2489285127494d022ce05ceef15cd154f0b6083dd34f567bfd0b228",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_24620.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_29362.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "af2fdede6c30f25946172ef9bba5cba6ef575a6248b0ef6ed5407c951c37cbc6",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_29362.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_2000.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "105d5f57f5608d62822b74ee7459b944426255c44233fc607c7426aa07f0eb0e",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_2000.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_11120.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "8cd774e1bc91b6d6d98c1c35474a748cb65d02a3e65afae80eaa4eea0b247645",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_11120.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_9052.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "ba03959e909e09b6a858f134cebe254aac3c41e4db66fc428298a615f4082711",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_9052.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_14100.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "8560831777ed89ac0088ff558e70efc5fa2fa9018c99874b0a5a4adfb2f019c3",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_14100.JPEG"
+    },
+    {
+      "path": "images/n03445777/ILSVRC2012_val_00020781.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "699215bfd1fd90b0bec1633e33f37252664277e6b1fb2ed33ad53d0f0dde4449",
+      "archive_member": "imagenette2-320/val/n03445777/ILSVRC2012_val_00020781.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_1660.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "cf01a43bfbcac22ebd43009551715108e242254766d086a5a0f64179058abd9d",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_1660.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_12681.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "c3de9ae1097eb9726393947bda093c3a218ade516e5e3be491d2eefc879d8053",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_12681.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_5691.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "1111889e9be3ec065398fdf18c06cc66556bfc0640fec2e5c73ff3a8e0306e64",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_5691.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_2340.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "8beacd5cba4cfe0ab78686109aaa13ffc4305eaf87edd110942a4b85f8c42361",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_2340.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_58650.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "c166ff166ff3e9c7005a745ceb2386232311119e0d691247f79fb4b031a1fd79",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_58650.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_9671.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "b6f6e97d02036a547a84849b4f8bd79dd3e29062cca03a340c5fa88bb0e82dbf",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_9671.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_1141.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "349d1ad82dae2ceacc5d56c110ab5172b0a4bcd202c262453dd7ef6fb0308487",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_1141.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_3351.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "f2766869abad54b71fcbf1f0a7e82b2b26cbb803e322ad6a78bd45cb1645715d",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_3351.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_15862.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "fe79d8b8017e9d5e20bdc885c0caf02f3b40b112dee0575462b8ace9de49d50d",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_15862.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_47330.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "804ba25e9b22bce44c26435c7f6f3b8766df26ed78bc6d21361d2956707d19d3",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_47330.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_2841.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "9a06ad69c2ad40c20584db176feac7afeb3df297db09c1ccdf6e914b6e1d014d",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_2841.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_2772.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "1b6069d98e8a90d1daf6200bab2f04a74451c26ec289f477a818848f9b7bfb1d",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_2772.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_11452.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "6b586911e161e1ef13789bd8fe72a7b7eaa5c453d7a9fc9804a667e12dc3e696",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_11452.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_4582.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "125f7015f7dacb7b976a3e1877444c495825aa8bdc4c233a20065166a2f5a4cc",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_4582.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_4292.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "4677c91ab6907af8f47769f7842326a9de66dfea67bd095c96c00853b9d4fe00",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_4292.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_24492.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "0227b3590ed801f0d6711003786d1905f101d4359b72497210efca9020ac6362",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_24492.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_15470.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "96e97a9344359585e9f3dd1e25bfb839749f4f5dd92a3cb27f330f6637d712f2",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_15470.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_18871.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "d7352ca1f8b289b9e9d31ae19e95204e51002553efcdcb2fda0caf4a062d454e",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_18871.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_10281.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "99c8c14e59b99cd6e398a8db3680b4b71ea5b5143f649087b1e5d5452b370b1c",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_10281.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_4702.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "a33e7bd022beb9ca714eaced38e1ca78e4f96ef767fa8223e66fa1137941cd61",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_4702.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_8260.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "900cb1da9bf2940122700a55b81d09ad54f972c6d64721610d1d61ade9da90fe",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_8260.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_15571.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "0d47395a38367d5532e323876fe5d393aa72cc1cb22bb296760af2b0ce80dde1",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_15571.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_14501.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "8e40e1c178f60c7d75744e87e2025c54a20e8ac5e709ae834ca290816d3e306d",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_14501.JPEG"
+    },
+    {
+      "path": "images/n03028079/ILSVRC2012_val_00003682.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "780be6975314846d2739e21e75c380bb1bd49ac64aec4dbf7a7820e24daf565a",
+      "archive_member": "imagenette2-320/val/n03028079/ILSVRC2012_val_00003682.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_20130.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "b27ddd6567d274375a9ad27c452176a9b673dfe613b689ab0f43e64114b7d1e4",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_20130.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_3422.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "757196e7a74dcc5612385aa9f6a9dd7f3cdb892c184542e75f87bfd2e84bce79",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_3422.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_3122.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "b5558b96a9c6928cad84cd9cd0e1e646ff321adfcda18d97ed9c03bf1c665a38",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_3122.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_32730.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "c43405fadb324e40c61bad38d48a4f57ee7b60706d05c33c3023e198ffb6f72e",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_32730.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_30011.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "0ed34dda0de07d10cc1c5efe9fa52ca8f3683acaaa8f5606ba9bc3fc32562b7c",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_30011.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_10751.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "7cec0fa3547066ed94efa52b6fee0684d89ccee987bb2bdf9c6b23a1b2298e18",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_10751.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_1750.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "568aec4f33b1f489e289bb13b695943e2041a47de725d192aab466268fb04cc3",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_1750.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_24352.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "3583294057133b5ce2785de631b478418c654eaf353a296bbb2b82d3dea1b33d",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_24352.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_15950.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "5aef6aca113537271e741dc031989bed9f1bd0234a199231736ef587072e2356",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_15950.JPEG"
+    },
+    {
+      "path": "images/n03000684/ILSVRC2012_val_00047060.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "9099f4762c34600120b821f2c1f0385ac3d92c8b2c5138f57d346a06d18a7224",
+      "archive_member": "imagenette2-320/val/n03000684/ILSVRC2012_val_00047060.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_26102.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "2a949099506c356dec441b9e8b6124ddb69c4d53501979a4a9d24ee6a3a43b57",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_26102.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_7392.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "76d52f2d4b2cb4feb9f8bce6a029a24cd0a5d10f0ecc0609c945bd07a49019e8",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_7392.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_4420.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "dca205e9229cda44f348efcb9d3ad0b3508541c1bace14e228f1e3d5d25e48aa",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_4420.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_5131.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "0603bd010e8757712926d920735cdb1da1958dd2796b1e120cdd547fa39f7666",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_5131.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_12430.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "825672e58cf0c3f22fe8b19d1e032c39674c93906623f2b6bf28927e2970d39f",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_12430.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_7082.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "e92868bf6001e8438ca941b9c72dc20703eeb4a98c712ab6947d560c528335ad",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_7082.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_13911.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "2b49a8429232604e73d74a2f81ed3d07a0f327e8d25f59cc5ca5a4557871934b",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_13911.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_5991.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "37efdd81b4b6c154047fe6380d007daa612da310100c1af187a46d0d60a7ac11",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_5991.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_4210.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "6d6d268e0e05614b406515c05a3c50a6f44d3f8d57589a2d312f1e01f5ad0aad",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_4210.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_16051.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "c4818ceda9a94d5cd0a42777b934b61f4ca84d9fbcc87d09fb0777897a494116",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_16051.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_171.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "54d8e1a3c42d783def20495d28596fce10c87f7753ecc87c5c497691581fe43c",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_171.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_21102.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "ec5eda5dfc7d4c0c621847d450ea712d150c4527b97596f91cdf3212ec6220c4",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_21102.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_69371.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "125f4ebd096befd9ea010b45bfc4ca70509f001b15e4d2609ecde3b57f965585",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_69371.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_33671.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "c6308a6e9d632cbd0397c05a0e48ccd3e338d50507b9787161ae362c8fc908bf",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_33671.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_16912.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "3df1b1181e2d41061d97fae0a9fdd0f85a828c33d42d53f92935bc1781f0183c",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_16912.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_2641.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "1c30177534ae91668d5574229c09fb880cad890cc035b256c8f1c612b1bd8e46",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_2641.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_18330.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "e352ee0b2d12cb6078968aba80c213f34ba05deef2e852e0b88001514fe95179",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_18330.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_140.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "a54d2035c5bfffe72f0246a63c7c2dbb67d8b9b229420ae7f7c65761cfd8b312",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_140.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_27471.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "8893cdf4d33888694a108ba49c08450ad9687aa3be9b512eca546e5032cb6c1f",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_27471.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_18901.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "96dc1cb224a614346087272070ed5a47cdfd4ed76c79722d32e0c3e50b6a9d05",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_18901.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_26102.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "ebfcb8437679ff55857d205cddd3f6f982bcae7bf898caef11c4b6a0203e1aa1",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_26102.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_13672.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "227a87aa2580a8fc24c918d1f5924e6504a84a6a707bf2cd9fa5d674141dc78f",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_13672.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_922.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "2427fb49f565eeaa91792b9606e8e52aae5122d3efe0fae5609f26945d88fe82",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_922.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_12900.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "8be8323a8c972389c19be460c04a87f1b0f758d9c95ca9cf09d918c85fd43c63",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_12900.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_5382.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "8235b1f11d265a8b80e8453ba5b0e7ebf68199a92fd748b10c2918b73dd8fca4",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_5382.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_6552.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "2dffe654989020327ae3ffaa934180243f56750ec8c9b1d48016f0c475ca2f10",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_6552.JPEG"
+    },
+    {
+      "path": "images/n03000684/ILSVRC2012_val_00011951.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "62920f3529a5dc33db76e387a0dbd2690f275e006ba4d72af93c1b48a4276fab",
+      "archive_member": "imagenette2-320/val/n03000684/ILSVRC2012_val_00011951.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_3172.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "fa3fdb757a34656ad6675b784b005026ab27db7367a47cbd684058d41cb71f35",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_3172.JPEG"
+    },
+    {
+      "path": "images/n01440764/ILSVRC2012_val_00045880.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "7c2a6848b3606f3d071c970f0dc6f76d3bedce0e2f3580133a8b57222c80ff32",
+      "archive_member": "imagenette2-320/val/n01440764/ILSVRC2012_val_00045880.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_14172.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "f32d67258635d6a0c2d6bf2ad86201f834d87f1f51ddb23142445060865158d3",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_14172.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_24502.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "cb63331160c2ac264575ab577df83258bd8f82b44be96727f2a1c2581039bfd2",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_24502.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_6520.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "2630808e4d1fb625795cd4f866bafe96c65ff1942d803f62851afe18dcafc7ab",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_6520.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_4492.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "b4ffc33dae93362aad1a0d3537283b7a87926816e370a4027a2497108c3a2942",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_4492.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_8891.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "04a21bfd7bd3364b552b988adc24accb9d4a7251d9aae522cf02374e05b8ae66",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_8891.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_35692.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "62e4827f45e9aebec04345f7c745ea514b794fa62fa2382cb934bac6ea23e000",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_35692.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_13381.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "3a4bb36c5d0d87d6c59ab645a1175b9b3f1c7c407e83d7f73cc2f5fcf53bc209",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_13381.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_10040.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "bf20c1f1867f1f199cc037efb83bb8ba047de8b5d23782ed78240e1460cccd98",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_10040.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_4852.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "7c0998958eef3da45f0028ded91ba8ff54b0e3d67c011455bfc84b575a20b7c1",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_4852.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_40501.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "b3abd84624c5f85fb95b40a5710e5a6120c88d35e996337e759f9145391797de",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_40501.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_15932.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "4e935d1f2299f3053c8d9e9bb42d297a8b99e706ba6505aa7b84d22ac484c70f",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_15932.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_3892.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "29f86d1a5dd46345588a776239544378d2c68464f393ef43fe2adab34ec2ebf8",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_3892.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_14232.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "fe147b3264a28ad9056ebfa7a81657c1fbe6874744a54da4cf083c3f83170976",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_14232.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_691.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "aa4c3ef53ecb42ab527b7959560c4f0efcfebac57efccaff55260535d459b53f",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_691.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_7531.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "417d25ee403e6f689e74c3d77e8f4a8cfc345080310e12a56c566cc47ba37874",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_7531.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_3422.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "b38a85066e579ab72f1abd36e19f3f21521d5907f538904bfd9ddd83b8e3b3f0",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_3422.JPEG"
+    },
+    {
+      "path": "images/n03417042/ILSVRC2012_val_00027110.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "174f3bbf13f1d79fc71168e2ad5324042418f552761af01f80e43ee39cd9bdbc",
+      "archive_member": "imagenette2-320/val/n03417042/ILSVRC2012_val_00027110.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_12172.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "e780961cf7a65be94b77ec452e53ae21d259b72cab5b72881d870d7956189fb7",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_12172.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_5200.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "2e818a5f5551f0162ea9e53c348e5e1a938445381ca58864ec06167794731119",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_5200.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_19531.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "5fe5af958cc40036c53d9f8d3a43d1cd537dfc817985514d7c27f5112bf0108f",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_19531.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_14040.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "dab67cb9dfb402dced268db5b7bb65dc13eb4dbdb55d48a560ec43007cd0cf37",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_14040.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_4972.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "1f1bda61147fb48123e53bea4fc738a0b62c13f0c7bc74080d36c161196ae343",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_4972.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_35911.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "06b41560246ffee5f574a157449a0a4eff3af86af15cb5e563d2cdc662e1a12c",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_35911.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_19440.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "166af7fc433cdcc1d44672cfd7b35822636d4e9172df3c12e3d38d28cf83ca57",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_19440.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_5720.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "fce9fa8ffcff6843ed609b70b0c06f16b58ab00ab6ebc623dd6c6664feea5590",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_5720.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_23801.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "7da4ceaddd9b7771802585173e28f089f5ae56585fa1ef473322f821bb40116b",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_23801.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_1771.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "0ac8f00eae230a49b9dda8ec5aed85292b652639ad0c9288ae9f894fe7ced735",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_1771.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_7310.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "076d202ca10452c93a1681679184cb51a1f2e582ec1d586f167ac1b2fc07f182",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_7310.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_33801.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "bf12261b86487d409f16a395cf6c5f86afc60527b8445670c38fc93745dc8088",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_33801.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_12061.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "2cb28eb73242f46eb6e4885c9710049a05504ac35d9b96eb6fc5d2038fd24255",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_12061.JPEG"
+    },
+    {
+      "path": "images/n03417042/n03417042_11222.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "c7c7c86e70ad532b71fc94af3d52df459f828fad7627e5afbdb683e580c88778",
+      "archive_member": "imagenette2-320/val/n03417042/n03417042_11222.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_132.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "b8e677ce7c1ba44cae7054f98f7b55e0632a8a98fcfd49cd69f2e23da78a3729",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_132.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_32550.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "83a93513daeee2f7b0fc4bdc5f5862ad622ec686647403f8c3084d204bf036ce",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_32550.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_35621.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "0ead26280c177e2fc6340d4eaa4ff99292987c841588726530af31fb77918821",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_35621.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_44670.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "183df6415d486a6b80be877c5201b4c309089cd27a7d3922a23e280338d33cde",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_44670.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_1450.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "78c437a539e9eefa37bdc3344da60db8af95f77b886950ae36e84205c8235ccb",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_1450.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_29861.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "253617fbfbcff856dd9331c3b98fdcf5323618a3628f2a6fc5be92a249219073",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_29861.JPEG"
+    },
+    {
+      "path": "images/n03000684/n03000684_4310.JPEG",
+      "synset": "n03000684",
+      "class_name": "chain saw",
+      "imagenet_index": 491,
+      "sha256": "6fecd7ab5d082ee82bbd1b517516ea18c0089844ef75d483ed5dd2d6ff269d20",
+      "archive_member": "imagenette2-320/val/n03000684/n03000684_4310.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_7820.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "5d6ae4bc46e1bcf9284d9b02d46faa74e4f67630fbc118445872eaac69255956",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_7820.JPEG"
+    },
+    {
+      "path": "images/n03394916/n03394916_25670.JPEG",
+      "synset": "n03394916",
+      "class_name": "French horn",
+      "imagenet_index": 566,
+      "sha256": "6a952d2fa341d1460f1e9e2f452a528608dea43fa1be46404ae75891c2b0451a",
+      "archive_member": "imagenette2-320/val/n03394916/n03394916_25670.JPEG"
+    },
+    {
+      "path": "images/n02102040/n02102040_3190.JPEG",
+      "synset": "n02102040",
+      "class_name": "English springer",
+      "imagenet_index": 217,
+      "sha256": "c9a9edfe41f204f4e311e6213533aecfbc7f9698313418bc535cd0b19fbae02e",
+      "archive_member": "imagenette2-320/val/n02102040/n02102040_3190.JPEG"
+    },
+    {
+      "path": "images/n03425413/ILSVRC2012_val_00001432.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "76416f662bdaf08b8e6490952e64840ac3ede243789317360728c9e7e7d1edcc",
+      "archive_member": "imagenette2-320/val/n03425413/ILSVRC2012_val_00001432.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_7912.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "2feca39649afe0460b8ef887397eaa0388948fffa37ed27e322c33cff0827760",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_7912.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_260.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "774b58ab15b0e6289db43b89655e0e267982bebdd49aba4b9c9987ba78903e51",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_260.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_16220.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "0a30f386fdc0d8e77963fc20f60b1e2bf1e0fe2a852f430ba95ab62cea7ac1d8",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_16220.JPEG"
+    },
+    {
+      "path": "images/n03425413/n03425413_19020.JPEG",
+      "synset": "n03425413",
+      "class_name": "gas pump",
+      "imagenet_index": 571,
+      "sha256": "58bb9d61501989c7f2313af3e00fd2f05c954d5da67e908bb5bdda65e25755f4",
+      "archive_member": "imagenette2-320/val/n03425413/n03425413_19020.JPEG"
+    },
+    {
+      "path": "images/n03888257/n03888257_16112.JPEG",
+      "synset": "n03888257",
+      "class_name": "parachute",
+      "imagenet_index": 701,
+      "sha256": "eb033ec9dfcf0a380bd9ba14f8d10ff877ad9c06c45c0cbc4c9742cbc2e87083",
+      "archive_member": "imagenette2-320/val/n03888257/n03888257_16112.JPEG"
+    },
+    {
+      "path": "images/n03417042/ILSVRC2012_val_00033842.JPEG",
+      "synset": "n03417042",
+      "class_name": "garbage truck",
+      "imagenet_index": 569,
+      "sha256": "6a532c7f537df7b3a61fe0d8ffff44cc25f696a25b0f544fbb9ab4fa112a48f9",
+      "archive_member": "imagenette2-320/val/n03417042/ILSVRC2012_val_00033842.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_9810.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "546b296b196526fc8d969080af80959b4f9e7aa949ec0e05c75ead9971549328",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_9810.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_7501.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "d95b2422358779dad4dd1ed0898db1ebbade55d650b97234afa3506640381eb3",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_7501.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_6350.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "1e00d775276f26754a26c23014ddd06b1c023be82ff231601304638f56652d54",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_6350.JPEG"
+    },
+    {
+      "path": "images/n01440764/n01440764_8992.JPEG",
+      "synset": "n01440764",
+      "class_name": "tench",
+      "imagenet_index": 0,
+      "sha256": "c47eb0e05d9d830b009b642bf4582835ab3f4c3592b21db36f1186261623689b",
+      "archive_member": "imagenette2-320/val/n01440764/n01440764_8992.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_12590.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "4a6563a2c23ed4cd6ddee302b0107f094a090ddc3fe3ff4f5be3027145430b73",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_12590.JPEG"
+    },
+    {
+      "path": "images/n03445777/n03445777_1002.JPEG",
+      "synset": "n03445777",
+      "class_name": "golf ball",
+      "imagenet_index": 574,
+      "sha256": "81060cbd28357b3a5c4fc17cae8738fa7b54d2887e1727f98249f4b2dfbfeb2e",
+      "archive_member": "imagenette2-320/val/n03445777/n03445777_1002.JPEG"
+    },
+    {
+      "path": "images/n03028079/n03028079_7882.JPEG",
+      "synset": "n03028079",
+      "class_name": "church",
+      "imagenet_index": 497,
+      "sha256": "00f314d6392389f02ec3dcd372555e1f18db41f7d97603b5a5d93281015d37bc",
+      "archive_member": "imagenette2-320/val/n03028079/n03028079_7882.JPEG"
+    },
+    {
+      "path": "images/n02979186/n02979186_2632.JPEG",
+      "synset": "n02979186",
+      "class_name": "cassette player",
+      "imagenet_index": 482,
+      "sha256": "39edc9f2222c39cbbc5a64cb4d3c65123fa9c3982eb96d312f5f0f1f7448e461",
+      "archive_member": "imagenette2-320/val/n02979186/n02979186_2632.JPEG"
+    }
+  ]
+}

@@ -39,6 +39,8 @@ def parse_args():
                    help="openvino backend only: CPU | GPU | NPU")
     p.add_argument("--source", default=None,
                    help="video/image path; omitted = synthetic frames")
+    p.add_argument('--image-read-mode', choices=('files', 'predecoded'), default='files',
+                   help='image manifest: file+decode or references to predecoded images')
     p.add_argument("--frames", type=int, default=300)
     p.add_argument("--duration-s", type=float, default=0.0,
                    help="measure for this long instead of for a frame count")
@@ -70,7 +72,7 @@ def measure_once(backend, args, height: int, width: int,
     so this must report zero -- which is what makes the same check meaningful
     when the async pipeline reports zero.
     """
-    source = make_source(args.source, args.frames)
+    source = make_source(args.source, args.frames, getattr(args, 'image_read_mode', 'files'))
     rec = Recorder(warmup=args.warmup, warmup_s=getattr(args, 'warmup_s', 0.0))
     checker = OrderChecker()
     idx = 0
@@ -202,6 +204,8 @@ def main() -> int:
     # other -- the two axes this project exists to separate.
     dev_slug = "-" + backend.ov_device.lower() if backend.ov_device else ""
     src_slug = Path(args.source).stem if args.source else "synthetic"
+    if args.source and Path(args.source).suffix.lower() == '.json':
+        src_slug += '-' + args.image_read_mode
     out = (Path(args.out_dir) /
            f"{args.tag}__{args.backend}{dev_slug}__{Path(args.model).stem}"
            f"__{src_slug}.json")

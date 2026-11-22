@@ -1,0 +1,74 @@
+[
+  {
+    "round": 1,
+    "depth": 4,
+    "exit_code": 0,
+    "result": "results\\inflight-investigation\\20261122-interleaved\\round-1-depth-4\\depth-4.json"
+  },
+  {
+    "round": 1,
+    "depth": 2,
+    "exit_code": 0,
+    "result": "results\\inflight-investigation\\20261122-interleaved\\round-1-depth-2\\depth-2.json"
+  },
+  {
+    "round": 1,
+    "depth": 16,
+    "exit_code": 0,
+    "result": "results\\inflight-investigation\\20261122-interleaved\\round-1-depth-16\\depth-16.json"
+  },
+  {
+    "round": 1,
+    "depth": 8,
+    "exit_code": 0,
+    "result": "results\\inflight-investigation\\20261122-interleaved\\round-1-depth-8\\depth-8.json"
+  },
+  {
+    "round": 2,
+    "depth": 8,
+    "exit_code": 0,
+    "result": "results\\inflight-investigation\\20261122-interleaved\\round-2-depth-8\\depth-8.json"
+  },
+  {
+    "round": 2,
+    "depth": 16,
+    "exit_code": 0,
+    "result": "results\\inflight-investigation\\20261122-interleaved\\round-2-depth-16\\depth-16.json"
+  },
+  {
+    "round": 2,
+    "depth": 2,
+    "exit_code": 0,
+    "result": "results\\inflight-investigation\\20261122-interleaved\\round-2-depth-2\\depth-2.json"
+  },
+  {
+    "round": 2,
+    "depth": 4,
+    "exit_code": 0,
+    "result": "results\\inflight-investigation\\20261122-interleaved\\round-2-depth-4\\depth-4.json"
+  },
+  {
+    "round": 3,
+    "depth": 16,
+    "exit_code": 0,
+    "result": "results\\inflight-investigation\\20261122-interleaved\\round-3-depth-16\\depth-16.json"
+  },
+  {
+    "round": 3,
+    "depth": 4,
+    "exit_code": 0,
+    "result": "results\\inflight-investigation\\20261122-interleaved\\round-3-depth-4\\depth-4.json"
+  },
+  {
+    "round": 3,
+    "depth": 8,
+    "exit_code": 0,
+    "result": "results\\inflight-investigation\\20261122-interleaved\\round-3-depth-8\\depth-8.json"
+  },
+  {
+    "round": 3,
+    "depth": 2,
+    "exit_code": 0,
+    "result": "results\\inflight-investigation\\20261122-interleaved\\round-3-depth-2\\depth-2.json"
+  }
+]

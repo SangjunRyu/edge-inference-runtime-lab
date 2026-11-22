@@ -4,6 +4,11 @@ __pycache__/
 models/*.onnx
 *.mp4
 clips/*.mp4
+data/
+.venv-cpu/
+.venv-cuda/
+.venv-export/
+results/local-image*/
 cpp/build/
 clips/scenario-assets/
 clips/real-video/

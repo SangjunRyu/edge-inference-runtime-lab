@@ -1,0 +1,28 @@
+{
+  "args": {
+    "frames": 200,
+    "warmup": 20,
+    "cooldown": 5,
+    "out_dir": "results/inflight-investigation/20261122-interleaved"
+  },
+  "schedule": [
+    [
+      4,
+      2,
+      16,
+      8
+    ],
+    [
+      8,
+      16,
+      2,
+      4
+    ],
+    [
+      16,
+      4,
+      8,
+      2
+    ]
+  ]
+}
