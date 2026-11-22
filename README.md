@@ -439,6 +439,11 @@ for the real-image depth sweep, raw NVML evidence and comparison with the MX150 
 The [Imagenette runtime validation](results/image-runtime-validation/20261122-rtx4060ti/README.md) reports output ordering,
 CPU input-buffer lifetime and Block/Drop ingress behavior using actual ResNet50 CUDA inference.
 
+## Portfolio
+
+[DEEPX Runtime SW personal portfolio (v10, PDF)](docs/portfolio/DEEPX_Runtime_SW_Personal_Portfolio_v10.pdf)
+links the Imagenette pipeline experiments and the CUDA MatMul profiling results.
+
 ## Licence note
 
 No DEEPX source is vendored or redistributed here. `dx_rt` is licensed to
